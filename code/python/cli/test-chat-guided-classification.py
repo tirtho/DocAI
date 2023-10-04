@@ -17,8 +17,9 @@ def main():
               {"role":"user","content":f"Headline: {cli_message}\nCategory:"},
               {"role":"assistant","content":""}
             ]
-  tokens_used, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=messages)
+  tokens_used, finish_reason, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=messages)
   print(f"Tokens: {tokens_used}")
+  print(f"Finish Reason: {finish_reason}")
   print(f"Category: {classified_category}")
 
 main()

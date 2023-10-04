@@ -45,4 +45,4 @@ def getChatCompletion(the_engine, the_messages):
         presence_penalty=0,
         stop=None
     )
-    return response.usage.total_tokens, response.choices[0].message["content"]
+    return response.usage.total_tokens, response.choices[0].finish_reason, response.choices[0].message["content"]

@@ -1,6 +1,5 @@
 import os, sys
 import aoai
-import classifyChat
 
 def main():
   cli_endpoint = sys.argv[1]
@@ -22,9 +21,9 @@ def main():
                             \nCategory:"
                 }
               ]      
-  tokens_used, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
-  #print(f"Logprobs: {log_probs}")
+  tokens_used, finish_reason, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
   print(f"Tokens: {tokens_used}")
+  print(f"Finish Reason: {finish_reason}")
   print(f"Category: {classified_category}")
 
 main()

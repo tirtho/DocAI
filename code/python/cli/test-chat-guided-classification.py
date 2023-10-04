@@ -1,6 +1,5 @@
 import os, sys
 import aoai
-import classify
 
 def main():
   cli_endpoint = sys.argv[1]
@@ -18,7 +17,7 @@ def main():
               {"role":"user","content":f"Headline: {cli_message}\nCategory:"},
               {"role":"assistant","content":""}
             ]
-  tokens_used, classified_category = aoai.getCompletion(the_engine=cli_engine, the_messages=messages)
+  tokens_used, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=messages)
   print(f"Tokens: {tokens_used}")
   print(f"Category: {classified_category}")
 

@@ -33,14 +33,14 @@ def setupOpenai(aoai_endpoint, aoai_version):
     print("\nSomething went wrong getting access key from environment variable")
     return -1
 
-# Returns total tokens used and the completion
-def getCompletion(the_engine, the_messages):
+# Returns total tokens used and the chat completion
+def getChatCompletion(the_engine, the_messages):
     response = openai.ChatCompletion.create(
         engine=the_engine,
         messages=the_messages,
         temperature=0,
         max_tokens=1000,
-        top_p=1,
+        #top_p=1,
         frequency_penalty=0,
         presence_penalty=0,
         stop=None

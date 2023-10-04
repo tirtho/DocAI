@@ -1,18 +1,13 @@
-#Note: The openai-python library support for Azure OpenAI is in preview.
 import os, sys
-import openai
-from azure.identity import DefaultAzureCredential
+import aoai
+import classify
 
-
-default_credential = DefaultAzureCredential()
-token = default_credential.get_token("https://cognitiveservices.azure.com/.default")
-openai.api_type = "azure_ad"
-openai.api_base = "https://tr-non-prod-gpt4.openai.azure.com/"
-openai.api_version = "2023-07-01-preview"
-openai.api_key = token.token
-
-response = openai.ChatCompletion.create(
-  engine="tr-gpt4-32k",
+def main():
+  cli_endpoint = sys.argv[1]
+  cli_engine = sys.argv[2]
+  cli_version = sys.argv[3]
+  cli_message = sys.argv[4]
+  aoai.setupOpenai(cli_endpoint, cli_version)
   messages = [{"role":"system","content":"You are an AI assistant that helps people find information."},
               {"role":"user","content":"Headline: Major Retailer Announces Plans to Close Over 100 Stores\nCategory:"},
               {"role":"assistant","content":"Business & Finance"},
@@ -20,16 +15,11 @@ response = openai.ChatCompletion.create(
               {"role":"assistant","content":"Politics"},
               {"role":"user","content":"Headline: Argentina won the World Cup Soccer match in 2022\nCategory:"},
               {"role":"assistant","content":"Sports"},
-              {"role":"user","content":f"Headline: {sys.argv[1]}\nCategory:"},
+              {"role":"user","content":f"Headline: {cli_message}\nCategory:"},
               {"role":"assistant","content":""}
-             ],
-  temperature=0.7,
-  max_tokens=800,
-  top_p=0.95,
-  frequency_penalty=0,
-  presence_penalty=0,
-  stop=None)
+            ]
+  tokens_used, classified_category = aoai.getCompletion(the_engine=cli_engine, the_messages=messages)
+  print(f"Tokens: {tokens_used}")
+  print(f"Category: {classified_category}")
 
-reply = response.choices[0].message["content"]
-
-print(f"Message: {sys.argv[1]}\nCategory: {reply}")
+main()

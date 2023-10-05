@@ -46,3 +46,11 @@ def getChatCompletion(the_engine, the_messages):
         stop=None
     )
     return response.usage.total_tokens, response.choices[0].finish_reason, response.choices[0].message["content"]
+
+# Return vectors for a given text using the ADA model
+def generate_embedding(the_engine, the_text):
+    response = openai.Embedding.create(
+                  input=the_text, 
+                  engine=the_engine)
+    embedding = response['data'][0]['embedding']
+    return embedding

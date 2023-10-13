@@ -8,7 +8,7 @@
 
 ## Overview
 
-The few code samples in [cli](code/python/cli) or [nootbooks](code/python/notebooks) to demonstrate how to implement - 
+The few code samples in [cli](code/python/cli) or [notebooks](code/python/notebooks) to demonstrate how to implement - 
 
 1. A text classifier
 2. A Retrieval augmented generation (RAG) pattern to get answers from Azure Open AI with 

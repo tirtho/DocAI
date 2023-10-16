@@ -16,9 +16,10 @@ def getFormRecognizerCredential():
         print(f"\nCould not get API key from environment variable FORM_RECOGNIZER_API_KEY. Trying Managed ID")
         default_credential = DefaultAzureCredential()
         #for access to Key Vault get_token(https://vault.azure.net)
-        token = default_credential.get_token("https://cognitiveservices.azure.com/.default")
+        #token = default_credential.get_token("https://cognitiveservices.azure.com/.default")
         print("\nAuthenticated successfully with AAD token")
-        return AzureKeyCredential(token.token)
+        return default_credential
+        #return AzureKeyCredential(token.token)
       except:
         print("\nSomething went wrong getting token with Managed Identity")
         return

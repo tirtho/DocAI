@@ -1,0 +1,3 @@
+Ang�lica, buen d�a. �Podr�as apoyarnos con varias correcciones en nuestras p�lizas, por favor? Primeramente, requerimos un cambio de asegurado en la p�liza KG42013202. Asimismo, necesitamos dar de baja los incisos No. 6 y 143 de la p�liza D342200020 del Grupo Lamosa a partir del 23 de febrero de 2023.
+
+�C�mo ves?, espero que podamos hacer estos ajustes. Te agradezco de antemano por tu apoyo y quedamos al pendiente de tu respuesta. Saludos cordiales.

@@ -28,6 +28,11 @@ def getFormRecognizerCredential():
 def getDocumentAnalysisClient(endpoint, credential):
   return DocumentAnalysisClient(endpoint, credential)
 
+def getDocumentModelAdminClient(endpoint, credential):
+  from azure.ai.formrecognizer import DocumentModelAdministrationClient
+  return  DocumentModelAdministrationClient(endpoint=endpoint, credential=credential)
+
+
 # Extract from local file
 def extractResultFromLocalDocument(client, model, filepath):
     with open(filepath, "rb") as f:
@@ -57,3 +62,45 @@ def getExtract(result):
 
 def getLabeledDataFromExtractedDocument(document):
   return document.doc_type, document.confidence, document.fields.items
+
+# Train document classifier
+# https://learn.microsoft.com/en-us/python/api/azure-ai-formrecognizer/azure.ai.formrecognizer.documentmodeladministrationclient?view=azure-python#Overview
+def trainClassifier(admin_client, blob_url, class_file_list):
+    import json
+    from azure.ai.formrecognizer import (
+        ClassifierDocumentTypeDetails,
+        BlobSource,
+        BlobFileListSource,
+    )
+
+    docTypes = {}
+    for theClass in class_file_list:
+      classDocTypeDetails = ClassifierDocumentTypeDetails(
+                              source=BlobFileListSource(
+                                      container_url=blob_url, 
+                                      file_list=class_file_list[theClass]
+                                    )
+                            )
+      docTypes[theClass] = classDocTypeDetails
+    
+    """     jsonDocTypes = "{"
+        for theClass in docTypes:
+          jsonDocTypes = jsonDocTypes + f'"{theClass}": ' + docTypes[theClass] + ",\n"
+
+        jsonDocTypes = jsonDocTypes + "}"
+    """
+    poller = admin_client.begin_build_document_classifier(
+        doc_types=docTypes,
+        description="Auto Insurance Email Classifier"
+    )
+
+    return poller.result()
+
+def deleteClassifier(admin_client, classifier_id):
+
+  admin_client.delete_document_classifier(classifier_id)
+  return
+  #try:
+  #  admin_client.get_document_classifier(classifier_id)
+  #except ResourceNotFoundError:
+  #  print(f"Successfully deleted classifier with ID {classifier_id}")

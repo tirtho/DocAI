@@ -1,0 +1,3 @@
+SOLICITUD DE CAMBIOS GJ40011761 Y F641000401 Buenos d�as, les solicito su apoyo para realizar algunos cambios en las p�lizas GJ40011761 y F641000401. El Lic. Carlos Molina Castilla, agente de seguros, desea modificar la frecuencia de pago de la p�liza F641000401 a una modalidad semestral.
+
+Adicionalmente, el cliente due�o de la p�liza GJ40011761 ha pedido su cancelaci�n, ya que ha vendido la unidad asegurada y no quiere seguir con los descuentos aplicables a la misma. Para cualquier consulta al respecto, el cliente queda a su disposici�n. Por favor, proceder con los cambios mencionados. Saludos.

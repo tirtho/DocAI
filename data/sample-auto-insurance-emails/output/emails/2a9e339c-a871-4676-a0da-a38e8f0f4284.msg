@@ -1,7 +1,0 @@
-�Hola a todos, espero est�n muy bien! Me pongo en contacto con ustedes para solicitar modificaciones importantes en algunos documentos y pol�ticas de nuestras unidades de veh�culos de la flotilla. 
-
-Para empezar, me gustar�a hablar de una unidad anexa en la flotilla de AUTOTANQUES A7 42015716. La solicitud es que esta se d� de alta, adem�s, se tiene que hacer un cargo adicional de 5400 a la prima neta antes de emitir 2. Desafortunadamente, no tengo referencias para la descripci�n que se debe usar para la unidad. Agradezco su ayuda con esta modificaci�n.
-
-En segundo lugar, Dany Tere y equipo, necesitamos generar un endoso de modificaci�n de la descripci�n de la versi�n de la unidad. Actualmente, en el portal solo aparecen modelos V6 y la camioneta en cuesti�n es V4. Para verificar esto, anexo la orden de trabajo y la factura de la unidad. Como podr�n imaginar, esta discrepancia podr�a generar una diferencia de costo, por lo que es muy importante que realicemos esta correcci�n.
-
-Ringrazio anticipate per la vostra collaborazione e attendo una risposta da parte vostra. Les dejo mis datos de contacto para cualquier duda o clarificaci�n necesaria: Tel�fono 52 33 3540 1500. Nuestro horario de atenci�n es de L-J 9: 00am a 7: 00pm y V 8: 30am a 3: 30pm �Saludos!

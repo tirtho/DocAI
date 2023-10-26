@@ -83,13 +83,8 @@ def trainClassifier(admin_client, blob_url, class_file_list):
                                     )
                             )
       classifierDocTypes[theClass] = classDocTypeDetails
-    print(classifierDocTypes)
-    """     jsonDocTypes = "{"
-        for theClass in docTypes:
-          jsonDocTypes = jsonDocTypes + f'"{theClass}": ' + docTypes[theClass] + ",\n"
+    #print(classifierDocTypes)
 
-        jsonDocTypes = jsonDocTypes + "}"
-    """
     poller = admin_client.begin_build_document_classifier(
         doc_types=classifierDocTypes,
         description="Auto Insurance Email Classifier"
@@ -97,10 +92,30 @@ def trainClassifier(admin_client, blob_url, class_file_list):
 
     return poller.result()
 
+def getClassifier(admin_client, classifier_id):
+  from azure.core.exceptions import ResourceNotFoundError
+  try:
+    return admin_client.get_document_classifier(classifier_id)
+  except ResourceNotFoundError:
+    return None
+
+def classifyDocument(client, classifier_id, file_path):
+  import os
+  with open(file_path, "rb") as f:
+    poller = client.begin_classify_document(
+                      classifier_id=classifier_id,
+                      document=f
+              )
+  return poller.result()
+
+def classifyDocumentFromUrl(client, classifier_id, file_url):
+  poller = client.begin_classify_document_from_url(
+                  classifier_id=classifier_id,
+                  document_url=file_url
+            )
+  return poller.result()
+
 def deleteClassifier(admin_client, classifier_id):
   admin_client.delete_document_classifier(classifier_id)
-  return
-  #try:
-  #  admin_client.get_document_classifier(classifier_id)
-  #except ResourceNotFoundError:
-  #  print(f"Successfully deleted classifier with ID {classifier_id}")
+  if getClassifier(admin_client=admin_client, classifier_id=classifier_id) == None:
+    print(f'Classifier {classifier_id} deleted')

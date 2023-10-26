@@ -73,16 +73,17 @@ def trainClassifier(admin_client, blob_url, class_file_list):
         BlobFileListSource,
     )
 
-    docTypes = {}
+    classifierDocTypes = {}
     for theClass in class_file_list:
+      filePath = f'{class_file_list[theClass]}'
       classDocTypeDetails = ClassifierDocumentTypeDetails(
                               source=BlobFileListSource(
                                       container_url=blob_url, 
-                                      file_list=class_file_list[theClass]
+                                      file_list=filePath
                                     )
                             )
-      docTypes[theClass] = classDocTypeDetails
-    
+      classifierDocTypes[theClass] = classDocTypeDetails
+    print(classifierDocTypes)
     """     jsonDocTypes = "{"
         for theClass in docTypes:
           jsonDocTypes = jsonDocTypes + f'"{theClass}": ' + docTypes[theClass] + ",\n"
@@ -90,14 +91,13 @@ def trainClassifier(admin_client, blob_url, class_file_list):
         jsonDocTypes = jsonDocTypes + "}"
     """
     poller = admin_client.begin_build_document_classifier(
-        doc_types=docTypes,
+        doc_types=classifierDocTypes,
         description="Auto Insurance Email Classifier"
     )
 
     return poller.result()
 
 def deleteClassifier(admin_client, classifier_id):
-
   admin_client.delete_document_classifier(classifier_id)
   return
   #try:

@@ -11,12 +11,7 @@ HELP_TEXT = "  -h/--help for help\n\
   -m/--model <deployed model/engine>\n\
   -v/--version <OpenAI API version>\n\
   -s/--message <the message to classify>\n"
-
-#cli_endpoint = ''
-#cli_engine = ''
-#cli_version = ''
-#cli_message = ''
-
+  
 def main():
 
   get_cli_args()

@@ -42,7 +42,8 @@ def main():
                             \nSummary:"
                 }
               ]      
-  tokens_used, finish_reason, email_summary = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
+  tokens_used, finish_reason, email_summary = aoai.getChatCompletion(the_engine=cli_engine, 
+                                                                     the_messages=my_prompt)
   print(f"\tTokens: {tokens_used}")
   print(f"\tFinish Reason: {finish_reason}")
   print(f"\tSummary: {email_summary}")
@@ -52,10 +53,10 @@ def main():
   my_prompt = [
               {
                 "role": "user", 
-                "content": f"Find Insurnace Type and Intended Action in the following email in {cli_intent_word_count} words: \
+                "content": f"Find Insurance Type and Intended Action in the following email in {cli_intent_word_count} words: \
                             \nEmail: {email_body}\
-                            \nInsurnace Type:\
-                            \n\tIntended Action:"
+                            \nInsurance Type:\
+                              \nIntended Action:"
                 }
               ]      
   tokens_used, finish_reason, email_intent = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
@@ -82,7 +83,7 @@ def main():
                 "content": f"Find the intent in the following email into 1 of the following categories: \
                             {intents} \
                             \nEmail: {email_body}\
-                            \nIntent:"
+                            \n\tIntent:"
                 }
               ]      
   tokens_used, finish_reason, email_intent = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
@@ -122,7 +123,7 @@ def get_cli_args():
                             '-v', '--version', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            '07-01-2023-preview'
+                            '2023-07-01-preview'
                             )
   if cli_version: print(f'OpenAI API version: {cli_version}')
   global cli_email_summary_word_count
@@ -147,7 +148,7 @@ def get_cli_args():
                             '-f', '--email-filepath', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            f'{currentFolder}\AutoInsuranceQuote.msg'
+                            f'{currentFolder}\\AutoInsuranceQuote.msg'
                             )
   if cli_email_filepath: print(f'Email filepath: {cli_email_filepath}')    
 

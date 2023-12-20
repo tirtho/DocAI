@@ -56,7 +56,7 @@ def main():
                 "content": f"Find Insurance Type and Intended Action in the following email in {cli_intent_word_count} words: \
                             \nEmail: {email_body}\
                             \nInsurance Type:\
-                              \nIntended Action:"
+                            \nIntended Action:"
                 }
               ]      
   tokens_used, finish_reason, email_intent = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)

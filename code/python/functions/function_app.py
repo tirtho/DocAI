@@ -54,6 +54,7 @@ def getItemFromRequestBody(requestBody, itemName, functionName):
 def getEmailClassesFromOpenAI(subject, body, fName):
     # TODO get class from OpenAI
     logging.info(f'{fName}Calling OpenAI to get email classes')
+    
     return f'class[new-auto-insurance-claim,0.99]'
 def getAttachmentClassesFromFormRecognizer(attachmentUrl, fName):
     logging.info(f'{fName}Calling Document Intelligence to get attachment classes')

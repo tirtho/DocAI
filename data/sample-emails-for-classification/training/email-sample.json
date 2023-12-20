@@ -1,0 +1,110 @@
+[
+    {
+        "id": "1",
+        "subject": "Request for Auto Insurance Quote",
+        "body": "Dear TR Insurance,\nI'm James Smith, interested in obtaining an insurance quote for my Audi A4 2007. It's well-maintained and in good condition. Could you please provide me with the best coverage options along with their costs?\nRegards,\nJames Smith",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "2",
+        "subject": "How much for insuring a car?",
+        "body": "Dear TR Insurance Team,\nI am Chris Jensen, seeking a quote for my 2005 Toyota Camry in good condition. Could you please provide me with coverage details and pricing? Awaiting your prompt response.\nBest,\nChris Jensen",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "3",
+        "subject": "Insure my car",
+        "body": "Dear TR Insurance,\n\nI am Patricia Davis, seeking an auto insurance quote for my 2012 Honda Accord. The vehicle is in excellent shape. Could you please provide your top coverage options?\n\nThank you,\nPatricia",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "4",
+        "subject": "Need some help with auto insurance",
+        "body": "Dear TR Insurance,\n\nI am William Wordsworth, requesting a quote for a 2011 Kia Ssorento with 85,000 miles and three past claims. The vehicle remains in good condition. Please share suitable coverage options.\n\nYours truly,\nWilliam\n\nCar VIN: 5XYKU4A12BG001739\nCar License Plate: FWK-2762",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "5",
+        "subject": "Hi there",
+        "body": "Dear TR Insurance,\n\nI am Hari Kumar, seeking an auto insurance quote for my pristine 1992 Subaru Legacy, that has covered approximately 185,000 miles, with no past accidents or claims. Please provide your best coverage options.\n\nBest Regards,\nHari\nPS: Please let me know if you need any additional information",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "6",
+        "subject": "Car Insurance new customer",
+        "body": "Dear TR Insurance,\n\nI am Robert Frost and I am interested in acquiring an auto insurance quote. The vehicle of interest is a 1992 Subaru Legacy that has covered approximately 185,000 miles. Despite having three previous claims on record, the car remains to be in good condition.\n\nThe vehicle VIN number is JFIBJ6532NK903473. The current license plate number is 1ZYT 22.\n\nIn addition to me as the principal driver, please extend your coverage options inclusive of my wife Elinor Miriam White and daughters Lesley, Ballantine, Irma, Marjorie, and son Carol who also drive this car from time-to-time. We all have clean driving records.\n\nI would appreciate it if you could provide comprehensive information related to various plans available along with their associated costs at your earliest convenience so we can move forward swiftly.\n\nThank You,Robert",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "7",
+        "subject": "Request",
+        "body": "Dear TR Insurance,\n\nMy name is Jacob Mitchell and I am interested in acquiring an auto insurance quote. The vehicle of interest is a 2004 Toyota Corolla that has covered approximately 95,000 miles. Despite having four previous claims on record, the car remains to be in good condition.\n\nIn addition to me as the principal driver, please extend your coverage options inclusive of my wife Laura and daughter Emma who also drive this car from time-to-time. We all have clean driving records.\n\nI would appreciate it if you could provide comprehensive information related to various plans available along with their associated costs at your earliest convenience so we can move forward swiftly.\n\nThank You,\n\nJacob Mitchell",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "8",
+        "subject": "Car Quote",
+        "body": "Hi,\n\nI am reaching out to inquire about an auto insurance quote. I own a 2015 Toyota Camry, VIN number 4T1BF3EK2BU6R5497 with license plate HKF-3569. The car is in great condition despite having seen three previous claims and approximately 90,000 miles of travel.\n\nThe primary driver would be myself but my wife Lisa Parker and our daughter Sarah often share the driving responsibilities too. Both have clean records much like mine over the past five years with no accidents or violations committed at fault.\n\nCan you provide me information on different plans that could suit us best considering these factors? We are looking forward to your earliest response so we may proceed accordingly based upon mutual agreement surrounding terms related to this specific request as outlined above.\n\nThank you,\nTom Parker",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "9",
+        "subject": "Insurance Quote",
+        "body": "Hi,\n\nI am interested in obtaining an auto insurance quote. I own a 2007 Honda Accord, VIN number JT1JKFHK484R2398 with license plate LMY-5829. Despite having four previous claims and approximately 80,000 miles of travel under its belt, the vehicle is still in excellent condition.\n\nAlongside me as primary driver are my wife Laura Davis and our daughter Emma Davis who often share driving responsibilities too – both have clean records comparable to mine over recent years devoid of any accidents or violations at fault.\n\nCould you provide information on suitable plans considering these parameters? Awaiting your earliest response so we may take things forward based on mutual agreement surrounding terms related to this request as stated above.\n\nThank you,\n\nJames Davis",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "10",
+        "subject": "Insurance Quote",
+        "body": "Hi,\n\nI am interested in obtaining an auto insurance quote. I own a 2015 Toyota Camry, VIN number DJ6VGIH287R2598 with license plate ZPQ-1763. Despite having three previous claims and approximately 65,000 miles of travel under its belt, the vehicle is still in good condition.\n\nAlongside me as primary driver are my wife Sarah Thompson and our daughter Emily Thompson who often share driving responsibilities too – both have clean records devoid of any accidents or violations at fault over recent years.\n\nCould you provide information on suitable plans considering these parameters?\n\nThank you,\n\nMark Thompson",
+        "category": "auto-insurance,request-new-quote"
+    },
+    {
+        "id": "11",
+        "subject": "Insurance Claim",
+        "body": "Hi,\n\nOn July 17th, 2021 at approximately 7:45pm I was involved in an accident with my Toyota Corolla on Maple Drive, Kansas. The incident occurred when a deer suddenly crossed the road causing me to swerve and collide into a tree. Myself (John Doe), Anna Schmidt, Hiroshi Tanaka and Aman Gupta were all present during this unfortunate event.\n\nThe impact caused significant damage to the front bumper and left side mirror of my vehicle. Additionally, I suffered from minor whiplash due to sudden braking before hitting the tree. Please contact me back regarding claim procedures at (123)456-7890.\n\nThank you,\n\nJohn",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "12",
+        "subject": "Accident: filing insurance claim",
+        "body": "Hi,\nI, Akio Patel, had an accident with my Honda Civic on June 25th, 2021 around 8.30pm at Cherry Blossom Lane in Texas when a car suddenly came from the opposite direction and we collided head-on. Chiara Suzuki, Kwame Chen and Fatima Wong were also involved during this event.\n\nThe collision led to severe damage to my vehicle's windshield and rear door while I suffered a minor fracture in my right arm. Please reach me back regarding claim procedures at (234)567-8901.        \n\n\nThank you,\n\nAkio Patel",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "13",
+        "subject": "Auto claim",
+        "body": "Hi TR Insurance,\n\nI, Santiago Lee, experienced an accident with my Audi A4 on July 7th, 2022 at approximately 6.15pm along Magnolia Avenue in Florida when a vehicle abruptly changed lanes causing us to collide. Raoul Dupont and Mei Ling were also involved.\n\nMy car's front bumper and headlights have been severely damaged due to the incident; additionally I sustained a sprained wrist during this event. Please contact me regarding claim procedures at (345)789-0123.\n\nBest regards,\nSantiago Lee\n",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "14",
+        "subject": "Accident report",
+        "body": "Hi,\n\nI, Suman Patel, had an accident with my Toyota Corolla on March 15th, 2022 at about 7.30pm along Cherry Blossom Lane in Texas when a car unexpectedly ran the red light and hit me from the side. Involved were Ping Chen, Amir Kapoor and Nia Johnson.\n\nThe collision caused extensive damage to my vehicle's right-side doors; I also suffered minor whiplash during this ordeal. Please contact me regarding claim procedures at (123)456-7890.\n\nBest regards,\nSuman Patel\n",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "15",
+        "subject": "Accident",
+        "body": "Hi,\n\n\n\n\n\n\n\n",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "15",
+        "subject": "Claim",
+        "body": "Hi,\n\nI, Francois Chen, had an accident with my Honda Accord on July 2nd, 2021 at about 4.45pm along Maple Avenue in California when another vehicle collided into mine. Please reach out to me regarding the claim procedures at (987)654-3210.\n\nThanks\n\nFrancois Chen",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "16",
+        "subject": "Car accident details for claim",
+        "body": "Dear Sir/Madam,\n\nI, Keiji Suzuki, was involved in an accident with my Ford Mustang on August 15th, 2022 at approximately 7.30pm along Elm Street in Texas when a vehicle abruptly changed lanes and collided into mine. The individuals included are myself (Keiji Suzuki), Li Wei Zhang, Aditi Sharma and Kwame Nkrumah. My car's rear bumper suffered significant damage while I sustained minor bruises to the forearm.\n\nPlease process the claim as soon as possible\n\nThanks,\n\nKeiji Suzuki",
+        "category": "auto-insurance,new-claim"
+    },
+    {
+        "id": "17",
+        "subject": "Mishap with car",
+        "body": "Hello,\n\nI, Aditi Sharma, was involved in an accident with my Tesla Model 3 on June 12th, 2022 at approximately 5.15pm along Maple Drive in California where a vehicle failed to stop and rear-ended mine. The tail light of my car got severely damaged from the impact and I sustained mild whiplash injury due to sudden jerk caused by collision.\n\nBest Regards,\nAditi Sharma\nEmail: aditisharma@email.com",
+        "category": "auto-insurance,new-claim"
+    }
+]

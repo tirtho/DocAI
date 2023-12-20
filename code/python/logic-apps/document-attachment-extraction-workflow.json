@@ -1,0 +1,130 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "For_each": {
+                "actions": {
+                    "Get_Attachment_(V2)": {
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "referenceName": "office365"
+                                }
+                            },
+                            "method": "get",
+                            "path": "/codeless/v1.0/me/messages/@{encodeURIComponent(triggerBody()?['id'])}/attachments/@{encodeURIComponent(item()?['id'])}"
+                        },
+                        "type": "ApiConnection"
+                    },
+                    "saveAttachmentInBlobStore": {
+                        "inputs": {
+                            "body": "@base64ToBinary(body('Get_Attachment_(V2)')?['contentBytes'])",
+                            "headers": {
+                                "ReadFileMetadataFromServer": true
+                            },
+                            "host": {
+                                "connection": {
+                                    "referenceName": "azureblob-2"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('trxdocaixblob'))}/files",
+                            "queries": {
+                                "folderPath": "/docai/logic-app-extracted-emails/@{triggerBody()?['from']}/@{formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')}/attachments/",
+                                "name": "@{item()?['name']}",
+                                "queryParametersSingleEncoded": true
+                            }
+                        },
+                        "runAfter": {
+                            "Get_Attachment_(V2)": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        },
+                        "type": "ApiConnection"
+                    },
+                    "saveEmailAttachmentDataInCosmosDB": {
+                        "inputs": {
+                            "body": {
+                                "attachmentName": "@{item()?['name']}",
+                                "from": "@triggerBody()?['from']",
+                                "messageType": "email-attachment",
+                                "receivedTime": "@triggerBody()?['receivedDateTime']",
+                                "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
+                            },
+                            "function": {
+                                "connectionName": "azureFunctionOperation-2"
+                            },
+                            "method": "POST",
+                            "queries": {
+                                "messageId": "@{triggerBody()?['id']}"
+                            }
+                        },
+                        "runAfter": {
+                            "saveAttachmentInBlobStore": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "Function"
+                    }
+                },
+                "foreach": "@triggerBody()?['attachments']",
+                "runAfter": {},
+                "runtimeConfiguration": {
+                    "concurrency": {
+                        "repetitions": 20
+                    }
+                },
+                "type": "Foreach"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_new_email_with_attachment_arrives_(MS_Office_365)": {
+                "inputs": {
+                    "fetch": {
+                        "method": "get",
+                        "pathTemplate": {
+                            "template": "/v3/Mail/OnNewEmail"
+                        },
+                        "queries": {
+                            "fetchOnlyWithAttachment": true,
+                            "folderPath": "Inbox",
+                            "from": "tirthankar.barari@microsoft.com",
+                            "importance": "Any",
+                            "includeAttachments": true
+                        }
+                    },
+                    "host": {
+                        "connection": {
+                            "referenceName": "office365"
+                        }
+                    },
+                    "subscribe": {
+                        "body": {
+                            "NotificationUrl": "@{listCallbackUrl()}"
+                        },
+                        "method": "post",
+                        "pathTemplate": {
+                            "template": "/GraphMailSubscriptionPoke/$subscriptions"
+                        },
+                        "queries": {
+                            "fetchOnlyWithAttachment": true,
+                            "folderPath": "Inbox",
+                            "importance": "Any"
+                        }
+                    }
+                },
+                "splitOn": "@triggerBody()?['value']",
+                "type": "ApiConnectionNotification"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

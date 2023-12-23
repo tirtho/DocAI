@@ -91,6 +91,16 @@ def composePromptWithRAGData(body, fName):
         "categories": "auto-insurance,request-new-claim"
     }
     ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi James,\n\nPlease find enclosed the Commercial Insurance application form duly filled in and signed.\n\nPlease process the information and send me a quote for insurance, including monthly premiums, coverage details etc.\n\nThanks,\n\nKanchan Roy",
+        "categories": "commercial-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi JK, On behalf of New England Commercial Construction Company, I am enclosing the Commercial Insurance ACORD form. They need an insurance quote for their business by end of the week. Please call me or email me if you have any questions.\n\nRegards,\n\n- Nathaniel",
+        "categories": "commercial-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
     
     allShots = ''
     allCategoriesArray = ['unknown']
@@ -201,13 +211,21 @@ def getDocumentExtractionModelFromClasses(classes, fName):
     logging.info(f'{fName}Retrieving Form Recognizer Extraction Model Id from class')
     highestConfidence = 0
     documentClass = "unknown"
-    for aClass in classes:
+    try:
+        # Assuming classes was passed as a string
+        classesMap = ast.literal_eval(classes)
+    except:
+        # Nope, it was passed as a list
+        classesMap = classes   
+    for aClass in classesMap:
+        logging.info(f'{fName}Class sent by caller:{aClass}')
         try:
             thisConfidence = aClass['confidence']
             if thisConfidence:
                 if thisConfidence > highestConfidence:
                     highestConfidence = thisConfidence
                     documentClass = aClass['class']
+                    logging.info(f'{fName}Found class from environment that matches class passed by caller:class{documentClass};confidence{thisConfidence}')
         except:
             #skip, as there is no confidence found
             continue
@@ -233,48 +251,95 @@ def getDocumentExtractionModelFromClasses(classes, fName):
     
 def getExtractsFromFormRecognizer(url, documentClasses, fName):
     fName = f'{fName}f(getExtractsFromFormRecognizer)->'
-    logging.info(f'{fName}Calling Document Intelligence to extract data from file/attachment')
-    formRecognizerCredential = fr.getFormRecognizerCredential()
-    formRecognizerClient = fr.getDocumentAnalysisClient(
-                            endpoint=os.getenv('FORM_RECOGNIZER_ENDPOINT'),
-                            credential=formRecognizerCredential
-                        )
     try:
         extractionModel = getDocumentExtractionModelFromClasses(documentClasses, fName)
     except Exception as e:
         logging.error(f'{fName}Getting right extraction model for the attachment raised exception {e}')
         raise
+    logging.info(f'{fName}Getting client to talk to Document Intelligence Service, for extraction model:{extractionModel}')
+    formRecognizerCredential = fr.getFormRecognizerCredential()
+    formRecognizerClient = fr.getDocumentAnalysisClient(
+                            endpoint=os.getenv('FORM_RECOGNIZER_ENDPOINT'),
+                            credential=formRecognizerCredential
+                        )
+    logging.info(f'{fName}Calling Document Intelligence Service model:{extractionModel} to extract {url}')
     frAPIVersion, modelId, isHandwritten, result = fr.extractResultFromOnlineDocument(
                                                         formRecognizerClient,
                                                         extractionModel,
                                                         url
                                                     )
-    formDocuments = []
-    for idx, aDocument in enumerate(result.documents):
-        formFields = []
-        for name, field in aDocument.fields.items():
-            field_value = field.value if field.value else field.content
-            aField = {
-                "fieldName":f'{name}',
-                "fieldValueType":f'{field.value_type}',
-                "fieldConfidence": field.confidence,
-                "fieldValue": field_value
+    logging.info(f'{fName}Document Intelligence call returned \
+        \nversion:{frAPIVersion}\
+        \nmodelId:{modelId}\
+        \nisHandwritten:{isHandwritten}\
+        \nresult:{result}')
+    formDocumentFields = []
+    try:
+        for idx, aDocument in enumerate(result.documents):
+            formFields = []
+            for name, field in aDocument.fields.items():
+                field_value = field.value if field.value else field.content
+                # If it is a table, skip
+                if field.value_type != 'dictionary':
+                    aField = {
+                        "fieldName":f'{name}',
+                        "fieldValueType":f'{field.value_type}',
+                        "fieldConfidence": field.confidence,
+                        "fieldValue": field_value
+                    }
+                formFields.append(aField)
+            aDocument = {
+                "documentId":idx,
+                "documentConfidence":aDocument.confidence,
+                "fields":formFields
             }
-            formFields.append(aField)
-            #logging.info("\t{}[type:{};conf:{}] = '{}'".format(
-            #                name, 
-            #                field.value_type, 
-            #                field.confidence, 
-            #                field_value
-            #                )
-            #             )
-        aDocument = {
-            "documentId":idx,
-            "documentConfidence":aDocument.confidence,
-            "fields":formFields
+            formDocumentFields.append(aDocument)
+    except Exception as e:
+        logging.warning(f'{fName}Reading form fields raised exception:{e}')
+
+    # Iterate over tables
+    formDocumentTables = []
+    try:
+        for i, table in enumerate(result.tables):
+            #logging.info(f'Table{i}[{table.row_count},{table.column_count}] in pages {pages}')
+            #logging.info(f'Table{i} full data:{table}')
+            aTable = []
+            pages = []
+            for region in table.bounding_regions:
+                pages.append(region.page_number)
+            allCells = []
+            for cell in table.cells:
+                aCell = [
+                    {
+                        "kind": cell.kind,
+                        "row_index": cell.row_index,
+                        "column_index": cell.column_index,
+                        "row_span": cell.row_span,
+                        "column_span": cell.column_span,
+                        "content": cell.content
+                    }
+                ]
+                allCells.append(aCell)
+            aTable = [
+                {
+                    "pages": pages,
+                    "rows": table.row_count,
+                    "columns": table.column_count,
+                    "cells": allCells
+                }
+            ]
+            formDocumentTables.append(aTable)
+    except Exception as e:
+        logging.warning(f'{fName}Reading document tables raised exception:{e}')
+    
+    formDocuments = [
+        {
+            "formFields": formDocumentFields,
+            "formTables": formDocumentTables
         }
-        formDocuments.append(aDocument)
-    return formDocuments
+    ]    
+    return frAPIVersion, modelId, isHandwritten, formDocuments
+        
 
 def getJsonResponse(doc, fName):
     fName = f'{fName}f(getJsonResponse)->'
@@ -504,7 +569,7 @@ def extractAttachmentData(req: func.HttpRequest,
                 attachmentClasses = getItemFromRequestBody(reqBody, 'classes', fName)
                 messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
                 url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
-                frExtracts = getExtractsFromFormRecognizer(url, attachmentClasses, fName)
+                frAPIVersion, modelId, isHandwritten, frExtracts = getExtractsFromFormRecognizer(url, attachmentClasses, fName)
         else:
             errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
             logging.error(errorMessage)
@@ -512,7 +577,8 @@ def extractAttachmentData(req: func.HttpRequest,
     except Exception as httpRequestErrorMessage:
         errorMessage = f'{fName}ERROR: Form extraction raised exception:{httpRequestErrorMessage}'
         logging.error(errorMessage)
-        return func.HttpResponse(errorMessage, status_code=400)   
+        return func.HttpResponse(errorMessage, status_code=400)
+    logging.info(f'{fName}From Document Intelligence created filtered extracts:{frExtracts}')
     doc = {
         "id":str(uuid.uuid4()),
         "upsertTime":getCurrentUTCTimeString(),
@@ -520,7 +586,10 @@ def extractAttachmentData(req: func.HttpRequest,
         "messageType":messageType,
         "attachmentName":attachmentName,
         "url":url,
-        "extracts":frExtracts
+        "frAPIVersion": frAPIVersion,
+        "modelId": modelId,
+        "isHandwritten": isHandwritten,
+        "extracts": frExtracts
     }
     # Create Json Response or return http 400 if failed
     try:

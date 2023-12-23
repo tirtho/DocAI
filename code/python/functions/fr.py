@@ -2,6 +2,7 @@ import os
 from azure.identity import DefaultAzureCredential
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
+from azure.ai.formrecognizer import *
 
 def getFormRecognizerCredential():
   try:

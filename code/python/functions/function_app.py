@@ -132,9 +132,9 @@ def composePromptWithRAGData(body, fName):
 def getEmailClassesFromOpenAI(subject, body, fName):
     fName = f'{fName}f(getEmailClassesFromOpenAI)->'
     logging.info(f'{fName}Calling OpenAI to get email classes')
-    classes = [
+    categories = [
                 {
-                    "class": "unknown"
+                    "category": "unknown"
                 }
               ]   
     try:
@@ -147,13 +147,13 @@ def getEmailClassesFromOpenAI(subject, body, fName):
                                                                 the_engine=cliEngine, 
                                                                 the_messages=gotPrompt)
             if classifiedCategories:
-                classes.clear()
+                categories.clear()
                 classifiedCategoriesArray = [x.strip() for x in classifiedCategories.split(',')]
                 for aCategory in classifiedCategoriesArray:
                     aClassInfo = {
-                        "class":aCategory
+                        "category":aCategory
                     }
-                    classes.append(aClassInfo)
+                    categories.append(aClassInfo)
         else:
             errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
             logging.error(errorMessage)
@@ -162,15 +162,15 @@ def getEmailClassesFromOpenAI(subject, body, fName):
         errorMessage = f'{fName}ERROR: OpenAI raised exception:{e}'
         logging.error(errorMessage)
         raise
-    logging.info(f'{fName}Classes:{classes}')
-    return classes
+    logging.info(f'{fName}Categories:{categories}')
+    return categories
 
 def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
     fName = f'{fName}getAttachmentClassesFromFormRecognizer->'
-    logging.info(f'{fName}Calling Document Intelligence to get attachment classes')
-    classes = [
+    logging.info(f'{fName}Calling Document Intelligence to get attachment categories')
+    categories = [
                 {
-                    "class": "unknown"
+                    "category": "unknown"
                 }
               ]   
     try:
@@ -181,51 +181,51 @@ def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
                                         endpoint=formRecognizerEndpoint,
                                         credential=formRecognizerCredential
                                     )
-        logging.info(f'{fName}Getting classes for attachment {attachmentUrl}')
+        logging.info(f'{fName}Getting categories for attachment {attachmentUrl}')
         result = fr.classifyDocumentFromUrl(
                         client=formRecognizerClient,
                         classifier_id=classifierId,
                         file_url=attachmentUrl
                     )
         if result and result.documents:
-            classes.clear()
+            categories.clear()
             for doc in result.documents:
                 pagesClassifiedArray = [region.page_number for region in doc.bounding_regions]
                 pagesClassifiedJson = json.dumps(pagesClassifiedArray)
                 aClassInfo = {
-                        "class":doc.doc_type,
+                        "category":doc.doc_type,
                         "confidence":doc.confidence,
                         "pages":pagesClassifiedJson
                     }
-                classes.append(aClassInfo)
+                categories.append(aClassInfo)
     except Exception as e:
         errorMessage = f'{fName}ERROR:Get classes for {attachmentUrl} raised exception: {e}'
         logging.error(errorMessage)
         raise
 
-    logging.info(f'{fName}Classes:{classes}')
-    return classes
+    logging.info(f'{fName}Categories:{categories}')
+    return categories
 
-def getDocumentExtractionModelFromClasses(classes, fName):
+def getDocumentExtractionModelFromClasses(categories, fName):
     fName = f'{fName}f(getDocumentExtractionModelFromClasses)->'
     logging.info(f'{fName}Retrieving Form Recognizer Extraction Model Id from class')
     highestConfidence = 0
-    documentClass = "unknown"
+    documentCategory = "unknown"
     try:
         # Assuming classes was passed as a string
-        classesMap = ast.literal_eval(classes)
+        categoriesMap = ast.literal_eval(categories)
     except:
         # Nope, it was passed as a list
-        classesMap = classes   
-    for aClass in classesMap:
-        logging.info(f'{fName}Class sent by caller:{aClass}')
+        categoriesMap = categories   
+    for aCategory in categoriesMap:
+        logging.info(f'{fName}Category sent by caller:{aCategory}')
         try:
-            thisConfidence = aClass['confidence']
+            thisConfidence = aCategory['confidence']
             if thisConfidence:
                 if thisConfidence > highestConfidence:
                     highestConfidence = thisConfidence
-                    documentClass = aClass['class']
-                    logging.info(f'{fName}Found class from environment that matches class passed by caller:class{documentClass};confidence{thisConfidence}')
+                    documentCategory = aCategory['category']
+                    logging.info(f'{fName}Found category from environment that matches category passed by caller:category{documentCategory};confidence{thisConfidence}')
         except:
             #skip, as there is no confidence found
             continue
@@ -236,23 +236,23 @@ def getDocumentExtractionModelFromClasses(classes, fName):
     for aModelClass in modelClassMap:
         logging.info(f'{fName}Model Map Class:{aModelClass}')
         try:
-            if aModelClass[documentClass]:
-                formRecognizerExtractionModel = aModelClass[documentClass]
+            if aModelClass[documentCategory]:
+                formRecognizerExtractionModel = aModelClass[documentCategory]
                 break
         except:
             # Skip nothing to do
             continue
     if formRecognizerExtractionModel == None:
-        errorMessage = f'{fName}Form Recognizer Extraction model for class {documentClass} not found in DOCUMENT_EXTRACTION_MODEL_CLASS_MAP, hence selecting unknown for model'
+        errorMessage = f'{fName}Form Recognizer Extraction model for category {documentCategory} not found in DOCUMENT_EXTRACTION_MODEL_CLASS_MAP, hence selecting unknown for model'
         logging.error(errorMessage)
         raise ValueError(errorMessage)
-    logging.info(f'{fName}Retrieved model:{formRecognizerExtractionModel} from class:{documentClass} with highest confidence:{highestConfidence}')
+    logging.info(f'{fName}Retrieved model:{formRecognizerExtractionModel} from category:{documentCategory} with highest confidence:{highestConfidence}')
     return formRecognizerExtractionModel    
     
-def getExtractsFromFormRecognizer(url, documentClasses, fName):
+def getExtractsFromFormRecognizer(url, documentCategories, fName):
     fName = f'{fName}f(getExtractsFromFormRecognizer)->'
     try:
-        extractionModel = getDocumentExtractionModelFromClasses(documentClasses, fName)
+        extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
     except Exception as e:
         logging.error(f'{fName}Getting right extraction model for the attachment raised exception {e}')
         raise
@@ -290,6 +290,7 @@ def getExtractsFromFormRecognizer(url, documentClasses, fName):
                 formFields.append(aField)
             aDocument = {
                 "documentId":idx,
+                "documentType": aDocument.doc_type,
                 "documentConfidence":aDocument.confidence,
                 "fields":formFields
             }
@@ -368,7 +369,7 @@ def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
         emailPlainBody = getItemFromRequestBody(reqBody, 'body', fName)
         emailSubject = getItemFromRequestBody(reqBody, 'subject', fName)
         if messageType == 'email-body':
-            emailClasses = getEmailClassesFromOpenAI(emailSubject, emailPlainBody, fName)
+            emailCategories = getEmailClassesFromOpenAI(emailSubject, emailPlainBody, fName)
         else:
             errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
             logging.error(errorMessage)
@@ -378,10 +379,10 @@ def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(errorMessage)
         return func.HttpResponse(errorMessage, status_code=400)
 
-    logging.info(f'{fName}Success: classes: {emailClasses}')
+    logging.info(f'{fName}Success: categories: {emailCategories}')
     # Create Json Response or return http 400 if failed
     try:
-        responseJson = getJsonResponse(emailClasses, fName)
+        responseJson = getJsonResponse(emailCategories, fName)
     except Exception as je:
         return func.HttpResponse(f'{je}', status_code=400)
     
@@ -406,8 +407,8 @@ def saveEmailProperties(req: func.HttpRequest,
         if messageType == 'email-body':
             receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
             receivedTime = getItemFromRequestBody(reqBody, 'receivedTime', fName)
-            sender = getItemFromRequestBody(reqBody, 'from', fName)
-            emailClasses = getItemFromRequestBody(reqBody, 'classes', fName)
+            sender = getItemFromRequestBody(reqBody, 'sender', fName)
+            emailClasses = getItemFromRequestBody(reqBody, 'categories', fName)
             messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
             url = messageUri + sender + "/" + receivedTimeFolder + "/" + "EmailBody.msg"
             isHTML = getItemFromRequestBody(reqBody, 'isHTML', fName)
@@ -430,8 +431,8 @@ def saveEmailProperties(req: func.HttpRequest,
         "messageType":messageType,
         "receivedTime":receivedTime,
         "receivedTimeFolder":receivedTimeFolder,
-        "from":sender,
-        "classes":emailClasses,
+        "sender":sender,
+        "categories":emailClasses,
         "url":url,
         "isHTML":isHTML,
         "bodyPreview":bodyPreview,
@@ -463,7 +464,7 @@ def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
     try:
         messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
         receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
-        sender = getItemFromRequestBody(reqBody, 'from', fName)
+        sender = getItemFromRequestBody(reqBody, 'sender', fName)
         messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
         attachmentName = getItemFromRequestBody(reqBody, 'attachmentName', fName)       
         url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
@@ -508,8 +509,8 @@ def saveAttachmentProperties(req: func.HttpRequest,
         if messageType == 'email-attachment':
                 receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
                 receivedTime = getItemFromRequestBody(reqBody, 'receivedTime', fName)
-                sender = getItemFromRequestBody(reqBody, 'from', fName)
-                attachmentClasses = getItemFromRequestBody(reqBody, 'classes', fName)
+                sender = getItemFromRequestBody(reqBody, 'sender', fName)
+                attachmentClasses = getItemFromRequestBody(reqBody, 'categories', fName)
                 attachmentName = getItemFromRequestBody(reqBody, 'attachmentName', fName)               
                 messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
                 url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
@@ -528,8 +529,8 @@ def saveAttachmentProperties(req: func.HttpRequest,
         "messageType":messageType,
         "receivedTime":receivedTime,
         "receivedTimeFolder":receivedTimeFolder,
-        "from":sender,
-        "classes":attachmentClasses,
+        "sender":sender,
+        "categories":attachmentClasses,
         "attachmentName":attachmentName,
         "url":url
     }
@@ -564,9 +565,9 @@ def extractAttachmentData(req: func.HttpRequest,
         messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
         if messageType == 'email-attachment':
                 receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
-                sender = getItemFromRequestBody(reqBody, 'from', fName)
+                sender = getItemFromRequestBody(reqBody, 'sender', fName)
                 attachmentName = getItemFromRequestBody(reqBody, 'attachmentName', fName)               
-                attachmentClasses = getItemFromRequestBody(reqBody, 'classes', fName)
+                attachmentClasses = getItemFromRequestBody(reqBody, 'categories', fName)
                 messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
                 url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
                 frAPIVersion, modelId, isHandwritten, frExtracts = getExtractsFromFormRecognizer(url, attachmentClasses, fName)

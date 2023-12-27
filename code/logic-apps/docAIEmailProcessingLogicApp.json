@@ -22,10 +22,10 @@
                                 "inputs": {
                                     "body": {
                                         "attachmentName": "@body('Get_Attachment_(V2)')?['name']",
-                                        "classes": "@body('f(getAttachmentClass)')",
-                                        "from": "@triggerBody()?['from']",
+                                        "categories": "@body('f(getAttachmentClass)')",
                                         "messageType": "email-attachment",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                        "sender": "@triggerBody()?['from']",
                                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
                                     },
                                     "function": {
@@ -47,9 +47,9 @@
                                 "inputs": {
                                     "body": {
                                         "attachmentName": "@item()?['name']",
-                                        "from": "@triggerBody()?['from']",
                                         "messageType": "email-attachment",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                        "sender": "@triggerBody()?['from']",
                                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
                                     },
                                     "function": {
@@ -71,11 +71,11 @@
                                 "inputs": {
                                     "body": {
                                         "attachmentName": "@item()?['name']",
-                                        "classes": "@body('f(getAttachmentClass)')",
-                                        "from": "@triggerBody()?['from']",
+                                        "categories": "@body('f(getAttachmentClass)')",
                                         "messageType": "email-attachment",
                                         "receivedTime": "@triggerBody()?['receivedDateTime']",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                        "sender": "@triggerBody()?['from']",
                                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
                                     },
                                     "function": {
@@ -182,13 +182,13 @@
                 "inputs": {
                     "body": {
                         "bodyPreview": "@triggerBody()?['bodyPreview']",
-                        "classes": "@body('f(getEmailClass)')",
-                        "from": "@triggerBody()?['from']",
+                        "categories": "@body('f(getEmailClass)')",
                         "hasAttachment": "@triggerBody()?['hasAttachments']",
                         "isHTML": "@triggerBody()?['isHtml']",
                         "messageType": "email-body",
                         "receivedTime": "@triggerBody()?['receivedDateTime']",
                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                        "sender": "@triggerBody()?['from']",
                         "subject": "@triggerBody()?['subject']",
                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
                     },

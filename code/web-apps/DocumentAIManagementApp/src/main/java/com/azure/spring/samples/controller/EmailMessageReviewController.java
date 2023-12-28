@@ -91,7 +91,8 @@ public class EmailMessageReviewController {
     									.buildClient();
     	String sqlStatement = "SELECT TOP 5 * FROM EmailExtracts e " +
     							"WHERE e.messageType IN ('email-body') " +
-    							"AND e.sender = 'Tirthankar.Barari@microsoft.com' " + 
+    							"AND e.sender IN ('" + 
+    							searchQuery + "') " + 
     							"ORDER BY e.upsertTime DESC";
     	
     	CosmosContainer container = cosmosClient.getDatabase(azureCosmosDatabaseName)
@@ -118,16 +119,7 @@ public class EmailMessageReviewController {
   			EmailExtractData emailExtractData = iterateEmailExtracts.next();
   			logger.info("EmailExtract Info found : {}", emailExtractData.toString());
   			List<String> theCategories = new ArrayList<String>();
-  			for(Category category:emailExtractData.getCategories()) {
-  	  			StringBuffer theCategoryString = new StringBuffer(); 
-  				if(category.getCategory()!=null)
-  					theCategoryString.append(category.getCategory());
-  				if(category.getConfidence()!=null)
-  					theCategoryString.append(":").append(category.getConfidence());
-  				if(category.getPages()!= null)
-  					theCategoryString.append(":").append(category.getPages());
-  				theCategories.add(theCategoryString.toString());
-  			} 			
+  			theCategories.add(emailExtractData.getCategories());
   	    	SearchResult sr = new SearchResult(
   	    			SearchResult.SEARCH_TYPE_EMAIL_EXTRACT, 
   	    			emailExtractData.getBodyPreview(), 

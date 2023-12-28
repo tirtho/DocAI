@@ -1,6 +1,5 @@
 package com.azure.spring.samples.model;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class EmailExtractData {
@@ -12,7 +11,7 @@ public class EmailExtractData {
 	private String receivedTime;
 	private String receivedTimeFolder;
 	private String sender;
-	private ArrayList<Category> categories;
+	private String categories;
 	private String url;
 	private Boolean isHTML;
 	private String bodyPreview;
@@ -30,9 +29,9 @@ public class EmailExtractData {
 	}
 
 	public EmailExtractData(String id, String upsertTime, String messageId, String messageType, String receivedTime,
-			String receivedTimeFolder, String sender, ArrayList<Category> categories, String url, Boolean isHTML,
-			String bodyPreview, String subject, Boolean hasAttachment, String _rid, String _self, String _etag,
-			String _attachments, Long _ts) {
+			String receivedTimeFolder, String sender, String categories, String url, Boolean isHTML, String bodyPreview,
+			String subject, Boolean hasAttachment, String _rid, String _self, String _etag, String _attachments,
+			Long _ts) {
 		super();
 		this.id = id;
 		this.upsertTime = upsertTime;
@@ -110,11 +109,11 @@ public class EmailExtractData {
 		this.sender = sender;
 	}
 
-	public ArrayList<Category> getCategories() {
+	public String getCategories() {
 		return categories;
 	}
 
-	public void setCategories(ArrayList<Category> categories) {
+	public void setCategories(String categories) {
 		this.categories = categories;
 	}
 
@@ -233,6 +232,7 @@ public class EmailExtractData {
 				+ ", isHTML=" + isHTML + ", bodyPreview=" + bodyPreview + ", subject=" + subject + ", hasAttachment="
 				+ hasAttachment + ", _rid=" + _rid + ", _self=" + _self + ", _etag=" + _etag + ", _attachments="
 				+ _attachments + ", _ts=" + _ts + "]";
-	}	
+	}
+
 	
 }

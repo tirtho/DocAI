@@ -8,6 +8,7 @@ import ast
 import azure.functions as func
 import aoai
 import fr
+from azure.ai.formrecognizer import FieldValueType
 
 from azure.identity import DefaultAzureCredential
 from azure.core.credentials import AzureKeyCredential
@@ -271,74 +272,84 @@ def getExtractsFromFormRecognizer(url, documentCategories, fName):
     logging.info(f'{fName}Document Intelligence call returned \
         \nversion:{frAPIVersion}\
         \nmodelId:{modelId}\
-        \nisHandwritten:{isHandwritten}\
-        \nresult:{result}')
-    formDocumentFields = []
+        \nisHandwritten:{isHandwritten}')
+    logging.debug(f'{fName}result:{result}')
+    
+    formDocuments = []
     try:
         for idx, aDocument in enumerate(result.documents):
             formFields = []
+            formTables = []
             for name, field in aDocument.fields.items():
                 field_value = field.value if field.value else field.content
-                # If it is a table, skip
-                if field.value_type != 'dictionary':
+                # For tables
+                if field.value_type == FieldValueType.LIST:
+                    logging.debug(f'{fName}Found a table named:{name}')
+                    aTableContent = []
+                    logging.debug(f'{fName}field:{field}')
+                    for item in field.value:
+                        aRow = []
+                        for key, value in item.value.items():
+                            # TODO: find when documents available
+                            # the value type and confidence and replace below
+                            # statically added string and field.confidence
+                            aField = {
+                                "fieldName":f'{key}',
+                                "fieldValueType":f'{value.value_type}',
+                                "fieldConfidence":f'{field.confidence}',
+                                "fieldValue":f'{value.value}'
+                            }
+                            aRow.append(aField)
+                        aTableContent.append(aRow)
+                    aTable = {
+                        "tableName":f'{name}',
+                        "tableContent":aTableContent
+                    }
+                    formTables.append(aTable)                
+                elif field.value_type == FieldValueType.DICTIONARY:
+                    # logging.info(f'{fName}Table:{name}->field:{field}')
+                    # aTableContent = []
+                    # aRow = []
+                    # for rowKey, rowDocumentField in field.to_dict().items():
+                    #     for columnKey, columnDocumentField in rowDocumentField.to_dict().items():
+                    #         # TODO: find when documents available
+                    #         # the value type and confidence and replace below
+                    #         # statically added string and field.confidence
+                    #         aField = {
+                    #             "fieldName":f'{columnKey}',
+                    #             "fieldValueType":f'{columnDocumentField.value_type}',
+                    #             "fieldConfidence":f'{field.confidence}',
+                    #             "fieldValue":f'{columnDocumentField.value}'
+                    #         }
+                    #         # TODO: add the row name if present, in future
+                    #         aRow.append(aField)
+                    #     aTableContent.append(aRow)
+                    # aTable = {
+                    #     "tableName":f'{name}',
+                    #     "tableContent":aTableContent
+                    # }
+                    # formTables.append(aTable)                        
+                    # Skip dictionary type for now
+                    logging.info(f'{fName}Not supported yet value type {field.value_type} for field:{name}. Skipping.')
+                else:
                     aField = {
                         "fieldName":f'{name}',
                         "fieldValueType":f'{field.value_type}',
                         "fieldConfidence": field.confidence,
                         "fieldValue": field_value
                     }
-                formFields.append(aField)
+                    formFields.append(aField)
             aDocument = {
                 "documentId":idx,
                 "documentType": aDocument.doc_type,
                 "documentConfidence":aDocument.confidence,
                 "fields":formFields
+                #"tables":formTables
             }
-            formDocumentFields.append(aDocument)
+            formDocuments.append(aDocument)
+        logging.info(f'{fName}formDocuments:{formDocuments}')
     except Exception as e:
         logging.warning(f'{fName}Reading form fields raised exception:{e}')
-
-    # Iterate over tables
-    formDocumentTables = []
-    try:
-        for i, table in enumerate(result.tables):
-            #logging.info(f'Table{i}[{table.row_count},{table.column_count}] in pages {pages}')
-            #logging.info(f'Table{i} full data:{table}')
-            aTable = []
-            pages = []
-            for region in table.bounding_regions:
-                pages.append(region.page_number)
-            allCells = []
-            for cell in table.cells:
-                aCell = [
-                    {
-                        "kind": cell.kind,
-                        "row_index": cell.row_index,
-                        "column_index": cell.column_index,
-                        "row_span": cell.row_span,
-                        "column_span": cell.column_span,
-                        "content": cell.content
-                    }
-                ]
-                allCells.append(aCell)
-            aTable = [
-                {
-                    "pages": pages,
-                    "rows": table.row_count,
-                    "columns": table.column_count,
-                    "cells": allCells
-                }
-            ]
-            formDocumentTables.append(aTable)
-    except Exception as e:
-        logging.warning(f'{fName}Reading document tables raised exception:{e}')
-    
-    formDocuments = [
-        {
-            "formFields": formDocumentFields,
-            "formTables": formDocumentTables
-        }
-    ]    
     return frAPIVersion, modelId, isHandwritten, formDocuments
         
 

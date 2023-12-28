@@ -1,55 +1,39 @@
 package com.azure.spring.samples.model;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Category {
 
 		private String category;
 		private Double confidence;
-		private ArrayList<Integer> pages;
 		
 		public Category() {
 			super();
 			// TODO Auto-generated constructor stub
 		}
-
-		public Category(String category, Double confidence, ArrayList<Integer> pages) {
+		
+		public Category(String category, Double confidence) {
 			super();
 			this.category = category;
 			this.confidence = confidence;
-			this.pages = pages;
 		}
 
 		public String getCategory() {
 			return category;
 		}
-
 		public void setCategory(String category) {
 			this.category = category;
 		}
-
 		public Double getConfidence() {
 			return confidence;
 		}
-
 		public void setConfidence(Double confidence) {
 			this.confidence = confidence;
 		}
-
-		public ArrayList<Integer> getPages() {
-			return pages;
-		}
-
-		public void setPages(ArrayList<Integer> pages) {
-			this.pages = pages;
-		}
-
 		@Override
 		public int hashCode() {
-			return Objects.hash(category, confidence, pages);
+			return Objects.hash(category, confidence);
 		}
-
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -59,14 +43,11 @@ public class Category {
 			if (getClass() != obj.getClass())
 				return false;
 			Category other = (Category) obj;
-			return Objects.equals(category, other.category) && Objects.equals(confidence, other.confidence)
-					&& Objects.equals(pages, other.pages);
+			return Objects.equals(category, other.category) && Objects.equals(confidence, other.confidence);
 		}
-
 		@Override
 		public String toString() {
-			return "DataCategory [category=" + category + ", confidence=" + confidence + ", pages=" + pages + "]";
+			return "Category [category=" + category + ", confidence=" + confidence + "]";
 		}
-		
-		
+				
 }

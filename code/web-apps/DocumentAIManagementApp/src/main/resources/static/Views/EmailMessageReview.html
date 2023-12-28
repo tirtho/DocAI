@@ -7,36 +7,37 @@
         <div class="input-group" style="margin-bottom: 20px !important;">
             <input ng-model="newSearchString" class="form-control"/>
             <span class="input-group-btn">
-                <button ng-click="add()" class="btn btn-primary">Search</button>
+                <button ng-click="add()" class="btn btn-primary">Search by sender email address</button>
             </span>
         </div>
-        <!--
         <ul class="list-group" id="emailMessageReview">
             <div class="list-group-item list-group-item-action flex-column align-items-start" data-ng-repeat="item in emailMessageReview">
                  <table>
                  <tr>
-                 	<td><b>Email Id:</b> {{item.searchId}}</td>
+                 	<td><b>Id (cosmosdb):</b> {{item.searchId}}</td>
                  	<td><b><font color='green'>Type:</font></b> {{item.searchType}}</td>
                  </tr>
                  <tr>
-                 	<td><b>Snippet:</b> {{item.searchResultString}}</td>
+                 	<td><b>Preview:</b> {{item.searchResultString}}</td>
+                 	<td> </td>
                  </tr>
                  <tr>
                  	<td><b>Source: </b><a href='{{item.searchResultUrl}}'>{{item.searchResultUrlName}}</a></td>
+                 	<td> </td>
                  </tr>
                  <tr>
-                 	<td><b>Key Phrases: {{item.keyPhrases}}</b></td>
+                 	<td><b>Classes: {{item.keyPhrases}}</b></td>
+                 	<td> </td>
                  </tr>
                  <tr>
-                   	<td><b><font color='red'>Score: </font>{{item.score}}</b></td>
+                   	<td><b><font color='red'>Review Summary: </font>{{item.score}}</b></td>
                    	<td>
-                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore(item)>Get Score</button>
+                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore(item)>Review</button>
                    	</td>
                  </tr>
                  </table>
                 </div>
             </div>
         </ul>
-        -->
     </div>
 </div>

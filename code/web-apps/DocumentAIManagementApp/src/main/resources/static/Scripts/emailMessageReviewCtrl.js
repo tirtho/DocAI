@@ -9,8 +9,8 @@ angular.module('documentAIManagementApp')
     .controller('emailMessageReviewCtrl', ['$scope', '$location', 'emailMessageReviewSvc', function ($scope, $location, emailMessageReviewSvc) {
         $scope.error = '';
         $scope.loadingMessage = '';
-        $scope.searchAndReview = null;
-        $scope.newSearchString = '';
+        $scope.emailMessageReview = null;
+        $scope.newEmailMessageReviewSearchString = '';
         $scope.item = null;
 		$scope.itemScore = {};
 		

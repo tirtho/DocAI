@@ -6,9 +6,13 @@
     <meta name="theme-color" content="#000000" />
     <title>Document AI Management Application</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="customStyles.css">
     <style>
         .list-group-item { word-wrap: break-word; }
         #todolist button { margin-left: 5px; }
+		#table td:nth-child(1) { width: 50em; border: 1px solid black; }
+		table td:nth-child(1) { width: 50em; }
+		table td:nth-child(2) { width: 20em; text-align: end; }
     </style>
 </head>
 <body ng-app="documentAIManagementApp" ng-controller="homeCtrl" role="document">

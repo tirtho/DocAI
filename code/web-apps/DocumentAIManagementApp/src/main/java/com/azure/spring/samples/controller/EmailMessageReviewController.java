@@ -52,12 +52,12 @@ public class EmailMessageReviewController {
     /**
      * HTTP - let AOAI identify any field with potential errors
      */
-    @RequestMapping(value = "/api/emailMessageReview/{messageId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getFormFieldsFixedByAI(@PathVariable String messageId) {
-        logger.info("GET request access '/api/emailMessageReview' path with item: {}", messageId);
+    @RequestMapping(value = "/api/emailMessageReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getEmailMessageReviewSummary(@PathVariable String id) {
+        logger.info("GET request access '/api/emailMessageReview' path with item: {}", id);
         String score = Double.toString(Math.random());
 		// TODO: For known forms, use AOAI to validate, flag and fix fields
-        return new ResponseEntity<>(score, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
     
     /**

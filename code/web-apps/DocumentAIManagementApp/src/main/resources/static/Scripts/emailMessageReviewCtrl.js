@@ -12,12 +12,12 @@ angular.module('documentAIManagementApp')
         $scope.emailMessageReview = null;
         $scope.newEmailMessageReviewSearchString = '';
         $scope.item = null;
-		$scope.itemScore = {};
+		$scope.itemEmailMessageReviewSummary = {};
 		
-		$scope.getUpdatedScore = function (item) {
-			emailMessageReviewSvc.getScore(item.keyPhrases)
+		$scope.getUpdatedEmailMessageReviewSummary = function (item) {
+			emailMessageReviewSvc.getEmailMessageReviewSummary(item.id)
 			.success(function (result) {
-				item.score = result;
+				item.emailMessageReviewSummary = result;
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';

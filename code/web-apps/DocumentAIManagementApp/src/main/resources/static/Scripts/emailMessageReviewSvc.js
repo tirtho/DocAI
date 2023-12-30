@@ -11,8 +11,8 @@ angular.module('documentAIManagementApp')
             postItem: function (item) {
                 return $http.post('api/emailMessageReview/', item);
             },
-            getScore: function (keyPhrases) {
-				return $http.get('api/emailMessageReview/' + keyPhrases);
+            getEmailMessageReviewSummary: function (id) {
+				return $http.get('api/emailMessageReview/' + id);
 			}
         };
     }]);

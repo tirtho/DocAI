@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.azure.spring.samples</groupId>
@@ -113,7 +111,12 @@
 			    </configuration>
 				-->
 			</plugin>
-
+			<!-- This plugin below is to deploy in azure -->
+			<!--plugin>
+			    <groupId>com.microsoft.azure</groupId>
+			    <artifactId>azure-spring-apps-maven-plugin</artifactId>
+			    <version>[Use the latest version above]</version>
+			<plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -183,35 +186,35 @@
 					<appSettings>
 						<property>
 							<name>COSMOS_URI</name>
-							<value>${COSMOS_URI}</value>
+							<value>${env.COSMOS_URI}</value>
 						</property>
 						<property>
 							<name>COSMOS_KEY</name>
-							<value>${COSMOS_KEY}</value>
+							<value>${env.COSMOS_KEY}</value>
 						</property>
 						<property>
 							<name>COSMOS_DATABASE</name>
-							<value>${COSMOS_DATABASE}</value>
+							<value>${env.COSMOS_DATABASE}</value>
 						</property>
 						<property>
 							<name>COSMOS_CONTAINER</name>
-							<value>${COSMOS_CONTAINER}</value>
+							<value>${env.COSMOS_CONTAINER}</value>
 						</property>
 						<property>
 							<name>BING_KEY</name>
-							<value>${BING_KEY}</value>
+							<value>${env.BING_KEY}</value>
 						</property>
 						<property>
 							<name>COGNITIVE_SERVICE_KEY</name>
-							<value>${COGNITIVE_SERVICE_KEY}</value>
+							<value>${env.COGNITIVE_SERVICE_KEY}</value>
 						</property>
 						<property>
 							<name>COGNITIVE_SERVICE_ENDPOINT</name>
-							<value>${COGNITIVE_SERVICE_ENDPOINT}</value>
+							<value>${env.COGNITIVE_SERVICE_ENDPOINT}</value>
 						</property>
 						<property>
 							<name>BING_QUERY_COUNT</name>
-							<value>${BING_QUERY_COUNT}</value>
+							<value>${env.BING_QUERY_COUNT}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>
@@ -220,6 +223,34 @@
 					</appSettings>
 				</configuration>
 			</plugin>
+		    <plugin>
+		        <groupId>com.microsoft.azure</groupId>
+		        <artifactId>azure-spring-apps-maven-plugin</artifactId>
+		        <version>1.19.0</version>
+		        <configuration>
+		            <subscriptionId>6cbec813-41ab-4929-bc3f-dc836dcb6919</subscriptionId>
+		            <resourceGroup>DocAI</resourceGroup>
+		            <clusterName>tr-docai-management-app</clusterName>
+		            <region>eastus</region>
+		            <sku>Standard</sku>
+		            <appName>document-ai-management-app</appName>
+		            <isPublic>true</isPublic>
+		            <deployment>
+		                <cpu>1</cpu>
+		                <memoryInGB>2</memoryInGB>
+		                <instanceCount>1</instanceCount>
+		                <runtimeVersion>Java 8</runtimeVersion>
+		                <resources>
+		                    <resource>
+		                        <directory>${project.basedir}/target</directory>
+		                        <includes>
+		                            <include>*.jar</include>
+		                        </includes>
+		                    </resource>
+		                </resources>
+		            </deployment>
+		        </configuration>
+		    </plugin>
 		</plugins>
 	</build>
 </project>

@@ -103,13 +103,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
-				<!--
+			    <!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
-				-->
+			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
 			<plugin>
@@ -152,6 +152,11 @@
 			</plugin>
 			<!--************************************************* -->
 			<!-- Deploy to Java SE in App Service Linux -->
+			<!-- Create Azure App Service with Linux and Java 8.x -->
+			<!-- Run "mvn package spring-boot:run" to test app    -->
+			<!-- running locally in windows/linux. Then run below -->
+			<!-- mvn install "-DRESOURCEGROUP_NAME=xxxx"       -->
+			<!-- "-DWEBAPP_NAME=yyyy" "-DREGION=zzzz" azure-webapp:deploy --> 
 			<!--************************************************* -->
 
 			<plugin>

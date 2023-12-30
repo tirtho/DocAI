@@ -23,7 +23,7 @@
                                     "body": {
                                         "attachmentName": "@body('Get_Attachment_(V2)')?['name']",
                                         "categories": "@body('f(getAttachmentClass)')",
-                                        "messageType": "email-attachment",
+                                        "messageType": "email-attachment-extracts",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
                                         "sender": "@triggerBody()?['from']",
                                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"

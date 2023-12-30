@@ -102,6 +102,16 @@ def composePromptWithRAGData(body, fName):
         "categories": "commercial-insurance,request-new-quote"
     }
     ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi Ram, Hope all is well at your end. Since we last met, I have worked on filling up the worker compensation application form for my organization. As you are aware, we are a rapidly growing startup. Our employee headcount is also increasing in recently months. So, we need worker compensation coverage for our employees as soon as possible, to mitigate associated risks. I am attaching the form here. Please respond back ASAP.\n\nRegards,\n\n- Roger",
+        "categories": "workers-compensation,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi, Please find attached our workers compensation application. Please respond with a quote, as discussed.\n\nRegards,\n\n- Hari",
+        "categories": "workers-compensation,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
     
     allShots = ''
     allCategoriesArray = ['unknown']
@@ -247,16 +257,35 @@ def getDocumentExtractionModelFromClasses(categories, fName):
         errorMessage = f'{fName}Form Recognizer Extraction model for category {documentCategory} not found in DOCUMENT_EXTRACTION_MODEL_CLASS_MAP, hence selecting unknown for model'
         logging.error(errorMessage)
         raise ValueError(errorMessage)
-    logging.info(f'{fName}Retrieved model:{formRecognizerExtractionModel} from category:{documentCategory} with highest confidence:{highestConfidence}')
-    return formRecognizerExtractionModel    
+    if formRecognizerExtractionModel != "unknown":
+        theModelType = "custom-model"
+    else:
+        theModelType = "unknown-model"
+
+    logging.info(f'{fName}Retrieved model type:{theModelType}, model:{formRecognizerExtractionModel} from category:{documentCategory} with highest confidence:{highestConfidence}')
+    return theModelType, formRecognizerExtractionModel    
     
-def getExtractsFromFormRecognizer(url, documentCategories, fName):
-    fName = f'{fName}f(getExtractsFromFormRecognizer)->'
+def getExtractsFromModel(url, documentCategories, fName):
+    fName = f'{fName}f(getExtractsFromModel)->'
     try:
-        extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
+        theModelType, extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
     except Exception as e:
         logging.error(f'{fName}Getting right extraction model for the attachment raised exception {e}')
         raise
+    
+    if theModelType == "unknown-model":
+        logging.info(f'{fName}Getting extracts for mode type:{theModelType}')
+        return extractResultForUnknownModel(url, fName)
+    else:
+        return extractResultForCustomModel(extractionModel, url, fName)
+
+def extractResultForUnknownModel(ur, fName):
+    fName = f'{fName}extractResultForUnknownModel->'
+    # frAPIVersion, modelId, isHandwritten, frExtracts
+    return "Unknown-v0", "NotYeyImplemented", True, None
+
+def extractResultForCustomModel(extractionModel, url, fName):
+    fName = f'{fName}extractResultForCustomModel->'
     logging.info(f'{fName}Getting client to talk to Document Intelligence Service, for extraction model:{extractionModel}')
     formRecognizerCredential = fr.getFormRecognizerCredential()
     formRecognizerClient = fr.getDocumentAnalysisClient(
@@ -352,7 +381,6 @@ def getExtractsFromFormRecognizer(url, documentCategories, fName):
         logging.warning(f'{fName}Reading form fields raised exception:{e}')
     return frAPIVersion, modelId, isHandwritten, formDocuments
         
-
 def getJsonResponse(doc, fName):
     fName = f'{fName}f(getJsonResponse)->'
     logging.info(f'{fName}Creating response payload json')
@@ -532,7 +560,16 @@ def saveAttachmentProperties(req: func.HttpRequest,
     except Exception as httpRequestErrorMessage:
         errorMessage = f'{fName}ERROR: Read request body items raised exception:{httpRequestErrorMessage}'
         logging.error(errorMessage)
-        return func.HttpResponse(errorMessage, status_code=400)   
+        return func.HttpResponse(errorMessage, status_code=400)
+    
+    try:
+        theModelType = getDocumentExtractionModelFromClasses(attachmentClasses, fName)
+    except:
+        theModelType = "unknown"
+    if theModelType != "unknown":
+        theModelType = "custom-model"
+    else:
+        theModelType = "unknown-model"
     doc = {
         "id":str(uuid.uuid4()),
         "upsertTime":getCurrentUTCTimeString(),
@@ -542,6 +579,7 @@ def saveAttachmentProperties(req: func.HttpRequest,
         "receivedTimeFolder":receivedTimeFolder,
         "sender":sender,
         "categories":attachmentClasses,
+        "modelType":theModelType,
         "attachmentName":attachmentName,
         "url":url
     }
@@ -574,14 +612,14 @@ def extractAttachmentData(req: func.HttpRequest,
         return func.HttpResponse(f'{httpRequestErrorMessage}', status_code=400)
     try:
         messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
-        if messageType == 'email-attachment':
+        if messageType == 'email-attachment-extracts':
                 receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
                 sender = getItemFromRequestBody(reqBody, 'sender', fName)
                 attachmentName = getItemFromRequestBody(reqBody, 'attachmentName', fName)               
                 attachmentClasses = getItemFromRequestBody(reqBody, 'categories', fName)
                 messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
                 url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
-                frAPIVersion, modelId, isHandwritten, frExtracts = getExtractsFromFormRecognizer(url, attachmentClasses, fName)
+                frAPIVersion, modelId, isHandwritten, frExtracts = getExtractsFromModel(url, attachmentClasses, fName)
         else:
             errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
             logging.error(errorMessage)

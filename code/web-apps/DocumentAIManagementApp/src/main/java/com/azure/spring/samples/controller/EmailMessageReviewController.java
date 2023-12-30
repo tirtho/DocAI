@@ -25,10 +25,12 @@ import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.CosmosContainer;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.util.CosmosPagedIterable;
-import com.azure.spring.samples.model.Category;
-import com.azure.spring.samples.model.EmailExtractData;
+import com.azure.spring.samples.model.AttachmentData;
+import com.azure.spring.samples.model.AttachmentExtractsData;
+import com.azure.spring.samples.model.AttachmentSearchResult;
+import com.azure.spring.samples.model.EmailData;
+import com.azure.spring.samples.model.EmailSearchResult;
 import com.azure.spring.samples.model.SearchItem;
-import com.azure.spring.samples.model.SearchResult;
 
 @RestController
 public class EmailMessageReviewController {
@@ -66,7 +68,7 @@ public class EmailMessageReviewController {
         logger.info("POST request access '/api/emailMessageReview' path with item: {}", searchItem);
         
         try {
-        	List<SearchResult> searchResults = searchEmailDetailsBySenderEmailAddress(searchItem.getDescription());
+        	List<EmailSearchResult> searchResults = searchEmailDetailsBySenderEmailAddress(searchItem.getDescription());
 
         	if (searchResults != null && !searchResults.isEmpty()) {
         		return new ResponseEntity<>(searchResults, HttpStatus.OK);
@@ -80,7 +82,7 @@ public class EmailMessageReviewController {
         }
     }
     
-    public List<SearchResult> searchEmailDetailsBySenderEmailAddress (String searchQuery) throws Exception {
+    public List<EmailSearchResult> searchEmailDetailsBySenderEmailAddress (String searchQuery) throws Exception {
     	CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
     	queryOptions.setQueryMetricsEnabled(true);
 
@@ -97,11 +99,11 @@ public class EmailMessageReviewController {
     	
     	CosmosContainer container = cosmosClient.getDatabase(azureCosmosDatabaseName)
 										.getContainer(azureCosmosContainerName);
-    	CosmosPagedIterable<EmailExtractData> emailExtractsIterable = container
-		    															.queryItems(
+    	CosmosPagedIterable<EmailData> emailExtractsIterable = container.queryItems(
 		    																sqlStatement, 
 		    																queryOptions, 
-		    																EmailExtractData.class);
+		    																EmailData.class
+		    															);
 //    	emailExtractsIterable.iterableByPage(10).forEach(cosmosItemPropertiesFeedResponse -> {
 //    		logger.info("Got a page of query result with {} items and request charge of {}",
 //    	            cosmosItemPropertiesFeedResponse.getResults().size(), 
@@ -113,22 +115,75 @@ public class EmailMessageReviewController {
 //    	            .collect(Collectors.toList()));
 //    	    });
     	
-  		Iterator<EmailExtractData> iterateEmailExtracts = emailExtractsIterable.iterator();
-    	List<SearchResult> results = new ArrayList<SearchResult>();
-  		while (iterateEmailExtracts.hasNext()) {
-  			EmailExtractData emailExtractData = iterateEmailExtracts.next();
-  			logger.info("EmailExtract Info found : {}", emailExtractData.toString());
-  			List<String> theCategories = new ArrayList<String>();
-  			theCategories.add(emailExtractData.getCategories());
-  	    	SearchResult sr = new SearchResult(
-  	    			SearchResult.SEARCH_TYPE_EMAIL_EXTRACT, 
-  	    			emailExtractData.getBodyPreview(), 
-  	    			emailExtractData.getId(), 
-  	    			emailExtractData.getUrl(), 
-  	    			emailExtractData.getMessageId(), 
-  	    			theCategories,
-  	    			null);
-  	    	results.add(sr);
+  		Iterator<EmailData> iterateED = emailExtractsIterable.iterator();
+    	List<EmailSearchResult> results = new ArrayList<>();
+    	// For each Email Message
+  		while (iterateED.hasNext()) {
+  			EmailData ed = iterateED.next();
+  			logger.info("EmailExtract Info found : {}", ed.toString());
+  	    	EmailSearchResult esr = new EmailSearchResult();
+  	    	esr.setId(ed.getId()); esr.setBodyPreview(ed.getBodyPreview());
+  	    	esr.setCategories(ed.getCategories().replace("\\\"", "\'")); esr.setReceivedTime(ed.getReceivedTime());
+  	    	esr.setIsHTML(ed.getIsHTML()); esr.setHasAttachment(ed.getHasAttachment());
+  	    	esr.setMessageId(ed.getMessageId());esr.setMessageType(ed.getMessageType());
+  	    	esr.setSender(ed.getSender());esr.setSubject(ed.getSubject());esr.setUpsertTime(ed.getUpsertTime());esr.setUrl(ed.getUrl()); 	
+  	    	// Get the attachment list for the given email message Id
+  	    	sqlStatement = "SELECT * FROM EmailExtracts e " +
+					"WHERE e.messageType IN ('email-attachment') " +
+					"AND e.messageId IN ('" + ed.getMessageId() + "') " + 
+					"ORDER BY e.upsertTime DESC";
+  	    	CosmosPagedIterable<AttachmentData> attachmentDataIterable = container.queryItems(
+					sqlStatement, 
+					queryOptions, 
+					AttachmentData.class
+				);
+  	    	if (attachmentDataIterable != null) {
+  	    		Iterator<AttachmentData> iterateAD = attachmentDataIterable.iterator();
+  	    		List<AttachmentSearchResult> asrList = new ArrayList<>();
+  	    		// For each attachment
+  	    		while (iterateAD.hasNext()) {
+  	    			AttachmentData ad = iterateAD.next();
+  	    			logger.info("AttachmentData Info found : {}", ad.toString());
+  	    			AttachmentSearchResult asr = new AttachmentSearchResult();
+  	    			asr.setAttachmentName(ad.getAttachmentName()); asr.setUrl(ad.getUrl());
+  	    			asr.setCategories(ad.getCategories());
+  	    			asr.setMessageType(ad.getMessageType());
+  	    			asr.setModelType(ad.getModelType());
+  	    			asr.setId(ad.getId());
+  	    			
+  	    			// Now get the extracted data for the attachment
+  	    	    	sqlStatement = "SELECT * FROM EmailExtracts e " +
+  	  					"WHERE e.messageType IN ('email-attachment-extracts') " +
+  	  					"AND e.messageId IN ('" + ed.getMessageId() + "') " + 
+  	  					"AND e.attachmentName IN ('" + ad.getAttachmentName() + "') " +
+  	  					"ORDER BY e.upsertTime DESC";
+  	    	    	CosmosPagedIterable<AttachmentExtractsData> attachmentExtractsDataIterable = container.queryItems(
+  	  					sqlStatement, 
+  	  					queryOptions, 
+  	  					AttachmentExtractsData.class
+  	  				);
+  	    	    	if (attachmentExtractsDataIterable != null) {
+  	    	    		Iterator<AttachmentExtractsData> iterateAED = attachmentExtractsDataIterable.iterator();
+  	    	    		// An attachment has only one AttachmentExtractsData
+  	    	    		// So, just getting the first one from the list below
+  	    	    		if (iterateAED.hasNext()) {
+  	    	    			AttachmentExtractsData aed = iterateAED.next();
+  	    	    			logger.info("AttachmentExtractsData Info for attachment:{} found as:{}", 
+  	    	    					aed.getAttachmentName(), aed.toString());  	    	    			
+  	    	    			asr.setIsHandwritten(aed.getIsHandwritten());
+  	    	    			asr.setModelId(aed.getModelId());
+  	    	    			asr.setFrAPIVersion(aed.getFrAPIVersion());
+  	    	    			asr.setExtracts(aed.getExtracts());
+  	    	    		}
+  	    	    	}
+  	    	    	// Add the attachment data and extracts to the list
+  	    			asrList.add(asr);
+  	    		}
+  	    		esr.setAttachments(asrList);
+  	    	} else {
+  	  	    	logger.info("No AttachmentData Info found");  	    		
+  	    	}
+  	    	results.add(esr);
   		}
   		if (cosmosClient != null) {
   			cosmosClient.close();

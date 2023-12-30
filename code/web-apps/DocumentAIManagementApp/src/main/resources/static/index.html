@@ -6,13 +6,45 @@
     <meta name="theme-color" content="#000000" />
     <title>Document AI Management Application</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="customStyles.css">
+    <link rel="stylesheet" type="text/css" href="#/customStyles.css" />
     <style>
-        .list-group-item { word-wrap: break-word; }
-        #todolist button { margin-left: 5px; }
-		#table td:nth-child(1) { width: 50em; border: 1px solid black; }
-		table td:nth-child(1) { width: 50em; }
-		table td:nth-child(2) { width: 20em; text-align: end; }
+		.list-group-item { word-wrap: break-word; }
+		#todolist button { margin-left: 5px; }
+		tr:hover {background-color: beige;}
+		#emailTable {
+			width: 100%;
+		}
+		#emailTable td:nth-child(1) { width: 50em; }
+		#emailTable td:nth-child(2) { width: 20em; text-align: end; };
+
+		#attachmentExtractsTable {
+			width: 100%;
+		}
+		#attachmentExtractsTable th:nth-child(1) { width: 15em; text-align: left}
+		#attachmentExtractsTable th:nth-child(2) { width: 85em; text-align: left}
+		#attachmentExtractsTable th:nth-child(3) { width: 2em; text-align: left}
+		#attachmentExtractsTable th:nth-child(4) { width: 1em; text-align: end}
+		#attachmentExtractsTable th {
+		  text-align: left;
+		  background-color: #04AA6D;
+		  color: white;
+		  border: 1px solid #ddd;
+		  padding: 8px;
+		  font-family: Monaco, "Lucida Console", Verdana;
+		}
+		#attachmentExtractsTable td {
+		  border: 1px solid #ddd;
+		  padding: 8px;
+		  font-family: Monaco, "Lucida Console", Verdana;
+		  font-size: 0.75em;
+		}
+		#attachmentExtractsTable tr:nth-child(even){background-color: #f2f2f2;}
+		#attachmentExtractsTable td:nth-child(1) { width: 25em; text-align: left}
+		#attachmentExtractsTable td:nth-child(2) { width: 75em; text-align: left}
+		#attachmentExtractsTable td:nth-child(3) { width: 2em; text-align: left}
+		#attachmentExtractsTable td:nth-child(4) { width: 1em; text-align: end}
+		#attachmentExtractsTable tr:hover {background-color:#ddd;}
+
     </style>
 </head>
 <body ng-app="documentAIManagementApp" ng-controller="homeCtrl" role="document">
@@ -25,7 +57,7 @@
             <!-- class="navbar-brand" href="#/Home">Search and Score</a-->
             <ul class="navbar-nav">
                 <li ng-class="{ active: isActive('/Home') }"><a class="nav-link" href="#/Home">Home</a></li>
-                <li ng-class="{ active: isActive('/EmailMessageReview') }"><a class="nav-link" href="#/EmailMessageReview">Email Message Review</a></li>
+                <li ng-class="{ active: isActive('/EmailMessageReview') }"><a class="nav-link" href="#/EmailMessageReview">Email Review</a></li>
                 <li ng-class="{ active: isActive('/SearchAndReview') }"><a class="nav-link" href="#/SearchAndReview">Bing Search</a></li>
                 <li ng-class="{ active: isActive('/LinkedInScore') }"><a class="nav-link" href="#/LinkedInScore">LinkedIn Score</a></li>
             </ul>

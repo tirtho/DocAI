@@ -10,33 +10,95 @@
                 <button ng-click="add()" class="btn btn-primary">Search by sender email address</button>
             </span>
         </div>
-        <ul class="list-group" id="emailMessageReview">
+        <ul class="list-group" id="emailMessageReview"}>
             <div class="list-group-item list-group-item-action flex-column align-items-start" data-ng-repeat="item in emailMessageReview">
-                 <table>
+                 <table id="emailTable">
                  <tr>
-                 	<td><b>Id (cosmosdb):</b> {{item.searchId}}</td>
-                 	<td><b><font color='green'>Type:</font></b> {{item.searchType}}</td>
+                 	<td><b>Item Id </b>{{item.id}}</td>
+                 	<td>{{item.messageType}}<b><font color='green'> : Type </font></b></td>
                  </tr>
                  <tr>
-                 	<td><b>Preview:</b> {{item.searchResultString}}</td>
+                 	<td><b>From </b>{{item.sender}}</td>
                  	<td> </td>
                  </tr>
                  <tr>
-                 	<td><b>Source: </b><a href='{{item.searchResultUrl}}'>{{item.searchResultUrlName}}</a></td>
+                 	<td><b>Received at </b>{{item.receivedTime}}</td>
                  	<td> </td>
                  </tr>
                  <tr>
-                 	<td><b>Classes: {{item.keyPhrases}}</b></td>
+                 	<td><b>Has Attachment(s) </b>{{item.hasAttachment}}</td>
                  	<td> </td>
                  </tr>
                  <tr>
-                   	<td><b><font color='red'>Review Summary: </font>{{item.score}}</b></td>
+                 	<td><b>Preview </b>{{item.bodyPreview}}</td>
+                 	<td> </td>
+                 </tr>
+                 <tr>
+                 	<td><b>Source </b><a href='{{item.url}}'>EmailBody.msg</a></td>
+                 	<td> </td>
+                 </tr>
+                 <tr>
+                 	<td><b><font color='orange'>Classes </font>{{item.categories}}</b></td>
+                 	<td> </td>
+                 </tr>
+                 <tr>
+                   	<td><b><font color='orange'>Review Summary </font>{{item.review}}</b></td>
                    	<td>
-                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore(item)>Review</button>
+                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getEmailMessageReviewSummary(item)>Review</button>
                    	</td>
                  </tr>
                  </table>
-                </div>
+            	 <div class="list-group-item list-group-item-action flex-column align-items-start" data-ng-repeat="attachment in item.attachments">
+            			<table id="emailTable">
+		                 <tr>
+		                 	<td><b>Attachment Id </b>{{attachment.id}}</td>
+		                 	<td>{{attachment.messageType}}<b><font color='green'> : Type</font></b></td>
+		                 </tr>
+		                 <tr>
+		                 	<td><b>Attachment </b><a href='{{attachment.url}}'>{{attachment.attachmentName}}</a></td>
+		                 	<td>{{attachment.modelType}}<b><font color='green'> : Model</font></b></td>
+		                 </tr>
+		                 <tr>
+		                 	<td><b>Model Id </b>{{attachment.modelId}}</td>
+		                 	<td>{{attachment.frAPIVersion}}<b><font color='green'> : API Version</font></b></td>
+		                 </tr>
+		                 <tr>
+		                 	<td><b>Classes </b>{{attachment.categories}}</td>
+		                 </tr>
+		                 <tr>
+		                 	<td><b>Any Handwritten content </b>{{attachment.isHandwritten}}</td>
+		                 </tr>
+            			</table>
+            			<div class="list-group-item list-group-item-action flex-column align-items-start" 
+            							data-ng-repeat="extract in attachment.extracts">
+            				<table id="emailTable">
+            				 <tr>
+            				  <td><b>Document Model </b>{{extract.documentType}}</td>
+		                 	  <td>{{extract.documentConfidence}}<b><font color='green'> : Confidence</font></b></td>
+            				 </tr>
+            				</table>
+            				<div style="overflow-x:auto;">
+		            		<table id="attachmentExtractsTable">
+		            			<thead>
+		            				<tr>
+			            				<th>Name</th>
+			            				<th>Value</th>
+			            				<th>Type</th>
+			            				<th>Confidence</th>
+									</tr>
+		            			</thead>
+		            			<tbody>
+								    <tr data-ng-repeat="field in extract.fields">
+									    <td>{{field.fieldName}}</td>
+									    <td>{{field.fieldValue}}</td>
+									    <td>{{field.fieldValueType}}</td>
+									    <td>{{field.fieldConfidence}}</td>
+								    </tr>
+		            			</tbody>
+		            		</table>
+		            		</div>
+            			</div>
+                	</div>
             </div>
         </ul>
     </div>

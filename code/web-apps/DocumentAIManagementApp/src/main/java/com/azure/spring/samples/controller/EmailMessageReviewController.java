@@ -20,11 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.azure.cosmos.CosmosClient;
-import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.CosmosContainer;
-import com.azure.cosmos.models.CosmosQueryRequestOptions;
-import com.azure.cosmos.util.CosmosPagedIterable;
+import com.azure.spring.samples.anomaly.EmailAnomaly;
+import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 import com.azure.spring.samples.model.AttachmentSearchResult;
@@ -36,7 +33,7 @@ import com.azure.spring.samples.model.SearchItem;
 public class EmailMessageReviewController {
 
     private static Logger logger = LoggerFactory.getLogger(EmailMessageReviewController.class);
-   
+
     @Value("${azure.cosmos.uri}")
     private String azureCosmosURI;
     @Value("${azure.cosmos.key}")
@@ -50,14 +47,37 @@ public class EmailMessageReviewController {
     }
   
     /**
-     * HTTP - let AOAI identify any field with potential errors
+     * HTTP - let AOAI identify any email with potential errors
      */
     @RequestMapping(value = "/api/emailMessageReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getEmailMessageReviewSummary(@PathVariable String id) {
         logger.info("GET request access '/api/emailMessageReview' path with item: {}", id);
-        String score = Double.toString(Math.random());
-		// TODO: For known forms, use AOAI to validate, flag and fix fields
-        return new ResponseEntity<>(id, HttpStatus.OK);
+
+    	CosmosDBOperation cosmosDB = new CosmosDBOperation(
+				azureCosmosURI, 
+				azureCosmosKey,
+				azureCosmosDatabaseName,
+				azureCosmosContainerName
+			);
+
+        EmailAnomaly eAnomaly = new EmailAnomaly(cosmosDB);
+        String reviewRemarks = eAnomaly.checkIntentContentGap(id);
+        // TODO: implement and call the EmailAnomaly.checkContentModeration
+        // and other methods
+        logger.info("Got review remark as {}", reviewRemarks);
+        return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
+    }
+    
+    /**
+     * HTTP - let AOAI identify any email with potential errors
+     */
+    @RequestMapping(value = "/api/attachmentReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getAttachmentReviewSummary(@PathVariable String id) {
+        logger.info("GET request access '/api/attachmentReview' path with item: {}", id);
+
+        String reviewRemarks = String.format("NotYetImplemented, attachmentId:{}", id);
+        logger.info("Got review remark as {}", reviewRemarks);
+        return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
     }
     
     /**
@@ -83,39 +103,20 @@ public class EmailMessageReviewController {
     }
     
     public List<EmailSearchResult> searchEmailDetailsBySenderEmailAddress (String searchQuery) throws Exception {
-    	CosmosQueryRequestOptions queryOptions = new CosmosQueryRequestOptions();
-    	queryOptions.setQueryMetricsEnabled(true);
 
-    	// Connect to CosmosDB Sql API and search for the Company data
-    	CosmosClient cosmosClient = new CosmosClientBuilder()
-    									.endpoint(azureCosmosURI)
-    									.key(azureCosmosKey)
-    									.buildClient();
+    	CosmosDBOperation cosmosDB = new CosmosDBOperation(
+    										azureCosmosURI, 
+    										azureCosmosKey,
+    										azureCosmosDatabaseName,
+    										azureCosmosContainerName
+    									);
     	String sqlStatement = "SELECT TOP 5 * FROM EmailExtracts e " +
     							"WHERE e.messageType IN ('email-body') " +
     							"AND e.sender IN ('" + 
     							searchQuery + "') " + 
-    							"ORDER BY e.upsertTime DESC";
-    	
-    	CosmosContainer container = cosmosClient.getDatabase(azureCosmosDatabaseName)
-										.getContainer(azureCosmosContainerName);
-    	CosmosPagedIterable<EmailData> emailExtractsIterable = container.queryItems(
-		    																sqlStatement, 
-		    																queryOptions, 
-		    																EmailData.class
-		    															);
-//    	emailExtractsIterable.iterableByPage(10).forEach(cosmosItemPropertiesFeedResponse -> {
-//    		logger.info("Got a page of query result with {} items and request charge of {}",
-//    	            cosmosItemPropertiesFeedResponse.getResults().size(), 
-//    	            cosmosItemPropertiesFeedResponse.getRequestCharge());
-//    	    logger.info("Item Ids {}", cosmosItemPropertiesFeedResponse
-//    	            .getResults()
-//    	            .stream()
-//    	            .map(EmailExtractData::getId)
-//    	            .collect(Collectors.toList()));
-//    	    });
-    	
-  		Iterator<EmailData> iterateED = emailExtractsIterable.iterator();
+    							"ORDER BY e.upsertTime DESC";    	
+  		Iterator<EmailData> iterateED = cosmosDB.query(sqlStatement, EmailData.class);
+  		
     	List<EmailSearchResult> results = new ArrayList<>();
     	// For each Email Message
   		while (iterateED.hasNext()) {
@@ -132,13 +133,8 @@ public class EmailMessageReviewController {
 					"WHERE e.messageType IN ('email-attachment') " +
 					"AND e.messageId IN ('" + ed.getMessageId() + "') " + 
 					"ORDER BY e.upsertTime DESC";
-  	    	CosmosPagedIterable<AttachmentData> attachmentDataIterable = container.queryItems(
-					sqlStatement, 
-					queryOptions, 
-					AttachmentData.class
-				);
-  	    	if (attachmentDataIterable != null) {
-  	    		Iterator<AttachmentData> iterateAD = attachmentDataIterable.iterator();
+  	    	Iterator<AttachmentData> iterateAD = cosmosDB.query(sqlStatement, AttachmentData.class);
+  	    	if (iterateAD != null) {
   	    		List<AttachmentSearchResult> asrList = new ArrayList<>();
   	    		// For each attachment
   	    		while (iterateAD.hasNext()) {
@@ -157,13 +153,8 @@ public class EmailMessageReviewController {
   	  					"AND e.messageId IN ('" + ed.getMessageId() + "') " + 
   	  					"AND e.attachmentName IN ('" + ad.getAttachmentName() + "') " +
   	  					"ORDER BY e.upsertTime DESC";
-  	    	    	CosmosPagedIterable<AttachmentExtractsData> attachmentExtractsDataIterable = container.queryItems(
-  	  					sqlStatement, 
-  	  					queryOptions, 
-  	  					AttachmentExtractsData.class
-  	  				);
-  	    	    	if (attachmentExtractsDataIterable != null) {
-  	    	    		Iterator<AttachmentExtractsData> iterateAED = attachmentExtractsDataIterable.iterator();
+  	    	    	Iterator<AttachmentExtractsData> iterateAED = cosmosDB.query(sqlStatement, AttachmentExtractsData.class);
+  	    	    	if (iterateAED != null) {
   	    	    		// An attachment has only one AttachmentExtractsData
   	    	    		// So, just getting the first one from the list below
   	    	    		if (iterateAED.hasNext()) {
@@ -185,8 +176,8 @@ public class EmailMessageReviewController {
   	    	}
   	    	results.add(esr);
   		}
-  		if (cosmosClient != null) {
-  			cosmosClient.close();
+  		if (cosmosDB != null) {
+  			cosmosDB.close();
   		}
   		return results;
 

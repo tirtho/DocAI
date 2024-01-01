@@ -13,6 +13,9 @@ angular.module('documentAIManagementApp')
             },
             getEmailMessageReviewSummary: function (id) {
 				return $http.get('api/emailMessageReview/' + id);
+            },
+            getAttachmentReviewSummary: function (id) {
+				return $http.get('api/attachmentReview/' + id);
 			}
         };
     }]);

@@ -73,9 +73,9 @@ public class EmailMessageReviewController {
      */
     @RequestMapping(value = "/api/attachmentReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getAttachmentReviewSummary(@PathVariable String id) {
-        logger.info("GET request access '/api/attachmentReview' path with item: {}", id);
+        logger.info("GET request access '/api/attachmentReview' path with attachment id : {}", id);
 
-        String reviewRemarks = String.format("NotYetImplemented, attachmentId:{}", id);
+        String reviewRemarks = String.format("NotYetImplemented, attachmentId:%s", id);
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
     }

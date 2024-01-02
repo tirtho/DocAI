@@ -14,7 +14,7 @@ angular.module('documentAIManagementApp')
         $scope.item = null;
         $scope.attachment = null;
 		$scope.itemEmailMessageReviewSummary = {};
-		$scope.attachmentAttachmentReviewSummary = {};
+		$scope.attachmentReviewSummary = null;
 		
 		$scope.getUpdatedEmailMessageReviewSummary = function (item) {
 			emailMessageReviewSvc.getEmailMessageReviewSummary(item.id)
@@ -25,10 +25,10 @@ angular.module('documentAIManagementApp')
                 $scope.loadingMessage = '';
             })
 		}
-		$scope.getUpdatedAttachmentReviewSummary = function (attachment) {
-			emailMessageReviewSvc.getAttachmentReviewSummary(attachment.id)
+		$scope.getUpdatedAttachmentReviewSummary = function (item) {
+			emailMessageReviewSvc.getAttachmentReviewSummary(item.id)
 			.success(function (result) {
-				attachment.attachmentReviewSummary = result;
+				$scope.attachmentReviewSummary = result;
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';

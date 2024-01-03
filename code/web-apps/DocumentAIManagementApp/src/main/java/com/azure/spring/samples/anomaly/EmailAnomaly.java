@@ -39,7 +39,7 @@ public class EmailAnomaly {
   		
   		if (iterateED == null) {
   			cosmosDB.close();
-  			reviewMessage = String.format("Note: Did not find the email record for id %s in Cosmos DB", emailBodyId);
+  			reviewMessage = String.format("Did not find the email record for id %s in Cosmos DB", emailBodyId);
   			logger.info(reviewMessage);
   			return reviewMessage;
   		}
@@ -56,7 +56,7 @@ public class EmailAnomaly {
   		// attachment/form, else nothing to check further
   		if (!Category.hasAny(requestNewQuoteCategory, emailCategories)) {
 			cosmosDB.close();
-			reviewMessage =  String.format("Note: Intent of email does not need any attached form or file. ");
+			reviewMessage =  String.format("Intent of email does not need any attached form or file. ");
 			logger.info(reviewMessage);
 			return reviewMessage;
   		}
@@ -66,7 +66,7 @@ public class EmailAnomaly {
 		Iterator<AttachmentData> iterateAD = cosmosDB.query(sqlStatement, AttachmentData.class);
 		if (iterateAD == null) {
 			cosmosDB.close();
-			reviewMessage = String.format("Note: Expected at least one attachment in email message thread with "
+			reviewMessage = String.format("Expected at least one attachment in email message thread with "
 								+ "message Id %s in Cosmos DB, but found none", messageId);
 			logger.info(reviewMessage);
 			return reviewMessage;
@@ -88,12 +88,12 @@ public class EmailAnomaly {
 		}
   		cosmosDB.close();
 		if (correspondingAttachmentName != null) {
-			reviewMessage = String.format("Note: For the intent of the email, got relevant attachment %s", 
+			reviewMessage = String.format("For the intent of the email, got relevant attachment %s", 
 											correspondingAttachmentName);
 			logger.info(reviewMessage);
 			return reviewMessage;
 		} else {
-			reviewMessage = String.format("Note: For the intent of the email, did NOT get any relevant attachment");
+			reviewMessage = String.format("For the intent of the email, did NOT get any relevant attachment");
 			logger.info(reviewMessage);
 			return reviewMessage;
 		}
@@ -104,9 +104,8 @@ public class EmailAnomaly {
 	 * 
 	 * @return
 	 */
-	public String checkContentModeration() {
-		
-		return null;
+	public String checkContentModeration(String emailBodyId) {
+		return "NotYetImplemented";
 	}
 	
 }

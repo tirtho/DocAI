@@ -14,14 +14,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.5</version>
+		<version>2.7.11</version>
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.build.timestamp.format>yyMMddHHmmssSSS</maven.build.timestamp.format>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 		<azure.spring.version>3.14.0</azure.spring.version>
 	</properties>
 	<dependencyManagement>
@@ -93,6 +93,22 @@
 		    <version>5.4.2</version>
 		</dependency>
 		<dependency>
+		    <groupId>com.azure</groupId>
+		    <artifactId>azure-ai-openai</artifactId>
+		    <version>1.0.0-beta.6</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.11</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-collections4</artifactId>
+		    <version>4.4</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
@@ -103,18 +119,22 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
+			    <!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
+			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
+			<!--
 			<plugin>
 			    <groupId>com.microsoft.azure</groupId>
 			    <artifactId>azure-spring-apps-maven-plugin</artifactId>
 			    <version>1.19.0</version>
 			</plugin>
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -172,7 +192,7 @@
 						<!-- Java Runtime Stack for Web App on Linux -->
 					<runtime>
 						<os>linux</os>
-						<javaVersion>Java 8</javaVersion>
+						<javaVersion>Java 17</javaVersion>
 						<webContainer>Java SE</webContainer>
 					</runtime>
 					<deployment>
@@ -187,6 +207,18 @@
 					</deployment>
 
 					<appSettings>
+						<property>
+							<name>OPENAI_API_ENDPOINT</name>
+							<value>${env.OPENAI_API_ENDPOINT}</value>
+						</property>
+						<property>
+							<name>OPENAI_API_KEY</name>
+							<value>${env.OPENAI_API_KEY}</value>
+						</property>
+						<property>
+							<name>OPENAI_API_MODEL</name>
+							<value>${env.OPENAI_API_MODEL}</value>
+						</property>
 						<property>
 							<name>COSMOS_URI</name>
 							<value>${env.COSMOS_URI}</value>
@@ -226,6 +258,7 @@
 					</appSettings>
 				</configuration>
 			</plugin>
+			<!--
 		    <plugin>
 		        <groupId>com.microsoft.azure</groupId>
 		        <artifactId>azure-spring-apps-maven-plugin</artifactId>
@@ -242,7 +275,7 @@
 		                <cpu>1</cpu>
 		                <memoryInGB>2</memoryInGB>
 		                <instanceCount>1</instanceCount>
-		                <runtimeVersion>Java 8</runtimeVersion>
+		                <runtimeVersion>Java 17</runtimeVersion>
 		                <resources>
 		                    <resource>
 		                        <directory>${project.basedir}/target</directory>
@@ -254,6 +287,7 @@
 		            </deployment>
 		        </configuration>
 		    </plugin>
+		    -->
 		</plugins>
 	</build>
 </project>

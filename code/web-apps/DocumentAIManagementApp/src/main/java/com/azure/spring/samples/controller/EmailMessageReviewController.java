@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
+import com.azure.spring.samples.anomaly.attachment.CommercialInsuranceApplicationAnomaly;
+import com.azure.spring.samples.anomaly.attachment.DefaultAttachmentAnomaly;
+import com.azure.spring.samples.anomaly.attachment.WorkersCompensationApplicationAnomaly;
+import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
@@ -28,6 +34,7 @@ import com.azure.spring.samples.model.AttachmentSearchResult;
 import com.azure.spring.samples.model.EmailData;
 import com.azure.spring.samples.model.EmailSearchResult;
 import com.azure.spring.samples.model.SearchItem;
+import com.azure.spring.samples.utils.Category;
 
 @RestController
 public class EmailMessageReviewController {
@@ -43,6 +50,13 @@ public class EmailMessageReviewController {
     @Value("${azure.cosmos.container}")
     private String azureCosmosContainerName;
     
+    @Value("${azure.aoai.endpoint}")
+    private String aoaiEndpoint;
+    @Value("${azure.aoai.key}")
+    private String aoaiKey;
+    @Value("${azure.aoai.model}")
+    private String aoaiModel;
+
     public EmailMessageReviewController() {
     }
   
@@ -61,9 +75,13 @@ public class EmailMessageReviewController {
 			);
 
         EmailAnomaly eAnomaly = new EmailAnomaly(cosmosDB);
-        String reviewRemarks = eAnomaly.checkIntentContentGap(id);
-        // TODO: implement and call the EmailAnomaly.checkContentModeration
-        // and other methods
+        String reviewRemarks = "";
+        String intentContentReviewRemarks = eAnomaly.checkIntentContentGap(id);
+        String contentModerationReviewRemark = eAnomaly.checkContentModeration(id);
+        reviewRemarks = String.format("Note: Intent Content Check : %s;Content Moderation Check : %s", 
+        								intentContentReviewRemarks, 
+        								contentModerationReviewRemark);
+        
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
     }
@@ -75,7 +93,34 @@ public class EmailMessageReviewController {
     public ResponseEntity<?> getAttachmentReviewSummary(@PathVariable String id) {
         logger.info("GET request access '/api/attachmentReview' path with attachment id : {}", id);
 
-        String reviewRemarks = String.format("NotYetImplemented, attachmentId:%s", id);
+        // Read the attachment category and call the AttachmentAnomaly.review method
+    	CosmosDBOperation cosmosDB = new CosmosDBOperation(
+				azureCosmosURI, 
+				azureCosmosKey,
+				azureCosmosDatabaseName,
+				azureCosmosContainerName
+			);
+        String reviewRemarks = "NotYetImplemented";
+        String attachmentCategory = getAttachmentCategoryByAttachmentId(cosmosDB, id);
+        if (attachmentCategory == null) {
+        	reviewRemarks = String.format("Could not find the category for the attachment by id %s", id);
+        	logger.info(reviewRemarks);
+            cosmosDB.close();
+            return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
+        }
+        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel);
+        AttachmentAnomaly anomaly;
+        if (StringUtils.compareIgnoreCase("workers-compensation-application", attachmentCategory) == 0) {
+        	anomaly = new WorkersCompensationApplicationAnomaly(cosmosDB, aoaiOps);
+        	reviewRemarks = anomaly.getAttachmentAnomaly(id);
+        } else if (StringUtils.compareIgnoreCase("commercial-insurance-application", attachmentCategory) == 0) {
+        	anomaly = new CommercialInsuranceApplicationAnomaly(cosmosDB, aoaiOps);
+        	reviewRemarks = anomaly.getAttachmentAnomaly(id);
+        } else {
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps);
+        	reviewRemarks= anomaly.getAttachmentAnomaly(id);
+        }
+        cosmosDB.close();
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
     }
@@ -180,7 +225,18 @@ public class EmailMessageReviewController {
   			cosmosDB.close();
   		}
   		return results;
-
     }
     
+    public String getAttachmentCategoryByAttachmentId(CosmosDBOperation cosmosDB, String attachmentId) {
+	    String sqlStatement = "SELECT * FROM EmailExtracts e " +
+	    				"WHERE e.messageType IN ('email-attachment') " +
+	    				"AND e.id IN ('" + attachmentId + "') ";
+	    Iterator<AttachmentData> iterateAD = cosmosDB.query(sqlStatement, AttachmentData.class);
+	    if (iterateAD != null && iterateAD.hasNext()) {
+	    	AttachmentData ad = iterateAD.next();
+	    	// Attachment has only one category
+	    	return Category.getCategoryList(ad.getCategories()).get(0);
+	    }
+		return null;
+    }
 }

@@ -7,6 +7,9 @@ export BING_KEY=<put-your-bing-web-search-api-key-here>
 export COGNITIVE_SERVICE_KEY=<put-your-azure-cognitive-service-key-here>
 export COGNITIVE_SERVICE_ENDPOINT=<put-your-cognitive-service-endpoint-here>
 export BING_QUERY_COUNT=<put-your-bing-query-count-per-search-here>
+export OPENAI_API_KEY=<put-your-azure-openai-key-here>
+export OPENAI_API_ENDPOINT=<put-your-openai-endpoint-here>
+export OPENAI_API_MODEL=<put-your-openai-deployed-model-name-here>
 
 # App Service Linux Configuration
 export RESOURCEGROUP_NAME=<resource group where app service will deploy>

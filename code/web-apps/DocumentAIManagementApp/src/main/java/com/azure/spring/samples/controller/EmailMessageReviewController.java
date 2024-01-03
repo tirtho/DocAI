@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
+import com.azure.spring.samples.anomaly.attachment.AutoInsuranceClaimAnomaly;
 import com.azure.spring.samples.anomaly.attachment.CommercialInsuranceApplicationAnomaly;
 import com.azure.spring.samples.anomaly.attachment.DefaultAttachmentAnomaly;
 import com.azure.spring.samples.anomaly.attachment.WorkersCompensationApplicationAnomaly;
@@ -112,14 +113,15 @@ public class EmailMessageReviewController {
         AttachmentAnomaly anomaly;
         if (StringUtils.compareIgnoreCase("workers-compensation-application", attachmentCategory) == 0) {
         	anomaly = new WorkersCompensationApplicationAnomaly(cosmosDB, aoaiOps);
-        	reviewRemarks = anomaly.getAttachmentAnomaly(id);
         } else if (StringUtils.compareIgnoreCase("commercial-insurance-application", attachmentCategory) == 0) {
         	anomaly = new CommercialInsuranceApplicationAnomaly(cosmosDB, aoaiOps);
-        	reviewRemarks = anomaly.getAttachmentAnomaly(id);
+        } else if (StringUtils.compareIgnoreCase("auto-insurance-claim", attachmentCategory) == 0) {
+        	anomaly = new  AutoInsuranceClaimAnomaly(cosmosDB, aoaiOps);
         } else {
         	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps);
-        	reviewRemarks= anomaly.getAttachmentAnomaly(id);
         }
+    	reviewRemarks = anomaly.getAttachmentAnomaly(id);
+
         cosmosDB.close();
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);

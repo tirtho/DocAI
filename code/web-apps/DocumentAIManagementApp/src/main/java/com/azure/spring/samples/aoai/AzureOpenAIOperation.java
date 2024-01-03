@@ -42,9 +42,10 @@ public class AzureOpenAIOperation {
 		chatMessages.add(new ChatRequestUserMessage("Can you help me?"));
 		chatMessages.add(new ChatRequestAssistantMessage("Of course, me hearty! What can I do for ye?"));
 		chatMessages.add(new ChatRequestUserMessage(prompt));
-		ChatCompletions chatCompletions = aoaiClient.getChatCompletions (deployedModel,
-															new ChatCompletionsOptions(chatMessages)
-														);
+		ChatCompletionsOptions cco = new ChatCompletionsOptions(chatMessages);
+		cco.setTemperature(0.0);
+		cco.setFrequencyPenalty(0.0);
+		ChatCompletions chatCompletions = aoaiClient.getChatCompletions (deployedModel,cco);
 
 		logger.info("Model ID=%s is created at %s.%n", chatCompletions.getId(), chatCompletions.getCreatedAt());
 		StringBuffer completionBuffer = new StringBuffer();

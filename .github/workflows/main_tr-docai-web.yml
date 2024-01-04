@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '/home/runner/.m2/repository/com/azure/spring/samples/DocumentAIManagementApp/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/../target/'
+          path: '/home/runner/.m2/repository/com/azure/spring/samples/DocumentAIManagementApp/*.jar'
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp

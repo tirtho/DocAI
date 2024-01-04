@@ -8,6 +8,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+  
+defaults:
+  run:
+    shell: bash
+    working-directory: ./code/web-apps/DocumentAIManagementApp
 
 jobs:
   build:
@@ -22,7 +27,6 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        working-directory: ./code/web-apps/DocumentAIManagementApp
         run: mvn clean install
 
       - name: Upload artifact for deployment job

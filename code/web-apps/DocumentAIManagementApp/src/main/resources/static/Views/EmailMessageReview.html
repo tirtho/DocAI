@@ -7,7 +7,7 @@
         <div class="input-group" style="margin-bottom: 20px !important;">
             <input ng-model="newSearchString" class="form-control"/>
             <span class="input-group-btn">
-                <button ng-click="add()" class="btn btn-primary">Search by sender email address</button>
+                <button ng-click="add()" class="btn btn-primary">Sender Email Address</button>
             </span>
         </div>
         <ul class="list-group" id="emailMessageReview"}>
@@ -72,7 +72,7 @@
 			                 	<td><b>Any Handwritten content </b>{{attachment.isHandwritten}}</td>
 			                 </tr>
 			                 <tr>
-			                   	<td><b><font color='orange'>Review Summary </font></b>{{attachmentReviewSummary}}</td>
+			                   	<td><b><font color='orange'>Review Summary </font></b>{{attachment.attachmentReviewSummary}}</td>
 			                   	<td>
 			                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedAttachmentReviewSummary(attachment)>Review</button>
 			                   	</td>

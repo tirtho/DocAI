@@ -14,7 +14,7 @@ angular.module('documentAIManagementApp')
         $scope.item = null;
         $scope.attachment = null;
 		$scope.itemEmailMessageReviewSummary = {};
-		$scope.attachmentReviewSummary = null;
+		$scope.itemAttachmentReviewSummary = null;
 		
 		$scope.getUpdatedEmailMessageReviewSummary = function (item) {
 			emailMessageReviewSvc.getEmailMessageReviewSummary(item.id)
@@ -28,7 +28,7 @@ angular.module('documentAIManagementApp')
 		$scope.getUpdatedAttachmentReviewSummary = function (item) {
 			emailMessageReviewSvc.getAttachmentReviewSummary(item.id)
 			.success(function (result) {
-				$scope.attachmentReviewSummary = result;
+				item.attachmentReviewSummary = result;
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';

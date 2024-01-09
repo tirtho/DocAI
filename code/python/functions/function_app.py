@@ -6,6 +6,7 @@ import datetime
 import ast
 
 import azure.functions as func
+import requests
 import aoai
 import fr
 from azure.ai.formrecognizer import FieldValueType
@@ -179,11 +180,18 @@ def getEmailClassesFromOpenAI(subject, body, fName):
 def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
     fName = f'{fName}getAttachmentClassesFromFormRecognizer->'
     logging.info(f'{fName}Calling Document Intelligence to get attachment categories')
+    confidenceThreshold = float(os.getenv('DOCUMENT_CONFIDENCE_THRESHOLD'))
+    logging.info(f'{fName}Confidence threashold DOCUMENT_CONFIDENCE_THRESHOLD = {confidenceThreshold}')
+    unknownCategories = [
+                {
+                    "category": "unknown"
+                }
+              ]
     categories = [
                 {
                     "category": "unknown"
                 }
-              ]   
+              ]
     try:
         formRecognizerEndpoint = os.getenv('FORM_RECOGNIZER_ENDPOINT')
         logging.info(f'{fName}Starting Form Recognizer connection with {formRecognizerEndpoint}')
@@ -203,6 +211,12 @@ def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
             for doc in result.documents:
                 pagesClassifiedArray = [region.page_number for region in doc.bounding_regions]
                 pagesClassifiedJson = json.dumps(pagesClassifiedArray)
+                if doc.confidence < confidenceThreshold:
+                    # The doc class is unknown to Form Recognizer
+                    # Need to try AOAI and other ways to determine the class
+                    errorMessage = f'{fName}Confidence of {doc.confidence} is low in determining category of document.'
+                    logging.error(errorMessage)
+                    return unknownCategories
                 aClassInfo = {
                         "category":doc.doc_type,
                         "confidence":doc.confidence,
@@ -216,6 +230,25 @@ def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
 
     logging.info(f'{fName}Categories:{categories}')
     return categories
+
+# If the categories list has a category that contains theCategory string in it
+def containsCategory(categories, theCategory, fName):
+    fName = f'{fName}f(hasCategory)->'
+    try:
+        # Assuming classes was passed as a string
+        categoriesMap = ast.literal_eval(categories)
+    except:
+        # Nope, it was passed as a list
+        categoriesMap = categories   
+    try:
+        for aCategory in categoriesMap:
+            cat = aCategory['category']
+            if theCategory in cat:
+                return True
+    except Exception as e:
+        logging.info(f'{fName}Finding matching category {theCategory} in categories {categories} raised exception:{e}')
+    return False    
+        
 
 def getDocumentExtractionModelFromClasses(categories, fName):
     fName = f'{fName}f(getDocumentExtractionModelFromClasses)->'
@@ -265,20 +298,115 @@ def getDocumentExtractionModelFromClasses(categories, fName):
     logging.info(f'{fName}Retrieved model type:{theModelType}, model:{formRecognizerExtractionModel} from category:{documentCategory} with highest confidence:{highestConfidence}')
     return theModelType, formRecognizerExtractionModel    
     
+def composeMultiModalPrompt(url, fName):
+    fName = f'{fName}f(composeMultiModalPrompt)->'
+    theMultiModalPrompt = { 
+        "messages": [ 
+            { "role": "system", "content": "You are a helpful assistant." }, 
+            { "role": "user", "content": [  
+                { 
+                    "type": "text", 
+                    "text": "Classify this picture in one word ONLY from one of the classes 'automobile', 'home', 'other':" 
+                },
+                { 
+                    "type": "image_url",
+                    "image_url": {
+                        "url": url
+                    }
+                }
+            ] } 
+        ],
+        "temperature":0.0,
+        "max_tokens": 4096 
+    }
+    return theMultiModalPrompt  
+
+def composeMultiModalExtractionPrompt(url, categories, fName):
+    fName = f'{fName}f(composeMultiModalExtractionPrompt)->'
+    theMultiModalExtractionPrompt = { 
+        "messages": [ 
+            { "role": "system", "content": "You are a helpful assistant." }, 
+            { "role": "user", "content": [  
+                { 
+                    "type": "text", 
+                    "text": "Summarize the content of the image in less than 15 words:" 
+                },
+                { 
+                    "type": "image_url",
+                    "image_url": {
+                        "url": url
+                    }
+                }
+            ] } 
+        ],
+        "temperature":0.0,
+        "max_tokens": 4096 
+    }
+    return theMultiModalExtractionPrompt  
+    
+def getExtractsFromAOAI(url, categories, fName):
+   
+    aoaiVisionAPIKey = os.getenv('OPENAI_VISION_API_KEY')
+    aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
+    aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
+    aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
+    blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN')
+    endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
+    #extract insights on the image
+    gotPrompt = composeMultiModalExtractionPrompt(f'{url}{blobStoreSASToken}', categories, fName)
+    logging.info(f'{fName}Got Prompt: {gotPrompt}')
+    headers = {
+                "Content-Type": "application/json",   
+                "api-key": aoaiVisionAPIKey 
+            }
+    response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
+    jsonResponse = json.loads(response.content.decode('utf-8'))
+    logging.info(f'{fName} GPT4 Vision API response:{jsonResponse}')
+    summary = jsonResponse['choices'][0]['message']['content']
+
+    aoaiAPIVersion = aoaiVisionAPIVersion
+    modelId = aoaiVisionAPIEngine
+    isHandwritten = False
+    formDocuments = []
+    formFields = []
+    name = "summary"
+    value_type = "string"
+    confidence = 0.99
+    aField = {
+        "fieldName":f'{name}',
+        "fieldValueType":f'{value_type}',
+        "fieldConfidence":confidence,
+        "fieldValue":f'{summary}'
+    }
+    formFields.append(aField)
+    aDocument = {
+        "documentId":0,
+        "documentType":f'{aoaiVisionAPIEngine}',
+        "documentConfidence":confidence,
+        "fields":formFields
+    }
+    formDocuments.append(aDocument)
+    logging.info(f'{fName}formDocuments:{formDocuments}')
+    return aoaiAPIVersion, modelId, isHandwritten, formDocuments
+    
 def getExtractsFromModel(url, documentCategories, fName):
     fName = f'{fName}f(getExtractsFromModel)->'
     try:
+        # If it is an image etc.. then call the GPT-4 Vision API to extract
+        if containsCategory(documentCategories, "image-", fName):
+            return getExtractsFromAOAI(url, documentCategories, fName)
         theModelType, extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
     except Exception as e:
         logging.error(f'{fName}Getting right extraction model for the attachment raised exception {e}')
         raise
-    
+    # vvvv TODO: Move this logic into separate functions called by Logic App vvvv #
     if theModelType == "unknown-model":
         logging.info(f'{fName}Getting extracts for mode type:{theModelType}')
         return extractResultForUnknownModel(url, fName)
     else:
         return extractResultForCustomModel(extractionModel, url, fName)
-
+    # ^^^^ TODO: Move this logic into separate functions called by Logic App ^^^^ #
+    
 def extractResultForUnknownModel(ur, fName):
     fName = f'{fName}extractResultForUnknownModel->'
     # frAPIVersion, modelId, isHandwritten, frExtracts
@@ -393,6 +521,44 @@ def getJsonResponse(doc, fName):
         logging.error(errorMessage)
         raise
 
+def determineAttachmentCategories(reqBody, fName):
+    fName = f"{fName}f(determineAttachmentCategories)->"
+    categories = [
+                {
+                    "category": "unknown"
+                }
+              ]
+    try:
+        frCategoriesResponseObj = getItemFromRequestBody(reqBody, 'formRecognizerCategories', fName)
+        try:
+            # Assuming classes was passed as a string
+            frCategoriesResponse = ast.literal_eval(frCategoriesResponseObj)
+        except:
+            # Nope, it was passed as a list
+            frCategoriesResponse = frCategoriesResponseObj   
+
+        if frCategoriesResponse:
+            frCategories = frCategoriesResponse[0]['category']
+            if frCategories != 'unknown':
+                logging.info(f'{fName}Found Form Recognizer classified categories:{frCategoriesResponseObj}')
+                return frCategoriesResponseObj
+    except Exception as e:
+        logging.info(f'{fName}Could not find a category from FR. Got exception:{e}')
+    try:
+        aoaiCategoriesResponseObj = getItemFromRequestBody(reqBody, 'openAICategories', fName)
+        try:
+            # Assuming classes was passed as a string
+            aoaiCategoriesResponse = ast.literal_eval(aoaiCategoriesResponseObj)
+        except:
+            # Nope, it was passed as a list
+            aoaiCategoriesResponse = aoaiCategoriesResponseObj
+        if aoaiCategoriesResponse:
+            aoaiCategories = aoaiCategoriesResponse[0]['category']
+            logging.info(f'{fName}Found GPT4 vision classified categories:{aoaiCategoriesResponseObj}')
+            return aoaiCategoriesResponseObj   
+    except Exception as e:
+        logging.info(f'{fName}Could not find a category from GPT4. Got exception:{e}')
+    return f'{categories}'
 
 @app.route(route="getEmailClass", auth_level=func.AuthLevel.ANONYMOUS)
 def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
@@ -491,9 +657,9 @@ def saveEmailProperties(req: func.HttpRequest,
     logging.info(responseMessage)
     return func.HttpResponse(responseMessage, status_code=201)
 
-@app.route(route="getAttachmentClass", auth_level=func.AuthLevel.ANONYMOUS)
-def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
-    fName = f"f(getAttachmentClass)->"
+@app.route(route="getAttachmentClassUsingFormRecognizerCustomModel", auth_level=func.AuthLevel.ANONYMOUS)
+def getAttachmentClassUsingFormRecognizerCustomModel(req: func.HttpRequest) -> func.HttpResponse:
+    fName = f"f(getAttachmentClassUsingFormRecognizerCustomModel)->"
     try:
         messageId, reqBody = getHttpRequestBody(request = req, functionName=fName)
         logging.info(f'{fName}Received MessageId:{messageId}')
@@ -529,6 +695,117 @@ def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
     logging.info(f'{fName}Success: attachment {attachmentName} has the classes: {attachmentClasses}') 
     return func.HttpResponse(f'{attachmentClasses}', status_code=200)    
 
+@app.route(route="getAttachmentClassUsingOpenAI", auth_level=func.AuthLevel.ANONYMOUS)
+def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
+    fName = f"f(getAttachmentClassUsingOpenAI)->"
+    categories = [
+                {
+                    "category": "unknown"
+                }
+              ]   
+    try:
+        messageId, reqBody = getHttpRequestBody(request = req, functionName=fName)
+        logging.info(f'{fName}Received MessageId:{messageId}')
+        logging.info(f'{fName}Received request body:{reqBody}')
+    except Exception as httpRequestErrorMessage:
+        return func.HttpResponse(f'{httpRequestErrorMessage}', status_code=400)
+    try:
+        messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
+        receivedTimeFolder = getItemFromRequestBody(reqBody, 'receivedTimeFolder', fName)
+        sender = getItemFromRequestBody(reqBody, 'sender', fName)
+        messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
+        attachmentName = getItemFromRequestBody(reqBody, 'attachmentName', fName)       
+        url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
+            
+        # Verify if filename extension is either .png, .jpg, .gif, .webp (these are supported in GPT4 preview)
+        # Also it supports file sizes lower than 20MB
+        # TODO: verify using some tool to actually inspect the file content to determine type. 
+        #       Check from PIL import Image, import imghdr etc... or other package
+        if not url.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')):
+            logging.info(f'{fName}Unsupported image file. Only .png, .jpg, .jpeg or .webp are only supported by GPT4 Turbo with Vision model at this time')
+            return func.HttpResponse(f'{categories}', status_code=200)    
+        if messageType == 'email-attachment':
+            try:
+                aoaiVisionAPIKey = os.getenv('OPENAI_VISION_API_KEY')
+                aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
+                aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
+                aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
+                blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN')
+                endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
+                #classifiedCategory
+                gotPrompt = composeMultiModalPrompt(f'{url}{blobStoreSASToken}', fName)
+                logging.info(f'{fName}Got Prompt: {gotPrompt}')
+                headers = {
+                            "Content-Type": "application/json",   
+                            "api-key": aoaiVisionAPIKey 
+                        }
+                response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
+                jsonResponse = json.loads(response.content.decode('utf-8'))
+                logging.info(f'{fName} GPT4 Vision API response:{jsonResponse}')
+                categoryRaw = jsonResponse['choices'][0]['message']['content']
+                category = categoryRaw.lower()
+                if category == 'home' or category == 'automobile' or category == 'other':
+                    category = f'image-{category}'
+                else:
+                    category = 'image-other'
+                logging.info(f'{fName}Category from GPT4 Vision API Completion message:{category}')
+                categories.clear()
+                aClassInfo = {"category":f"{category}"}
+                categories.append(aClassInfo)
+            except Exception as e:
+                return func.HttpResponse(f'{e}', status_code=400)               
+        else:
+            errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
+            logging.error(errorMessage)
+            return func.HttpResponse(errorMessage, status_code=400)
+    except Exception as httpRequestErrorMessage:
+        errorMessage = f'{fName}ERROR: Read request body items raised exception:{httpRequestErrorMessage}'
+        logging.error(errorMessage)
+        return func.HttpResponse(errorMessage, status_code=400)
+
+    logging.info(f'{fName}Success: attachment {attachmentName} categories: {categories}') 
+    return func.HttpResponse(f'{categories}', status_code=200)    
+
+@app.route(route="getAttachmentClass", auth_level=func.AuthLevel.ANONYMOUS)
+def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
+    fName = f"f(getAttachmentClass)->"
+    categories = [
+                {
+                    "category": "unknown"
+                }
+              ]   
+    logging.info(f'{fName}HttpRequest:{func.HttpRequest}')
+    try:
+        messageId, reqBody = getHttpRequestBody(request = req, functionName=fName)
+        logging.info(f'{fName}Received MessageId:{messageId}')
+        logging.info(f'{fName}Received request body:{reqBody}')
+    except Exception as httpRequestErrorMessage:
+        return func.HttpResponse(f'{httpRequestErrorMessage}', status_code=400)
+    try:
+        # Read categories returned by FR and AOAI and finalize the 
+        # true categories for the attachment
+        messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
+        if messageType == 'email-attachment':
+            try:
+                gotCategories = determineAttachmentCategories(reqBody, fName)      
+                if gotCategories:
+                    logging.info(f'Determined attachment categories : {gotCategories}')
+                    return func.HttpResponse(gotCategories, status_code=200)
+                else:
+                    logging.info(f'{fName}Could not determine attachment category, returning unknown')
+                    return func.HttpResponse(categories, status_code=200)
+            except Exception as e:
+                    logging.info(f'{fName}Determining attachment category raised exception:{e}')
+                    return func.HttpResponse(categories, status_code=200)
+        else:
+            errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
+            logging.error(errorMessage)
+            return func.HttpResponse(errorMessage, status_code=400)
+    except Exception as httpRequestErrorMessage:
+        errorMessage = f'{fName}ERROR: Read request body items raised exception:{httpRequestErrorMessage}'
+        logging.error(errorMessage)
+        return func.HttpResponse(errorMessage, status_code=400)
+    
 @app.route(route="saveAttachmentProperties", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
 @app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
@@ -561,15 +838,18 @@ def saveAttachmentProperties(req: func.HttpRequest,
         errorMessage = f'{fName}ERROR: Read request body items raised exception:{httpRequestErrorMessage}'
         logging.error(errorMessage)
         return func.HttpResponse(errorMessage, status_code=400)
-    
-    try:
-        theModelType = getDocumentExtractionModelFromClasses(attachmentClasses, fName)
-    except:
-        theModelType = "unknown"
-    if theModelType != "unknown":
-        theModelType = "custom-model"
+    # If this is a GPT4 detected category
+    if containsCategory(attachmentClasses, "image-", fName):
+        theModelType = "gpt4-model"
     else:
-        theModelType = "unknown-model"
+        try:
+            theModelType = getDocumentExtractionModelFromClasses(attachmentClasses, fName)
+        except:
+            theModelType = "unknown"
+        if theModelType != "unknown":
+            theModelType = "custom-model"
+        else:
+            theModelType = "unknown-model"
     doc = {
         "id":str(uuid.uuid4()),
         "upsertTime":getCurrentUTCTimeString(),
@@ -652,3 +932,4 @@ def extractAttachmentData(req: func.HttpRequest,
     responseMessage = f'{fName}messageId  {messageId} data stored in Cosmos DB'
     logging.info(responseMessage)
     return func.HttpResponse(responseMessage, status_code=201)
+

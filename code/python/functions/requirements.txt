@@ -7,3 +7,4 @@ azure-storage-blob
 azure-identity
 azure-ai-formrecognizer==3.3.0
 openai==0.28.0
+requests

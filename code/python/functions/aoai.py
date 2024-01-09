@@ -1,6 +1,7 @@
 from azure.identity import DefaultAzureCredential
 import openai
 import os
+import requests
 
 # Returns a +ve number if successful
 # It sets openai with the endpoint, api key etc.

@@ -26,8 +26,8 @@ In your CosmosDB NoSQL API instance you need to create a database/container as D
 Use the training documents below to train the Azure Document Intelligence Service for your custom Classifier and custom Extractor -
 
 - [Sample Auto Insurance Claims](data/sample-claims-docs/training)
-- [Sample Commercial Insurance Application](data/sample-commercial-insurance-docs)
-- [Sample Worker Compensation Application](data/sample-worker-compensation-docs)
+- [Sample Commercial Insurance Application](data/sample-commercial-insurance-docs/training)
+- [Sample Worker Compensation Application](data/sample-worker-compensation-docs/training)
 
 
 If you do not want to install the end to end solution but learn some of the technologies there are some great examples in the [cli](code/python/cli) or [notebooks](code/python/notebooks) section that demonstrate how to implement - 

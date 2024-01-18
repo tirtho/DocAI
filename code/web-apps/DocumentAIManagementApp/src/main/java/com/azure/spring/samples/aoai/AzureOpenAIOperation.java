@@ -1,5 +1,9 @@
 package com.azure.spring.samples.aoai;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +26,40 @@ import com.azure.core.credential.AzureKeyCredential;
 public class AzureOpenAIOperation {
 
     public static Logger logger = LoggerFactory.getLogger(AzureOpenAIOperation.class);
+    public static enum AOAIConnectionType {
+    	SDK,
+    	HTTP
+    }
 
     private OpenAIClient aoaiClient;
     private String deployedModel;
+    private String endpoint;
+    private String key;
+    private AOAIConnectionType type;
 
-	public AzureOpenAIOperation(String endpoint, String key, String deployedModel) {
+    /**
+     * The connectionType is one of the following - 
+     * 		'sdk'  - when you want to leverage the Java AOAI sdk package 
+     * 		'http' - when you want to connect to AOAI directly via REST API (this is needed for VISION for example)
+     * @param endpoint
+     * @param key
+     * @param deployedModel
+     * @param connectionType
+     */
+	public AzureOpenAIOperation(String endpoint, String key, String deployedModel, AOAIConnectionType connectionType) {
 		super();
-		aoaiClient = new OpenAIClientBuilder()
-								    .credential(new AzureKeyCredential(key))
-								    .endpoint(endpoint)
-									.serviceVersion(OpenAIServiceVersion.V2023_07_01_PREVIEW)
-								    .buildClient();
+		this.type = connectionType;
 		this.deployedModel = deployedModel;
+		this.endpoint = endpoint;
+		this.key = key;
+		
+		if (type.equals(AOAIConnectionType.SDK)) {
+			aoaiClient = new OpenAIClientBuilder()
+				    .credential(new AzureKeyCredential(key))
+				    .endpoint(endpoint)
+					.serviceVersion(OpenAIServiceVersion.V2023_07_01_PREVIEW)
+				    .buildClient();
+		}
 	}
 
 	public String getAOAIChatCompletion(String prompt) {
@@ -61,6 +87,27 @@ public class AzureOpenAIOperation {
 		return completionBuffer.toString();
 	}
 	
+	/**
+	 * This makes a call to the Vision API with enhancements. 
+	 * And this is using direct http connection
+	 * @param prompt
+	 * @return
+	 */
+	public String getAOAIVisionCompletion(String prompt) {
+		URL url;
+		try {
+			url = new URL(endpoint);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			logger.info("Connecting to AOAI over HTTP for AOAI raised exception: %s", e);
+			return null;
+		} catch (IOException e) {
+			logger.info("Connecting to AOAI over HTTP for AOAI raised exception: %s", e);
+			return null;
+		}
+		return null;
+	}
 	
 	
 }

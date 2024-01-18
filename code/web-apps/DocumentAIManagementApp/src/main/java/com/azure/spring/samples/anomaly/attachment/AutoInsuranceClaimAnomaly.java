@@ -100,9 +100,9 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 		reviewSummary.add(String.format("Fraud Review: %s", aoaiFraudReview));
   		
   		// Check for data inconsistencies and fix those, if possible, based on surrounding context
-  		String aoaiDateQualityReview = getDateLocationCheckResult(aed);
-  		logger.info(aoaiDateQualityReview);
-		reviewSummary.add(String.format("Data Inconsistency Review: %s", aoaiDateQualityReview));
+  		String aoaiDataQualityReview = getDateLocationCheckResult(aed);
+  		logger.info(aoaiDataQualityReview);
+		reviewSummary.add(String.format("Data Inconsistency Review: %s", aoaiDataQualityReview));
 
 		// TODO: more reviews in future
 		

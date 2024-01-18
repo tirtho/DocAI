@@ -28,6 +28,7 @@ import com.azure.spring.samples.anomaly.attachment.CommercialInsuranceApplicatio
 import com.azure.spring.samples.anomaly.attachment.DefaultAttachmentAnomaly;
 import com.azure.spring.samples.anomaly.attachment.WorkersCompensationApplicationAnomaly;
 import com.azure.spring.samples.aoai.AzureOpenAIOperation;
+import com.azure.spring.samples.aoai.AzureOpenAIOperation.AOAIConnectionType;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
@@ -109,7 +110,7 @@ public class EmailMessageReviewController {
             cosmosDB.close();
             return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
         }
-        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel);
+        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel, AOAIConnectionType.SDK);
         AttachmentAnomaly anomaly;
         if (StringUtils.compareIgnoreCase("workers-compensation-application", attachmentCategory) == 0) {
         	anomaly = new WorkersCompensationApplicationAnomaly(cosmosDB, aoaiOps);

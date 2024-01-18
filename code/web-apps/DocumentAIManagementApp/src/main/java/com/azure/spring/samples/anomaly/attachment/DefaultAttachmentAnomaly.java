@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.aoai.AzureOpenAIOperation;
+import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
+import com.azure.spring.samples.model.AttachmentExtractsData;
 
 public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
@@ -44,9 +46,10 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	public List<?> getAttachmentAnomaly(String attachmentId) {
 
 		List<String> reviewSummary = new ArrayList<>();
-		
+
+	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
 		// Check if text or image or video
-		
+		String fileUrl = aed.getUrl();
 		
 		return reviewSummary;
 	}

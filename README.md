@@ -41,3 +41,9 @@ If you do not want to install the end to end solution but learn some of the tech
 - Creates Summary of the sarched information, using Azure OpenAI GTP-4 Completion model
 - Sends the augmented and engineered prompt to Azure Open AI
 - Returns the completion to the calling end user
+
+## End to End Document AI Solution
+
+! [Review & Detect Data Inconsistencies] (/detect-fix-ui.jpg)
+
+! [Review & Detect Anomaly or Fraud] (/detect-anomaly-ui.jpg)

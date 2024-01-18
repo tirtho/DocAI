@@ -28,11 +28,26 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 		this.aoaiOps = aoaiOps;
 	}
 
+    /**
+     * Default is where the document does not belong to a 
+     * certain class in Form Recognizer. It is most likely one of - 
+     * a. An Image File
+     * b. A Video
+     * c. A generic document of the type not supported by Form Recognizer
+     * 
+     * Note - 
+     * 		Form Recognizer supports JPEG, PNG, BMP, TIFF, HEIF, PDF
+     * 		GPT4 Vision supports JPEG, GIF, PNG and WEBP and MP4 and MOV
+     * 
+     */
 	@Override
 	public List<?> getAttachmentAnomaly(String attachmentId) {
-		// TODO Auto-generated method stub
+
 		List<String> reviewSummary = new ArrayList<>();
-		reviewSummary.add("Note: DefaultAttachmentAnomaly: NotYetImplemented");
+		
+		// Check if text or image or video
+		
+		
 		return reviewSummary;
 	}
 

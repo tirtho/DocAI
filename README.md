@@ -44,9 +44,9 @@ If you do not want to install the end to end solution but learn some of the tech
 
 ## End to End Document AI Solution
 
-! [Review & Detect Data Inconsistencies] [Review Page]
+![Review & Detect Data Inconsistencies][Review Page]
 
-! [Detect Anomaly & Fraud Page] [Anomaly Page]
+![Detect Anomaly & Fraud Page][Anomaly Page]
 
 [Review Page]: <https://github.com/tirtho/DocAI/blob/main/detect-fix-ui.jpg>
 [Anomaly Page]: <https://github.com/tirtho/DocAI/blob/main/detect-anomaly-ui.jpg>

@@ -8,7 +8,7 @@ Cosmos DB](https://docs.microsoft.com/en-us/java/azure/spring-framework/configur
 
 ## Requirements
 
-| [Azure CLI](http://docs.microsoft.com/cli/azure/overview) | [Java 8](https://www.azul.com/downloads/azure-only/zulu) | [Maven 3](http://maven.apache.org/) | [Git](https://github.com/) |
+| [Azure CLI](http://docs.microsoft.com/cli/azure/overview) | [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) | [Maven 3](http://maven.apache.org/) | [Git](https://github.com/) |
 
 ## Create Azure Cosmos DB
 

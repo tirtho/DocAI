@@ -76,12 +76,11 @@ public class EmailMessageReviewController {
 			);
 
         EmailAnomaly eAnomaly = new EmailAnomaly(cosmosDB);
-        String reviewRemarks = "";
+        List<String> reviewRemarks = new ArrayList<>();
         String intentContentReviewRemarks = eAnomaly.checkIntentContentGap(id);
+        reviewRemarks.add(intentContentReviewRemarks);
         String contentModerationReviewRemark = eAnomaly.checkContentModeration(id);
-        reviewRemarks = String.format("Note: Intent Content Check : %s;Content Moderation Check : %s", 
-        								intentContentReviewRemarks, 
-        								contentModerationReviewRemark);
+        reviewRemarks.add(contentModerationReviewRemark);
         
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
@@ -101,13 +100,14 @@ public class EmailMessageReviewController {
 				azureCosmosDatabaseName,
 				azureCosmosContainerName
 			);
-        String reviewRemarks = "NotYetImplemented";
         String attachmentCategory = getAttachmentCategoryByAttachmentId(cosmosDB, id);
         if (attachmentCategory == null) {
-        	reviewRemarks = String.format("Could not find the category for the attachment by id %s", id);
-        	logger.info(reviewRemarks);
+            List<String> reviewSummary = new ArrayList<>();
+        	String errorString = String.format("Could not find the category for the attachment by id %s", id);
+        	reviewSummary.add(errorString);
+        	logger.info(errorString);
             cosmosDB.close();
-            return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
+            return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
         }
         AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel);
         AttachmentAnomaly anomaly;
@@ -120,11 +120,11 @@ public class EmailMessageReviewController {
         } else {
         	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps);
         }
-    	reviewRemarks = anomaly.getAttachmentAnomaly(id);
+        List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);
 
         cosmosDB.close();
-        logger.info("Got review remark as {}", reviewRemarks);
-        return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);
+        logger.info("Got review remark as {}", reviewSummary);
+        return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
     }
     
     /**

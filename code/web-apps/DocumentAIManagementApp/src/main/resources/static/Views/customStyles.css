@@ -1,6 +1,0 @@
-.list-group-item { word-wrap: break-word; }
-#todolist button { margin-left: 5px; }
-/*table td:nth-child(1) { width: 50em; border: 1px solid black; }*/
-table td:nth-child(1) { width: 50em; }
-table td:nth-child(2) { width: 20em; text-align: end; }
-

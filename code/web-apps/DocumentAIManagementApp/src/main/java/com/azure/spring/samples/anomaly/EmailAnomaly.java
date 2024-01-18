@@ -36,10 +36,9 @@ public class EmailAnomaly {
 		
   		Iterator<EmailData> iterateED = cosmosDB.query(sqlStatement, EmailData.class);
   		String reviewMessage;
-  		
   		if (iterateED == null) {
   			cosmosDB.close();
-  			reviewMessage = String.format("Did not find the email record for id %s in Cosmos DB", emailBodyId);
+  			reviewMessage = String.format("Intent Content Check: Did not find the email record for id %s in Cosmos DB", emailBodyId);
   			logger.info(reviewMessage);
   			return reviewMessage;
   		}
@@ -56,7 +55,7 @@ public class EmailAnomaly {
   		// attachment/form, else nothing to check further
   		if (!Category.hasAny(requestNewQuoteCategory, emailCategories)) {
 			cosmosDB.close();
-			reviewMessage =  String.format("Intent of email does not need any attached form or file. ");
+			reviewMessage =  String.format("Intent Content Check: Intent of email needs no attached form or file.");
 			logger.info(reviewMessage);
 			return reviewMessage;
   		}
@@ -66,8 +65,7 @@ public class EmailAnomaly {
 		Iterator<AttachmentData> iterateAD = cosmosDB.query(sqlStatement, AttachmentData.class);
 		if (iterateAD == null) {
 			cosmosDB.close();
-			reviewMessage = String.format("Expected at least one attachment in email message thread with "
-								+ "message Id %s in Cosmos DB, but found none", messageId);
+			reviewMessage = String.format("Intent Content Check: Expected at least 1 attachment, found none for messageId %s", messageId);
 			logger.info(reviewMessage);
 			return reviewMessage;
 		}
@@ -88,15 +86,14 @@ public class EmailAnomaly {
 		}
   		cosmosDB.close();
 		if (correspondingAttachmentName != null) {
-			reviewMessage = String.format("For the intent of the email, got relevant attachment %s", 
+			reviewMessage = String.format("Intent Content Check: For the email's intent, got required attachment %s", 
 											correspondingAttachmentName);
 			logger.info(reviewMessage);
-			return reviewMessage;
 		} else {
-			reviewMessage = String.format("For the intent of the email, did NOT get any relevant attachment");
+			reviewMessage = String.format("Intent Content Check: For the email's intent, got NO required attachment(s)");
 			logger.info(reviewMessage);
-			return reviewMessage;
 		}
+		return reviewMessage;
 	}
 	
 	/**
@@ -105,7 +102,7 @@ public class EmailAnomaly {
 	 * @return
 	 */
 	public String checkContentModeration(String emailBodyId) {
-		return "NotYetImplemented";
+		return "Content Moderation Check: NotYetImplemented";
 	}
 	
 }

@@ -1,5 +1,8 @@
 package com.azure.spring.samples.anomaly.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,20 +37,25 @@ public class CommercialInsuranceApplicationAnomaly implements AttachmentAnomaly 
 	}
 
     @Override
-	public String getAttachmentAnomaly(String attachmentId) {
+	public List<?> getAttachmentAnomaly(String attachmentId) {
   		String reviewMessage;
+		List<String> reviewSummary = new ArrayList<String>();
 	  	
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
 	  	if (aed == null) {
-			reviewMessage = String.format("Note: Attachment extracted data not found");
+			reviewMessage = String.format("Attachment extracted data not found");
 			logger.info(reviewMessage);
-			return reviewMessage;
+			reviewSummary.add(reviewMessage);
+			return reviewSummary;
 	  	}
-	  	reviewMessage = AttachmentAnomaly.attachmentExtractsDataRquiredFieldsReview(aed, aoaiOps, FIND_MISSING_FIELDS_PROMPT);
+	  	
+	  	reviewMessage = attachmentExtractsDataRquiredFieldsReview(aed, aoaiOps, FIND_MISSING_FIELDS_PROMPT);
 		logger.info(reviewMessage);
+		reviewSummary.add(reviewMessage);
 		
 		// TODO: more reviews in future
-		return reviewMessage;
+		
+		return reviewSummary;
 	}
 
 }

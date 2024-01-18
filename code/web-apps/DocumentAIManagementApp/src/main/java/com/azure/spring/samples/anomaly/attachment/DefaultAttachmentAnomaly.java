@@ -1,5 +1,8 @@
 package com.azure.spring.samples.anomaly.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +29,11 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	}
 
 	@Override
-	public String getAttachmentAnomaly(String attachmentId) {
+	public List<?> getAttachmentAnomaly(String attachmentId) {
 		// TODO Auto-generated method stub
-		return "Note: DefaultAttachmentAnomaly: NotYetImplemented";
+		List<String> reviewSummary = new ArrayList<>();
+		reviewSummary.add("Note: DefaultAttachmentAnomaly: NotYetImplemented");
+		return reviewSummary;
 	}
 
 }

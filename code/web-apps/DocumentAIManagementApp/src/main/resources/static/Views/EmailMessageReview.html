@@ -43,7 +43,13 @@
 	                 	<td> </td>
 	                 </tr>
 	                 <tr>
-	                   	<td><b><font color='orange'>Review Summary </font></b><font id="reviewTextStyle">{{item.emailMessageReviewSummary}}</font></td>
+	                   	<td><b><font color='orange'>Review Summary </font></b><font id="reviewTextStyle">
+			               <ol id="reviewSummaryOrderedList">
+						      <li data-ng-repeat="reviewItem in item.emailMessageReviewSummary">
+			                     <span>{{reviewItem}}</span>
+			                  </li>
+			               </ol>
+	                   	</font></td>
 	                   	<td>
 	                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedEmailMessageReviewSummary(item)>Review</button>
 	                   	</td>
@@ -72,7 +78,15 @@
 			                 	<td><b>Any Handwritten content </b>{{attachment.isHandwritten}}</td>
 			                 </tr>
 			                 <tr>
-			                   	<td><b><font color='orange'>Review Summary </font></b><font id="reviewTextStyle">{{attachment.attachmentReviewSummary}}</font></td>
+			                   	<td><b><font color='orange'>Review Summary </font></b>
+			                   	   <font id="reviewTextStyle">
+			               			  <ol id="reviewSummaryOrderedList">
+								         <li data-ng-repeat="reviewItem in attachment.attachmentReviewSummary">
+			                   	            <span>{{reviewItem}}</span>
+			                   	         </li>
+			                   	      </ol>
+								   </font>
+								</td>
 			                   	<td>
 			                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedAttachmentReviewSummary(attachment)>Review</button>
 			                   	</td>

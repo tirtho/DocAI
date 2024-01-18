@@ -1,11 +1,9 @@
 package com.azure.spring.samples.anomaly.attachment;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +12,6 @@ import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentExtractsData;
-import com.azure.spring.samples.model.ExtractData;
 
 public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 	
@@ -44,14 +41,28 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 													+ "'All required fields are present' or 'Required field(s) <field names> are absent' "
 													+ "\n ";
 
-	public static String FIND_SUSTAINED_INJURY_WHEN_NOT_IN_CAR = 
+	public static String FIND_SUSTAINED_INJURY_WHEN_NOT_IN_CAR_PROMPT = 
 							"From the INCIDENT_DESCRIPTION field find if the person was inside the car. \n"
 							+ "From the SUSTAINED_INJURIES field find if there was any bodily injury. \n"
 							+ "INCIDENT_DESCRIPTION: %s\n"
 							+ "SUSTAINED_INJURIES: %s\n"
 							+ "Answer in json format { 'insideCar': 'yes/no', 'bodilyInjury': 'yes/no' } \n"
 							+ "Return the json data only.";
-	
+
+	public static String INCIDENT_TIME_FIELD_NAME = "IncidentTime";
+	public static String INCIDENT_LOCATION_FIELD_NAME = "IncidentLocation";
+	public static String FIELDS_FOR_INCIDENT_TIME_LOCATION_MATCH_CHECK = INCIDENT_TIME_FIELD_NAME + ", " + INCIDENT_LOCATION_FIELD_NAME;
+			
+	public static String FIND_US_LOCATION_DATE_TIME_MATCH_PROMPT = 
+				"From the ADDRESS field find the timezone and from the TIME field find the timezone. \n"
+				+ "The timezone in USA is one of AST, EST, EDT, CST, CDT, MST, MDT, PST, PDT, AKST, AKDT, HST, HAST, HADT, SST, SDT, CHST. \n"
+				+ "If no time zone found, return NONE. \n"
+				+ "ADDRESS: %s\n"
+				+ "TIME: %s\n"
+				+ "Answer in json format \n"
+				+ "{ 'addressTimezone': '<timezone of the ADDRESS>', 'incidentTimezone': '<timezone in TIME>', 'matching': true/false }"
+				+ "If the timezone for the ADDRESS and TIME fields are same, the 'matching' field in the json should be true, otherwise it should be false. \n"
+				+ "Return the json data only.";
 	
 	private CosmosDBOperation cosmosDB;
     private AzureOpenAIOperation aoaiOps;
@@ -66,42 +77,62 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 	}
 
 	@Override
-	public String getAttachmentAnomaly(String attachmentId) {
+	public List<?> getAttachmentAnomaly(String attachmentId) {
   		String reviewMessage;
-	  	
+		List<String> reviewSummary = new ArrayList<String>();
+  		
   		// Check for required field
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
 	  	if (aed == null) {
-			reviewMessage = String.format("Note: Attachment extracted data not found");
+			reviewMessage = String.format("Note:<br>Attachment extracted data not found");
 			logger.info(reviewMessage);
-			return reviewMessage;
+			reviewSummary.add(reviewMessage);
+			return reviewSummary;
 	  	}
-	  	reviewMessage = AttachmentAnomaly.attachmentExtractsDataRquiredFieldsReview(aed, aoaiOps, FIND_MISSING_FIELDS_PROMPT);
+	  	
+	  	reviewMessage = attachmentExtractsDataRquiredFieldsReview(aed, aoaiOps, FIND_MISSING_FIELDS_PROMPT);
 		logger.info(reviewMessage);
+		reviewSummary.add(String.format("Missing Fields: %s", reviewMessage));
 		
-		// Check for fraud or any discrepancy
-		List<String> fraudFieldNameArray = Arrays.asList(StringUtils.split(FIELDS_FOR_FRAUD_DETECTION, ", "));
-		
-		Map<String, String> fraudCheckFields = new HashMap<>();
+		// Check for fraud or field errors
+		String aoaiFraudReview = getFraudCheckResult(aed);
+  		logger.info(aoaiFraudReview);
+		reviewSummary.add(String.format("Fraud Review: %s", aoaiFraudReview));
+  		
+  		// Check for data inconsistencies and fix those, if possible, based on surrounding context
+  		String aoaiDateQualityReview = getDateLocationCheckResult(aed);
+  		logger.info(aoaiDateQualityReview);
+		reviewSummary.add(reviewMessage);
+
 		// TODO: more reviews in future
-		for (ExtractData ed : aed.getExtracts()) {
-			for (Map<String, ?> field : ed.getFields()) {
-				String fieldName = (String) field.get("fieldName");
-				if (fraudFieldNameArray.contains(fieldName)) {
-					String fieldValue = String.format("%s", field.get("fieldValue"));
-					fraudCheckFields.put(fieldName, fieldValue);
-				}
-			}
-		}
-		String prompt = String.format(FIND_SUSTAINED_INJURY_WHEN_NOT_IN_CAR, 
+		
+		
+  		return reviewSummary;	
+	}
+	
+	private String getDateLocationCheckResult(AttachmentExtractsData aed) {
+		
+		Map<String, String> checkingFields = searchFieldValueMapFromAttachmentExtractsData(aed, FIELDS_FOR_INCIDENT_TIME_LOCATION_MATCH_CHECK);
+
+		String prompt = String.format(
+										FIND_US_LOCATION_DATE_TIME_MATCH_PROMPT,
+										checkingFields.get(INCIDENT_LOCATION_FIELD_NAME),
+										checkingFields.get(INCIDENT_TIME_FIELD_NAME)
+									);
+		logger.info("Checking date location mismatch with prompt : {}", prompt);
+		
+		return aoaiOps.getAOAIChatCompletion(prompt);
+	}
+
+	private String getFraudCheckResult(AttachmentExtractsData aed) {
+		// Check for fraud or any discrepancy	
+		Map<String, String> fraudCheckFields = searchFieldValueMapFromAttachmentExtractsData(aed, FIELDS_FOR_FRAUD_DETECTION);
+		
+		String prompt = String.format(FIND_SUSTAINED_INJURY_WHEN_NOT_IN_CAR_PROMPT, 
 				fraudCheckFields.get(INCIDENT_DESCRIPTION_FIELD_NAME),
 				fraudCheckFields.get(SUSTAINED_INJURIES_FIELD_NAME));
 		logger.info("Checking fraud with prompt : {}", prompt);
-  		String aoaiReview = aoaiOps.getAOAIChatCompletion(prompt);
-  		
-  		logger.info(aoaiReview);
-  		
-  		return String.format("%s; Fraud Review: %s", reviewMessage, aoaiReview);	
+  		return aoaiOps.getAOAIChatCompletion(prompt);
 	}
 
 }

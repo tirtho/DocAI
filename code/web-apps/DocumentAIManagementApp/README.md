@@ -13,76 +13,22 @@ Cosmos DB](https://docs.microsoft.com/en-us/java/azure/spring-framework/configur
 ## Create Azure Cosmos DB
 
 Create Azure Cosmos DB 
-using [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) 
+using [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) or from the Azure Portal
 
-### STEP A - LOGIN to Azure
-Login your Azure CLI, and set your subscription 
-    
-```bash
-az login
-az account set -s <your-subscription-id>
-```
-### STEP B - Create Resource Group
-
-Create an Azure Resource Group, and note down the resource group name
-
-```bash
-az group create -n <your-azure-group-name> \
-    -l <your-resource-group-region>
-```
-
-### STEP C - Create COSMOS DB
-
-Create Azure Cosmos DB with GlobalDocumentDB kind. 
-The name of Cosmos DB must use only lower case letters. Note down the `documentEndpoint` field in the response
-
-```bash
-az cosmosdb create --kind GlobalDocumentDB \
-    -g <your-azure-group-name> \
-    -n <your-azure-COSMOS-DB-name-in-lower-case-letters>
-```
-
-### STEP D - Get COSMOS DB Key
-
-Get your Azure Cosmos DB key, get the `primaryMasterKey`
-
-```bash
-az cosmosdb list-keys -g <your-azure-group-name> -n <your-azure-COSMOSDB-name>
-```
+Create the database/container DocAIDatabase/EmailExtracts
 
 ## Running Spring App locally
 
-### STEP 1 - Checkout Spring TODO app
+### STEP 1 - Checkout Spring app
 
 ```bash
-git clone https://github.com/Microsoft/spring-todo-app.git
-cd spring-todo-ap
+git clone https://github.com/tirtho/DocAI.git
+cd code\web-apps\DocumentAIManagementApp
 ```  
     
 ### STEP 2 - Configure the app
 
-Set environment variables using a script file. Start with 
-the supplied template in the repo: 
-
-```bash
-cp set-env-variables-template.sh .scripts/set-env-variables.sh
-```
- 
-Edit .scripts/set-env-variables.sh and supply Azure 
-Cosmos DB connection info. Particularly:
-
-```bash
-export COSMOS_URI=<put-your-COSMOS-DB-documentEndpoint-URI-here>
-export COSMOS_KEY=<put-your-COSMOS-DB-primaryMasterKey-here>
-export COSMOS_DATABASE=<put-your-COSMOS-DATABASE-name-here>
-```
-    
-    
-Set environment variables:
-
-```bash
-source .scripts/set-env-variables.sh
-```
+Checkout the [pom file](pom.xml) for the list of environment variables under the "<appSettings>" section and set those environment variables in your OS 
 
 ### STEP 3 - Run Spring App locally
 

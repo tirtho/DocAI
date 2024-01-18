@@ -42,7 +42,7 @@ If you do not want to install the end to end solution but learn some of the tech
 - Sends the augmented and engineered prompt to Azure Open AI
 - Returns the completion to the calling end user
 
-## End to End Document AI Solution
+## End to End Document AI Solution UI Screenshots
 
 ![Review & Detect Data Inconsistencies][Review Page]
 

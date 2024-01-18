@@ -28,7 +28,7 @@ cd code\web-apps\DocumentAIManagementApp
     
 ### STEP 2 - Configure the app
 
-Checkout the [pom file](pom.xml) for the list of environment variables under the "<appSettings>" section and set those environment variables in your OS 
+Checkout the [pom file](pom.xml) for the list of environment variables under the "\<appSettings\>" section and set those environment variables in your OS 
 
 ### STEP 3 - Run Spring App locally
 

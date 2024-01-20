@@ -43,6 +43,11 @@ public class EmailMessageReviewController {
 
     private static Logger logger = LoggerFactory.getLogger(EmailMessageReviewController.class);
 
+    // Azure Blob Store access
+    @Value("${azure.blob.store.sas.token}")
+    private String blobStoreSASToken;
+
+    // Azure CosmosDB access
     @Value("${azure.cosmos.uri}")
     private String azureCosmosURI;
     @Value("${azure.cosmos.key}")
@@ -52,12 +57,31 @@ public class EmailMessageReviewController {
     @Value("${azure.cosmos.container}")
     private String azureCosmosContainerName;
     
+    // Azure Open AI access
     @Value("${azure.aoai.endpoint}")
     private String aoaiEndpoint;
     @Value("${azure.aoai.key}")
     private String aoaiKey;
-    @Value("${azure.aoai.model}")
+    @Value("${azure.aoai.engine}")
     private String aoaiModel;
+    @Value("${azure.aoai.version}")
+    private String aoaiVersion;
+
+    // GPT4 VISION API access
+    @Value("${azure.aoai.vision.endpoint}")
+    private String aoaiVisionEndpoint;
+    @Value("${azure.aoai.vision.key}")
+    private String aoaiVisionKey;
+    @Value("${azure.aoai.vision.engine}")
+    private String aoaiVisionModel;
+    @Value("${azure.aoai.vision.version}")
+    private String aoaiVisionVersion;
+    
+    // All common Azure Cognitive Services access
+    @Value("${azure.cognitive.service.endpoint}")
+    private String aiEndpoint;
+    @Value("${azure.cognitive.service.key}")
+    private String aiKey;
 
     public EmailMessageReviewController() {
     }
@@ -110,7 +134,7 @@ public class EmailMessageReviewController {
             cosmosDB.close();
             return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
         }
-        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel, AOAIConnectionType.SDK);
+        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel, aoaiVersion, AOAIConnectionType.SDK);
         AttachmentAnomaly anomaly;
         if (StringUtils.compareIgnoreCase("workers-compensation-application", attachmentCategory) == 0) {
         	anomaly = new WorkersCompensationApplicationAnomaly(cosmosDB, aoaiOps);
@@ -119,9 +143,19 @@ public class EmailMessageReviewController {
         } else if (StringUtils.compareIgnoreCase("auto-insurance-claim", attachmentCategory) == 0) {
         	anomaly = new  AutoInsuranceClaimAnomaly(cosmosDB, aoaiOps);
         } else {
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps);
+        	// For the files with unknown classification, need to run the content
+        	// by GPT4 regular if content is text, else by Vision API if image/video
+            AzureOpenAIOperation aoaiVisionOps = new AzureOpenAIOperation (
+            											aoaiVisionEndpoint, 
+            											aoaiVisionKey, 
+            											aoaiVisionModel, 
+            											aoaiVisionVersion, 
+            											AOAIConnectionType.HTTP
+            										);
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps, aoaiVisionOps, aiEndpoint, aiKey, blobStoreSASToken);
         }
-        List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);
+        @SuppressWarnings("unchecked")
+		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);
 
         cosmosDB.close();
         logger.info("Got review remark as {}", reviewSummary);

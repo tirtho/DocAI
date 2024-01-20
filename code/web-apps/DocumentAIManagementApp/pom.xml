@@ -109,6 +109,11 @@
 		    <version>4.4</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
@@ -216,8 +221,28 @@
 							<value>${env.OPENAI_API_KEY}</value>
 						</property>
 						<property>
-							<name>OPENAI_API_MODEL</name>
-							<value>${env.OPENAI_API_MODEL}</value>
+							<name>OPENAI_API_ENGINE</name>
+							<value>${env.OPENAI_API_ENGINE}</value>
+						</property>
+						<property>
+							<name>OPENAI_API_VERSION</name>
+							<value>${env.OPENAI_API_VERSION}</value>
+						</property>
+						<property>
+							<name>OPENAI_VISION_API_ENDPOINT</name>
+							<value>${env.OPENAI_VISION_API_ENDPOINT}</value>
+						</property>
+						<property>
+							<name>OPENAI_VISION_API_KEY</name>
+							<value>${env.OPENAI_VISION_API_KEY}</value>
+						</property>
+						<property>
+							<name>OPENAI_VISION_API_ENGINE</name>
+							<value>${env.OPENAI_VISION_API_ENGINE}</value>
+						</property>
+						<property>
+							<name>OPENAI_VISION_API_VERSION</name>
+							<value>${env.OPENAI_VISION_API_VERSION}</value>
 						</property>
 						<property>
 							<name>COSMOS_URI</name>
@@ -250,6 +275,10 @@
 						<property>
 							<name>BING_QUERY_COUNT</name>
 							<value>${env.BING_QUERY_COUNT}</value>
+						</property>
+						<property>
+							<name>BLOB_STORE_SAS_TOKEN</name>
+							<value>${env.BLOB_STORE_SAS_TOKEN}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

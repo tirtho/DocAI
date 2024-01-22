@@ -329,7 +329,7 @@ def composeMultiModalExtractionPrompt(url, categories, fName):
             { "role": "user", "content": [  
                 { 
                     "type": "text", 
-                    "text": "Summarize the content of the image in less than 15 words:" 
+                    "text": "Describe image in less than 500 words:" 
                 },
                 { 
                     "type": "image_url",

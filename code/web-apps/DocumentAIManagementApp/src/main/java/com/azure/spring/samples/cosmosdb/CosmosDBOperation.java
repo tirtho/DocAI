@@ -5,8 +5,10 @@ import java.util.Iterator;
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.CosmosContainer;
+import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.util.CosmosPagedIterable;
+import com.azure.spring.samples.model.AttachmentExtractsData;
 
 public class CosmosDBOperation {
 
@@ -30,6 +32,10 @@ public class CosmosDBOperation {
 			return result.iterator();
 		}
 		return null;
+    }
+    
+    public CosmosItemResponse<AttachmentExtractsData> upsertAttachmentExtractsData(AttachmentExtractsData aed) {
+    	return container.upsertItem(aed);
     }
     
     public void close() {

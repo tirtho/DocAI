@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 
@@ -47,5 +48,12 @@ public class CosmosDBCommonQueries {
   		}
 
 		return null;
+	}
+	
+	public static <T> AttachmentExtractsData upsertAttachmentExtractedData(AttachmentExtractsData aed, CosmosDBOperation cosmosDB) {
+		CosmosItemResponse<AttachmentExtractsData> response = cosmosDB.upsertAttachmentExtractsData(aed);
+		int status = response.getStatusCode();
+		logger.info("CosmosDB Upsert request status code %s", status);
+		return response.getItem();
 	}
 }

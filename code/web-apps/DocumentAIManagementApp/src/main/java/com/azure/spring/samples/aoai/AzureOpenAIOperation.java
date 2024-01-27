@@ -142,7 +142,7 @@ public class AzureOpenAIOperation {
 			HttpPost aoaiVisionPost = new HttpPost(baseUrl);
 			aoaiVisionPost.setHeader("Content-Type", "application/json");
 			aoaiVisionPost.setHeader("api-key", this.key);
-			
+			logger.info("Prompt sent to GPT-4 Turbo Vision API: {}", prompt);
 			StringEntity entity = new StringEntity(prompt);
 			aoaiVisionPost.setEntity(entity);
 			
@@ -157,7 +157,7 @@ public class AzureOpenAIOperation {
 				logger.info(promptCompletion);
 			} else {
 				promptCompletion = getCompletionFromHttpResponse(response);
-				logger.info("Vision API returned: %s", promptCompletion);
+				logger.info("Vision API returned: {}", promptCompletion);
 			}
 			
 			return promptCompletion;			
@@ -167,6 +167,10 @@ public class AzureOpenAIOperation {
 			logger.info(promptFailedMessage);
 			return promptFailedMessage;
 		}
+	}
+	
+	public String getAOAIVideoCompletion(String prompt) {
+		return getAOAIVisionCompletion(prompt, true);
 	}
 	
 	private String getCompletionFromHttpResponse(HttpResponse response) {
@@ -195,11 +199,11 @@ public class AzureOpenAIOperation {
 			// Remove the , from the last in the list of json elements
 			String aggregatedCompletion = StringUtils.removeEnd(completionBuffer.toString(), ", ");
 			promptCompletion = String.format("Model[%s]: [%s]", model, StringUtils.trim(aggregatedCompletion));
-			logger.info("Prompt Completion returned %s", promptCompletion);
+			logger.info("Prompt Completion returned {}", promptCompletion);
 			return promptCompletion;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			promptCompletion = String.format("Prompt Completion failed with exception: %s", e);
+			promptCompletion = String.format("Prompt Completion failed with exception: {}", e);
 			logger.info(promptCompletion);
 			return promptCompletion;
 		}

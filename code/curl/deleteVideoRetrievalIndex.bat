@@ -1,0 +1,1 @@
+curl.exe -v DELETE "%COGNITIVE_SERVICE_ENDPOINT%computervision/retrieval/indexes/%1?api-version=%AI_VIDEO_API_VERSION%" -H "Ocp-Apim-Subscription-Key: %COGNITIVE_SERVICE_KEY%"

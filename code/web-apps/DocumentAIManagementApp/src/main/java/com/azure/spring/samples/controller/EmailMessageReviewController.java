@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azure.spring.samples.ai.AzureAIOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
 import com.azure.spring.samples.anomaly.attachment.AutoInsuranceClaimAnomaly;
@@ -82,7 +83,11 @@ public class EmailMessageReviewController {
     private String aiEndpoint;
     @Value("${azure.cognitive.service.key}")
     private String aiKey;
-
+    @Value("${azure.aoai.vision.video.index}")
+    private String aiVideoIndexName;
+    @Value("${azure.ai.video.api.version}")
+    private String aiVideoAPIVersion;
+    
     public EmailMessageReviewController() {
     }
   
@@ -152,7 +157,8 @@ public class EmailMessageReviewController {
             											aoaiVisionVersion, 
             											AOAIConnectionType.HTTP
             										);
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiOps, aoaiVisionOps, aiEndpoint, aiKey, blobStoreSASToken);
+            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, blobStoreSASToken);
         }
         @SuppressWarnings("unchecked")
 		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);

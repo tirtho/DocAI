@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
+
 public class ExtractData {
 
 	private Integer documentId;
@@ -47,6 +49,30 @@ public class ExtractData {
 
 	public void setFields(List<Map<String, ?>> fields) {
 		this.fields = fields;
+	}
+	
+	public void upsertFields(List<Map<String, ?>> uFields) {
+		if (this.fields == null) {
+			this.fields = uFields;
+		} else {
+			for (Map<String, ?> uField : uFields) {
+				String newFieldNameValue = (String) uField.get("fieldName");
+				boolean isNewField = true;
+				for (Map<String, ?> aField : this.fields) {
+					if (StringUtils.compare(newFieldNameValue, (String) aField.get("fieldName")) == 0) {
+						// Field exists, so updating it with new data
+						this.fields.remove(aField);
+						this.fields.add(uField);
+						isNewField = false;
+						break;
+					}
+				}
+				if (isNewField) {
+					// Field does not exist, so adding it
+					this.fields.add(uField);
+				}
+			}
+		}
 	}
 
 	public List<Map<String, ?>> getTables() {

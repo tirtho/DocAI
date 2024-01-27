@@ -1,0 +1,2 @@
+@echo off
+curl.exe -v POST "%COGNITIVE_SERVICE_ENDPOINT%computervision/retrieval/indexes/%1:queryByText?api-version=%AI_VIDEO_API_VERSION%" -H "Ocp-Apim-Subscription-Key: %COGNITIVE_SERVICE_KEY%" -H "Content-Type: application/json" --data-ascii "{'queryText': 'red pillar', 'filters': {'stringFilters': [{ 'fieldName': 'cameraId', 'values': ['camera1']}], 'featureFilters': ['vision']}}"

@@ -194,7 +194,7 @@
 					<appName>${WEBAPP_NAME}</appName>
 					<region>${REGION}</region>
 					<pricingTier>P1V2</pricingTier>
-						<!-- Java Runtime Stack for Web App on Linux -->
+					<!-- Java Runtime Stack for Web App on Linux -->
 					<runtime>
 						<os>linux</os>
 						<javaVersion>Java 17</javaVersion>
@@ -243,6 +243,14 @@
 						<property>
 							<name>OPENAI_VISION_API_VERSION</name>
 							<value>${env.OPENAI_VISION_API_VERSION}</value>
+						</property>
+						<property>
+							<name>OPENAI_VISION_VIDEO_INDEX</name>
+							<value>${env.OPENAI_VISION_VIDEO_INDEX}</value>
+						</property>
+						<property>
+							<name>AI_VIDEO_API_VERSION</name>
+							<value>${env.AI_VIDEO_API_VERSION}</value>
 						</property>
 						<property>
 							<name>COSMOS_URI</name>

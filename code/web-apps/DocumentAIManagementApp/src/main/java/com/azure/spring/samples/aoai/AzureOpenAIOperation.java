@@ -198,7 +198,7 @@ public class AzureOpenAIOperation {
 			}
 			// Remove the , from the last in the list of json elements
 			String aggregatedCompletion = StringUtils.removeEnd(completionBuffer.toString(), ", ");
-			promptCompletion = String.format("Model[%s]: [%s]", model, StringUtils.trim(aggregatedCompletion));
+			promptCompletion = String.format("Model[%s]: %s", model, StringUtils.trim(aggregatedCompletion));
 			logger.info("Prompt Completion returned {}", promptCompletion);
 			return promptCompletion;
 		} catch (Exception e) {

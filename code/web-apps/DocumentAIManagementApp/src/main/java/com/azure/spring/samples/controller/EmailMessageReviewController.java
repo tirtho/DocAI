@@ -30,14 +30,17 @@ import com.azure.spring.samples.anomaly.attachment.DefaultAttachmentAnomaly;
 import com.azure.spring.samples.anomaly.attachment.WorkersCompensationApplicationAnomaly;
 import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.aoai.AzureOpenAIOperation.AOAIConnectionType;
+import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 import com.azure.spring.samples.model.AttachmentSearchResult;
 import com.azure.spring.samples.model.EmailData;
 import com.azure.spring.samples.model.EmailSearchResult;
+import com.azure.spring.samples.model.ExtractData;
 import com.azure.spring.samples.model.SearchItem;
 import com.azure.spring.samples.utils.Category;
+import com.azure.spring.samples.utils.ReturnEntity;
 
 @RestController
 public class EmailMessageReviewController {
@@ -168,6 +171,59 @@ public class EmailMessageReviewController {
         return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
     }
     
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/attachmentExtracts/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getAttachmentExtracts(@PathVariable String id) {
+        logger.info("GET request access '/api/attachmentExtracts' path with attachment id : {}", id);
+        // Read the attachment category
+        // If attachment is a video and status is "Running", check if now it is "Completed" and call GPT-4 to provide description
+        // If attachment is of any other category, just read from CosmosDB and return
+        List<ExtractData> extracts = null;
+        
+    	CosmosDBOperation cosmosDB = new CosmosDBOperation(
+				azureCosmosURI, 
+				azureCosmosKey,
+				azureCosmosDatabaseName,
+				azureCosmosContainerName
+			);
+    	
+        String attachmentCategory = getAttachmentCategoryByAttachmentId(cosmosDB, id);        
+        if (attachmentCategory == null) {
+        	String errorString = String.format("Could not find the category for the attachment by id %s", id);
+        	logger.info(errorString);
+            cosmosDB.close();
+            return new ResponseEntity<>(errorString, HttpStatus.NOT_FOUND);
+        }
+
+        // For the files with unknown classification, need to run the content
+    	// by GPT4 regular if content is text, else by Vision API if image/video
+        if (attachmentCategory.startsWith("video-")) {
+            AzureOpenAIOperation aoaiVisionOps = new AzureOpenAIOperation (
+														aoaiVisionEndpoint, 
+														aoaiVisionKey, 
+														aoaiVisionModel, 
+														aoaiVisionVersion, 
+														AOAIConnectionType.HTTP
+													);
+            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
+            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, blobStoreSASToken);
+        	// Check status, if 'Running', try to read status again
+        	// If still in 'Running' State then just return
+        	// If it is now 'Completed', then 
+        	// make the call to GPT-4 to get 'Description' 
+        	// update CosmosDB and return the extracts
+            ReturnEntity<Object, Object> returnedEntities = daa.updateVideoExtractionData(id);
+            logger.info("Refresh Attachment Extracts operation returned status: %s", returnedEntities.getStatus());
+            extracts = (List<ExtractData>) returnedEntities.getEntity();
+        } else {
+        	// Read Extracts from CosmosDB again and return
+        	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId(id, cosmosDB);
+        	logger.info("Read the Attachment Extracts from CosmoDB for Attachment Id: %s", aed.getId());
+        	extracts = aed.getExtracts();
+        }
+		return new ResponseEntity<>(extracts, HttpStatus.OK);
+    }
+    
     /**
      * HTTP POST NEW ONE
      */
@@ -269,7 +325,7 @@ public class EmailMessageReviewController {
   		}
   		return results;
     }
-    
+        
     public String getAttachmentCategoryByAttachmentId(CosmosDBOperation cosmosDB, String attachmentId) {
 	    String sqlStatement = "SELECT * FROM EmailExtracts e " +
 	    				"WHERE e.messageType IN ('email-attachment') " +

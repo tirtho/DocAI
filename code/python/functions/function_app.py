@@ -470,7 +470,6 @@ def getExtractsFromAOAIVideo(url, fName):
     blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN').replace("%%", "%").replace("^", "")
     cognitiveServiceEndpoint = os.getenv('COGNITIVE_SERVICE_ENDPOINT')
     cognitiveServiceAPIKey = os.getenv('COGNITIVE_SERVICE_KEY')
-    #docaiVideoIndex = f'{uuid.uuid4()}'
     docaiVideoIndex = f'{shortuuid.uuid()}'
     videoDocumentId = docaiVideoIndex
     # First create the index and then call the create ingestion api
@@ -500,7 +499,9 @@ def getExtractsFromAOAIVideo(url, fName):
                                         'timestamp': createdDateTime
                                     }
                                 }
-                            ]
+                            ],
+                            'moderation': False,
+                            'includeSpeechTranscript': True
                         }
         #ingestionData = json.dumps(videoIngestion)
         #logging.info(f'{fName}Calling CreateIngestion with ingestionData:{ingestionData}')

@@ -14,6 +14,9 @@ angular.module('documentAIManagementApp')
             getEmailMessageReviewSummary: function (id) {
 				return $http.get('api/emailMessageReview/' + id);
             },
+            getUpdatedAttachmentExtracts: function (id) {
+				return $http.get('api/attachmentExtracts/' + id);
+			},
             getAttachmentReviewSummary: function (id) {
 				return $http.get('api/attachmentReview/' + id);
 			}

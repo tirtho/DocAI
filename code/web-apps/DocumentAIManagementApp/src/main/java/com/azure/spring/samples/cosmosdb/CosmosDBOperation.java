@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.CosmosContainer;
+import com.azure.cosmos.models.CosmosItemRequestOptions;
 import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.util.CosmosPagedIterable;
@@ -34,6 +35,12 @@ public class CosmosDBOperation {
 		return null;
     }
     
+    public <T> int delete(T item) {
+    	CosmosItemRequestOptions opts = new CosmosItemRequestOptions();
+    	CosmosItemResponse<Object> response = container.deleteItem(item, opts);
+    	return response.getStatusCode();
+    }
+
     public CosmosItemResponse<AttachmentExtractsData> upsertAttachmentExtractsData(AttachmentExtractsData aed) {
     	return container.upsertItem(aed);
     }

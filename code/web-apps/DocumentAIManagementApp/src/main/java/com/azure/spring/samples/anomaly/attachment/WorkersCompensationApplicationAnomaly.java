@@ -42,7 +42,7 @@ public class WorkersCompensationApplicationAnomaly implements AttachmentAnomaly 
   		String reviewMessage;
 		List<String> reviewSummary = new ArrayList<>();
 
-		AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
+		AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
 	  	if (aed == null) {
 			reviewMessage = String.format("Note: Attachment extracted data not found");
 			logger.info(reviewMessage);

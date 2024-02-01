@@ -41,7 +41,7 @@ public class CommercialInsuranceApplicationAnomaly implements AttachmentAnomaly 
   		String reviewMessage;
 		List<String> reviewSummary = new ArrayList<String>();
 	  	
-	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
+	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
 	  	if (aed == null) {
 			reviewMessage = String.format("Attachment extracted data not found");
 			logger.info(reviewMessage);

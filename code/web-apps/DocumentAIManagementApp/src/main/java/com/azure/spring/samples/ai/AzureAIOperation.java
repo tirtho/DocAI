@@ -4,6 +4,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -83,6 +84,40 @@ public class AzureAIOperation {
 			}
 	}
 	
+	public int deleteVideoIndex(String videoIndex) {
+		String ingestionState = "Unknown";
+		try {
+			String baseUrl = String.format(
+											"%scomputervision/retrieval/indexes/%s?api-version=%s", 
+											this.aiEndpoint, 
+											videoIndex,
+											this.aiVideoAPIVersion
+										  );
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			HttpDelete videoIndexDelete = new HttpDelete(baseUrl);
+			videoIndexDelete.setHeader("Ocp-Apim-Subscription-Key", this.aiKey);
+			
+			// Send the request and get the response
+			HttpResponse response = httpClient.execute(videoIndexDelete);
+			StatusLine statusOfTheCall = response.getStatusLine();
+			
+			int statusCode = statusOfTheCall.getStatusCode();
+			if (statusCode != HttpStatus.SC_NO_CONTENT) {
+				ingestionState = String.format("DeleteVideoIndex failed with error: %s and reason: %s", statusCode, statusOfTheCall.getReasonPhrase());
+				logger.info(ingestionState);
+			} else {
+				ingestionState = getVideoIngestionStateFromHttpResponse(response);
+				logger.info("Success: Deleted Video Index: {}", videoIndex);
+			}
+			return statusCode;			
+		}
+		catch (Exception e) {
+			ingestionState = String.format("AI Vision API over HTTP raised exception: %s", e);
+			logger.info(ingestionState);
+			return HttpStatus.SC_BAD_REQUEST;
+		}
+	}
+
 	public String getAiEndpoint() {
 		return aiEndpoint;
 	}
@@ -115,5 +150,4 @@ public class AzureAIOperation {
 		this.aiVideoAPIVersion = aiVideoAPIVersion;
 	}
 
-	
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azure.spring.samples.adls.AzureADLSOperation;
 import com.azure.spring.samples.ai.AzureAIOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
@@ -50,7 +51,7 @@ public class EmailMessageReviewController {
     // Azure Blob Store access
     @Value("${azure.blob.store.sas.token}")
     private String blobStoreSASToken;
-
+    
     // Azure CosmosDB access
     @Value("${azure.cosmos.uri}")
     private String azureCosmosURI;
@@ -217,13 +218,36 @@ public class EmailMessageReviewController {
             extracts = (List<ExtractData>) returnedEntities.getEntity();
         } else {
         	// Read Extracts from CosmosDB again and return
-        	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId(id, cosmosDB);
+        	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId(id, cosmosDB);
         	logger.info("Read the Attachment Extracts from CosmoDB for Attachment Id: %s", aed.getId());
         	extracts = aed.getExtracts();
         }
 		return new ResponseEntity<>(extracts, HttpStatus.OK);
     }
-    
+
+    /**
+     * HTTP DELETE
+     */
+    @RequestMapping(value = "/api/emailMessageReview/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteItem(@PathVariable("id") String id) {
+        logger.info("DELETE request access '/api/emailMessageReview/{}' path.", id);
+        try {
+        	CosmosDBOperation cosmosDB = new CosmosDBOperation(
+    				azureCosmosURI, 
+    				azureCosmosKey,
+    				azureCosmosDatabaseName,
+    				azureCosmosContainerName
+    			);
+            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
+            String cleanedSASToken = StringUtils.replace(blobStoreSASToken, "%%", "%");
+            AzureADLSOperation adlsOps = new AzureADLSOperation(cleanedSASToken);
+        	CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, aiOps, adlsOps, id);
+            return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Delete errors: ", e);
+            return new ResponseEntity<>("Email Message deletion failed", HttpStatus.NOT_FOUND);
+        }
+    }
     /**
      * HTTP POST NEW ONE
      */

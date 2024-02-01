@@ -16,7 +16,7 @@ angular.module('documentAIManagementApp')
 		$scope.itemEmailMessageReviewSummary = {};
 		$scope.itemAttachmentReviewSummary = null;
 		$scope.itemAttachmentExtract = null;
-		
+
 		$scope.getUpdatedEmailMessageReviewSummary = function (item) {
 			emailMessageReviewSvc.getEmailMessageReviewSummary(item.id)
 			.success(function (result) {
@@ -25,7 +25,18 @@ angular.module('documentAIManagementApp')
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
-		}
+		};
+        $scope.delete = function (id) {
+            emailMessageReviewSvc.deleteItem(id)
+            .success(function (results) {
+                $scope.populate();
+                $scope.loadingMessage = results;
+                $scope.error = '';
+            }).error(function (err) {
+                $scope.error = err;
+                $scope.loadingMessage = '';
+            })
+        };
 		$scope.getUpdatedAttachmentReviewSummary = function (item) {
 			emailMessageReviewSvc.getAttachmentReviewSummary(item.id)
 			.success(function (result) {
@@ -34,7 +45,7 @@ angular.module('documentAIManagementApp')
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
-		}
+		};
 		$scope.getUpdatedAttachmentExtracts = function (item) {
 			emailMessageReviewSvc.getUpdatedAttachmentExtracts(item.id)
 			.success(function (result) {
@@ -43,7 +54,7 @@ angular.module('documentAIManagementApp')
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
-		}
+		};
         $scope.populate = function () {
             emailMessageReviewSvc.getItems().success(function (results) {
                 $scope.emailMessageReview = results;

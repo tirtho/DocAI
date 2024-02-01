@@ -1,7 +1,10 @@
 package com.azure.spring.samples.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
 
 public class AttachmentExtractsData extends BaseData {
 
@@ -84,6 +87,17 @@ public class AttachmentExtractsData extends BaseData {
 		return "AttachmentData [attachmentName=" + attachmentName + ", frAPIVersion=" + frAPIVersion + ", modelId="
 				+ modelId + ", isHandwritten=" + isHandwritten + ", extracts=" + extracts + ", toString()="
 				+ super.toString() + "]";
+	}
+
+	public String getFieldValue(String valueOfFieldName) {
+		for (ExtractData ed : extracts) {
+			for (Map<String, ?> f : ed.getFields()) {
+				if (StringUtils.compare(valueOfFieldName, (String) f.get("fieldName")) == 0) {
+					return StringUtils.trimToNull((String) f.get("fieldValue"));
+				}
+			}
+		}
+		return null;
 	}
 	
 }

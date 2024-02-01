@@ -82,7 +82,7 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 		List<String> reviewSummary = new ArrayList<String>();
   		
   		// Check for required field
-	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractedDataByAttachmentId (attachmentId, cosmosDB);
+	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
 	  	if (aed == null) {
 			reviewMessage = String.format("Note:<br>Attachment extracted data not found");
 			logger.info(reviewMessage);

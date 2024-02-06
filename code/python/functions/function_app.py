@@ -378,18 +378,27 @@ def getExtractsFromAOAI(url, categories, fName):
     formFields = []
     name = "Description"
     value_type = "string"
-    confidence = 0.99
+    # TODO: Compute confidence for what is returned by GPT4
+    #    "fieldConfidence":confidence,
     aField = {
         "fieldName":f'{name}',
         "fieldValueType":f'{value_type}',
-        "fieldConfidence":confidence,
         "fieldValue":f'{summary}'
     }
     formFields.append(aField)
+    createdDateTime = getCurrentUTCTimeString()
+    aField = {
+        "fieldName":"CreatedTime",
+        "fieldValueType":"string",
+        "fieldConfidence":0.99,
+        "fieldValue":f'{createdDateTime}'
+    }
+    formFields.append(aField)
+    # TODO: compute cofidence for doc
+    # "documentConfidence":confidence,
     aDocument = {
         "documentId":0,
         "documentType":f'{aoaiVisionAPIEngine}',
-        "documentConfidence":confidence,
         "fields":formFields
     }
     formDocuments.append(aDocument)
@@ -553,10 +562,11 @@ def getExtractsFromAOAIVideo(url, fName):
         "fieldValue":f'{createdDateTime}'
     }
     formFields.append(aField)
+    # TODO: Implement document confidence computation
+    #    "documentConfidence":0.99,
     aDocument = {
         "documentId":0,
         "documentType":f'{modelId}',
-        "documentConfidence":0.99,
         "fields":formFields
     }
     formDocuments.append(aDocument)

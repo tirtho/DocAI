@@ -133,7 +133,13 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ "            }, \r\n"
 			+ "            { \r\n"
 			+ "                \"type\": \"text\", \r\n"
-			+ "                \"text\": \"Describe this video. Include any transcript.\" \r\n"
+			+ "                \"text\": \"Extract and render information in the format: \r\n"
+			+ "\\n"
+			+ "							   Description: Describe the video. \r\n"
+			+ "\\n"
+			+ "                            Transcript: Provide the transcript. \r\n"
+			+ "\\n"
+			+ "                            Question: Does the transcript match the visual content of the frames provided? <Answer>\" \r\n"
 			+ "            } \r\n"
 			+ "        ]}\r\n"
 			+ "    ], \r\n"
@@ -342,7 +348,9 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 				Map descriptionField = new HashMap<>();
 				descriptionField.put("fieldName", "Description");
 				descriptionField.put("fieldValueType", "string");
-				descriptionField.put("fieldConfidence", 0.99);
+				// Open AI does not support logprobs for Vision APIs yet
+				// Hence the confidence score is commented out and not computed
+				//descriptionField.put("fieldConfidence", 0.99);
 				descriptionField.put("fieldValue", description);
 				updatedFields.add((HashMap<String, ?>) descriptionField);
 

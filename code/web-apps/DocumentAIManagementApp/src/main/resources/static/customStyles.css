@@ -7,6 +7,42 @@
 	margin-left: 5px;
 }
 
+.checkboxTexStyle {
+	color: rgb(85, 4, 193) 0, 23);
+	font-family: Monaco, "Lucida Console", Verdana;
+	padding: 2px;
+	text-align: left
+}
+
+.footNoteTextStyleLarge {
+	color: #5504c1;
+	font-family: Papyrus, "Brush Script MT", Verdana;
+	font-size: 0.9em;
+}
+
+.footNoteTextStyleSmall {
+	color: #400040;
+	font-family: Monaco, "Lucida Console", Verdana;
+	font-size: 0.6em;
+}
+
+#footNoteTable {
+	width: 100%;
+}
+
+#footNoteTable tr:hover {
+	background-color: white;
+}
+
+#footNoteTable td:nth-child(1) {
+	width: 50em;
+}
+
+#footNoteTable td:nth-child(2) {
+	width: 20em;
+	text-align: end;
+}
+
 tr:hover {
 	background-color: beige;
 }
@@ -19,6 +55,26 @@ tr:hover {
 
 #reviewSummaryOrderedList {
 	margin-left: 0.5em
+}
+
+#sendEmailFormTable {
+	width: 100%;
+	/* border: 1px solid #ddd; */
+	padding: 8px;
+}
+
+#sendEmailFormTable td:nth-child(1) {
+	width: 15%;
+	text-align: right;
+	padding: 4px;
+	font-size: 1em;
+	font-weight: 600;
+}
+
+#sendEmailFormTable td:nth-child(2) {
+	width: 85%;
+	text-align: end;
+	padding: 4px;
 }
 
 #emailTable {
@@ -34,7 +90,6 @@ tr:hover {
 	text-align: end;
 }
 
-;
 #attachmentExtractsTable {
 	width: 100%;
 }
@@ -102,3 +157,4 @@ tr:hover {
 #attachmentExtractsTable tr:hover {
 	background-color: #ddd;
 }
+

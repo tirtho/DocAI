@@ -1,0 +1,100 @@
+<div ng-init="populate()" style="margin-bottom: 40px !important;">
+    <div class="panel">
+    	<h4 align=center>Compose New Email</h4>
+        <hr>
+        	<table id="sendEmailFormTable">
+        		<div class="input-group" style="margin-bottom: 20px !important;">
+        		<form method="post">
+		        	<tr>
+						<td>Demo User Full Name</td>
+						<td>
+							<input matInput placeholder='e.g. John Smith' ng-model="newEmailDemoUserName" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the full name of the demo user</div></mat-hint>
+						</td>
+		        	</tr>
+		        	<tr>
+						<td>Demo User Email Address</td>
+						<td>
+							<input matInput placeholder='e.g. John.Smith@microsoft.com' ng-model="newEmailDemoUserEmailAddress" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the email address of the demo user</div></mat-hint>
+						</td>
+		        	</tr>
+		        	<tr>
+						<td>Subject</td>
+						<td>
+							<input matInput placeholder='DocAI <My subject line>' ng-model="newEmailSubject" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall"><font color=red>Add 'DocAI' as prefix in Subject to trigger Logic App</font></div></mat-hint>
+						</td>
+		        	</tr>
+		        	<tr>
+		        		<td>Email Body</td>
+		        		<td>
+		        			<textarea ng-model="newEmailBody" class="form-control" ng-required="true"></textarea>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td>Attachments</td>
+		        		<td><hr></td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td>
+        					<div class="checkboxTexStyle">
+			        			<input type="checkbox" ng-model="newEmailAutoInsuranceClaimForm">
+			        				<mat-checkbox [indeterminate]="true"><a href="documents/IC-handwritten-JeanGenet.pdf" target="_blank">Auto Insurance Claim hand written form</a></mat-checkbox>
+		        			</div>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td>
+        					<div class="checkboxTexStyle">
+			        			<input type="checkbox" ng-model="newEmailAutoInsuranceClaimImageFront">
+			        				<mat-checkbox [indeterminate]="true"><a href="documents/2011LexusS350C-broken-front.png" target="_blank">Front Image of damaged car</a></mat-checkbox>
+		        			</div>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td>
+        					<div class="checkboxTexStyle">
+			        			<input type="checkbox" ng-model="newEmailAutoInsuranceClaimImageBack">
+			        				<mat-checkbox [indeterminate]="true"><a href="documents/2011LexusIS350C-broken-back.png" target="_blank">Back Image of damaged car</a></mat-checkbox>
+		        			</div>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td>
+        					<div class="checkboxTexStyle">
+			        			<input type="checkbox" ng-model="newEmailAutoInsuranceClaimVideo">
+			        				<mat-checkbox [indeterminate]="true"><a href="documents/CarClaim480p.mp4" target="_blank">Video of damaged car</a></mat-checkbox>
+		        			</div>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td><hr></td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+		        		<td>
+        					<div class="checkboxTexStyle">
+			        			<input type="checkbox" ng-model="newEmailCommercialInsuranceApplicationForm">
+			        				<mat-checkbox [indeterminate]="true"><a href="documents/ABCChemicals-NECommercialConstructionCompany-COMMERCIAL INSURANCE APPLICATION.pdf" target="_blank">ABC Chemicals Commercial Insurance Application Form (ACORD)</a></mat-checkbox>
+		        			</div>
+		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td>
+		        			<input type="submit" ng-click="add()" class="btn btn-primary" value="Send Email">
+		        		</td>
+		        		<td>
+		        		</td>
+		        	</tr>
+		        </form>
+        		</div>
+        	</table>          
+    </div>
+        <div style="height: 70px !important;">
+        <div class="alert alert-danger" data-ng-show="error && error !== ''"><strong>Failure!</strong>&nbsp;{{error}}</div>
+        <div class="alert alert-success" data-ng-show="loadingMessage && loadingMessage !== ''"><strong>Success!</strong>&nbsp;{{loadingMessage}}</div>
+    </div>
+</div>

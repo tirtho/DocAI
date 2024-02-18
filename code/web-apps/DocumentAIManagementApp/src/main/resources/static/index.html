@@ -17,12 +17,11 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navBarToggler">
-            <!-- class="navbar-brand" href="#/Home">Search and Score</a-->
             <ul class="navbar-nav">
                 <li ng-class="{ active: isActive('/Home') }"><a class="nav-link" href="#/Home">Home</a></li>
-                <li ng-class="{ active: isActive('/EmailMessageReview') }"><a class="nav-link" href="#/EmailMessageReview">Email Review</a></li>
+                <li ng-class="{ active: isActive('/EmailClient') }"><a class="nav-link" href="#/EmailClient">Send Email</a></li>
+                <li ng-class="{ active: isActive('/EmailMessageReview') }"><a class="nav-link" href="#/EmailMessageReview">Review Documents</a></li>
                 <li ng-class="{ active: isActive('/SearchAndReview') }"><a class="nav-link" href="#/SearchAndReview">Bing Search</a></li>
-                <li ng-class="{ active: isActive('/LinkedInScore') }"><a class="nav-link" href="#/LinkedInScore">LinkedIn Score</a></li>
             </ul>
         </div>
     </div>
@@ -30,6 +29,27 @@
 
 <div class="container" role="main" style="margin-top: 80px !important;">
     <div ng-view class="panel-body">
+</div>
+<hr>
+<div style="overflow-x:auto;">
+  <table id="footNoteTable">
+	<tr>
+		<td></td>
+		<td><div class="footNoteTextStyleLarge">Tirthankar Barari (TR)</div></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><div class="footNoteTextStyleSmall">Principal Cloud Solution Architect</div></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><div class="footNoteTextStyleSmall">Financial Services and Insurance, Microsoft</div></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><div class="footNoteTextStyleSmall"><a href="mailto:Tirthankar.Barari@microsoft.com">Tirthankar.Barari@microsoft.com</a></div></td>
+	</tr>
+  </table>
 </div>
 </div>
 </body>
@@ -44,6 +64,6 @@
 <script src="Scripts/emailMessageReviewSvc.js"></script>
 <script src="Scripts/searchAndReviewCtrl.js"></script>
 <script src="Scripts/searchAndReviewSvc.js"></script>
-<script src="Scripts/linkedInScoreCtrl.js"></script>
-<script src="Scripts/linkedInScoreSvc.js"></script>
+<script src="Scripts/emailClientCtrl.js"></script>
+<script src="Scripts/emailClientSvc.js"></script>
 </html>

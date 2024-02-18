@@ -16,9 +16,9 @@ angular.module('documentAIManagementApp', ['ngRoute'])
 			controller: 'emailMessageReviewCtrl',
 			templateUrl: 'Views/EmailMessageReview.html',
 		})
-         .when('/LinkedInScore', {
-			controller: 'linkedInScoreCtrl',
-			templateUrl: 'Views/LinkedInScore.html',
+         .when('/EmailClient', {
+			controller: 'emailClientCtrl',
+			templateUrl: 'Views/EmailClient.html',
 		})
         .when('/SearchAndReview', {
             controller: 'searchAndReviewCtrl',

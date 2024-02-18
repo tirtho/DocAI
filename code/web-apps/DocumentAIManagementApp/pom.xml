@@ -59,6 +59,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-mail</artifactId>
+	    </dependency>
+  		<!-- https://mvnrepository.com/artifact/com.microsoft.graph/microsoft-graph -->
+		<dependency>
+			<groupId>com.microsoft.graph</groupId>
+			<artifactId>microsoft-graph</artifactId>
+			<version>5.42.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.azure</groupId>
 			<artifactId>azure-storage-blob</artifactId>
@@ -132,13 +142,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
-				<!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
-			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
 			<!--
@@ -277,6 +285,10 @@
 							<value>${env.COSMOS_CONTAINER}</value>
 						</property>
 						<property>
+							<name>COSMOS_CONTAINER_DEMOS</name>
+							<value>${env.COSMOS_CONTAINER_DEMOS}</value>
+						</property>
+						<property>
 							<name>BING_KEY</name>
 							<value>${env.BING_KEY}</value>
 						</property>
@@ -295,6 +307,30 @@
 						<property>
 							<name>BLOB_STORE_SAS_TOKEN</name>
 							<value>${env.BLOB_STORE_SAS_TOKEN}</value>
+						</property>
+						<property>
+							<name>DOCAI_APP_TENANT_ID</name>
+							<value>${env.DOCAI_APP_TENANT_ID}</value>
+						</property>
+						<property>
+							<name>DOCAI_APP_CLIENT_ID</name>
+							<value>${env.DOCAI_APP_CLIENT_ID}</value>
+						</property>
+						<property>
+							<name>DOCAI_APP_CLIENT_SECRET</name>
+							<value>${env.DOCAI_APP_CLIENT_SECRET}</value>
+						</property>
+						<property>
+							<name>DOCAI_EMAIL_SENDER_USER_NAME</name>
+							<value>${env.DOCAI_EMAIL_SENDER_USER_NAME}</value>
+						</property>
+						<property>
+							<name>DOCAI_EMAIL_SENDER_PASSWORD</name>
+							<value>${env.DOCAI_EMAIL_SENDER_PASSWORD}</value>
+						</property>
+						<property>
+							<name>DOCAI_EMAIL_RECEIVER_ADDRESS</name>
+							<value>${env.DOCAI_EMAIL_RECEIVER_ADDRESS}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

@@ -40,15 +40,14 @@ Use the training documents below to train the Azure Document Intelligence Servic
 
 If you do not want to install the end to end solution but learn some of the technologies there are some great examples in the [cli](code/python/cli) or [notebooks](code/python/notebooks) section that demonstrate how to implement - 
 
-1. A text classifier
-2. A Retrieval augmented generation (RAG) pattern to get answers from Azure Open AI with 
+1. A text classifier using Azure AI Search and Azure Open AI
+2. A Retrieval Augmented Generation (RAG) pattern with Azure Open AI with Azure AI Search leveraging
+   - Semantic Hybrid Search
+   - Cross-Field Vector Search
+   - Hybrid Search
+   - Pure Vector Search with a filter
+4. Use Azure Document Intelligence Service to classify and extract Documents  
 
-- Receives user prompt,
-- Calls Azure OpenAI Embedding APIs to create vector corresponding to the prompt,
-- Searches indexed documents using hybrid search by Azure Cognitive Search (vector, semantic and full text search) for the given prompt and vector,
-- Creates Summary of the sarched information, using Azure OpenAI GTP-4 Completion model
-- Sends the augmented and engineered prompt to Azure Open AI
-- Returns the completion to the calling end user
 
 ## End to End Document AI Solution UI Screenshots
 

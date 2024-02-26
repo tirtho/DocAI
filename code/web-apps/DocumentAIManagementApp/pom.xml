@@ -77,7 +77,7 @@
 		<dependency>
 		    <groupId>com.azure</groupId>
 		    <artifactId>azure-identity</artifactId>
-		    <version>1.11.1</version>
+		    <version>1.7.2</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.azure</groupId>
@@ -142,11 +142,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
+				<!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
+			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
 			<!--
@@ -293,16 +295,24 @@
 							<value>${env.BING_KEY}</value>
 						</property>
 						<property>
+							<name>ALL_AI_SERVICES_API_KEY</name>
+							<value>${env.ALL_AI_SERVICES_API_KEY}</value>
+						</property>
+						<property>
+							<name>ALL_AI_SERVICES_ENDPOINT</name>
+							<value>${env.ALL_AI_SERVICES_ENDPOINT}</value>
+						</property>
+						<property>
+							<name>BING_QUERY_COUNT</name>
+							<value>${env.BING_QUERY_COUNT}</value>
+						</property>
+						<property>
 							<name>COGNITIVE_SERVICE_KEY</name>
 							<value>${env.COGNITIVE_SERVICE_KEY}</value>
 						</property>
 						<property>
 							<name>COGNITIVE_SERVICE_ENDPOINT</name>
 							<value>${env.COGNITIVE_SERVICE_ENDPOINT}</value>
-						</property>
-						<property>
-							<name>BING_QUERY_COUNT</name>
-							<value>${env.BING_QUERY_COUNT}</value>
 						</property>
 						<property>
 							<name>BLOB_STORE_SAS_TOKEN</name>

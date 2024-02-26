@@ -49,7 +49,7 @@ public class EmailClientController {
     @Value("${docai.app.tenant.id}")
 	private String tenantId;	
     
-    private String LOCAL_DOCUMENTS_PATH = "static/documents/";
+    private String LOCAL_ATTACHMENTS_FOLDER = "static\\documents\\";
     
     public EmailClientController() {
     }
@@ -65,12 +65,13 @@ public class EmailClientController {
         	List<String> filesToAttach = addLocaFilePaths(emailClientItem.getAttachments());
         	List<String> emailReceivers = new ArrayList<>();
         	emailReceivers.add(docAIEmailReceiver);
-        	SendOutlookEmail soe = new SendOutlookEmail(tenantId, clientId, clientSecret);
+        	SendOutlookEmail soe = new SendOutlookEmail(clientId, clientSecret, tenantId);
         	soe.sendMailWithAttachments(
         						docAIEmailSender,
         						emailReceivers,
         						emailClientItem.getSubject(), 
-        						emailClientItem.getBody(), 
+        						emailClientItem.getBody(),
+        						LOCAL_ATTACHMENTS_FOLDER,
         						filesToAttach
         					);
         	responseMessage = String.format("Email Sent");
@@ -88,7 +89,7 @@ public class EmailClientController {
     	for (String attachment : attachments) {
     		String[] fileInfos = StringUtils.split(attachment, ':');
     		if (fileInfos.length == 2 && StringUtils.compare(fileInfos[1], "true") == 0) {
-        		attachment = LOCAL_DOCUMENTS_PATH + fileInfos[0];
+        		attachment = fileInfos[0];
         		fullFilePaths.add(attachment);
     		}
     	}

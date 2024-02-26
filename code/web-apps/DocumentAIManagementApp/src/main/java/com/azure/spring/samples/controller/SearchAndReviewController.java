@@ -40,10 +40,10 @@ public class SearchAndReviewController {
    
     @Value("${azure.bing.key}")
     private String azureBingKey;
-    @Value("${azure.cognitive.service.key}")
-    private String azureCognitiveServiceKey;
-    @Value("${azure.cognitive.service.endpoint}")
-    private String azureCognitiveServiceEndpoint;
+    @Value("${azure.all.ai.service.key}")
+    private String azureBingCognitiveServiceKey;
+    @Value("${azure.all.ai.service.endpoint}")
+    private String azureBingCognitiveServiceEndpoint;
     @Value("${azure.bing.query.count}")
     private Integer azureBingQueryCount;
     
@@ -128,10 +128,10 @@ public class SearchAndReviewController {
     }
     
     public List<String> getKeyPhrases(String textDocument) {
-    	AzureKeyCredential cred = new AzureKeyCredential(azureCognitiveServiceKey);
+    	AzureKeyCredential cred = new AzureKeyCredential(azureBingCognitiveServiceKey);
     	TextAnalyticsClient textAnalyticsClient = new TextAnalyticsClientBuilder()
     		    .credential(cred)
-    		    .endpoint(azureCognitiveServiceEndpoint)
+    		    .endpoint(azureBingCognitiveServiceEndpoint)
     		    .buildClient();
     	List<String> keyPhrases = new ArrayList<>();
     	textAnalyticsClient.extractKeyPhrases(textDocument).forEach(keyPhrase -> keyPhrases.add(keyPhrase));

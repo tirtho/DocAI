@@ -1,10 +1,11 @@
 package core.azure.spring.samples.messaging;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.azure.identity.ClientSecretCredential;
 import com.azure.identity.ClientSecretCredentialBuilder;
@@ -52,6 +53,7 @@ public class SendOutlookEmail {
 					List<String> receivers,
 					String subject,
 					String body,
+					String attachmentsFolder,
 					List<String> attachments
 				) throws IOException {
 	    final ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
@@ -77,23 +79,27 @@ public class SendOutlookEmail {
 	    message.body = itemBody;
 	    
 	    // Add attachments
-	    if (attachments != null && attachments.size() > 0) {
-		    List<Attachment> theAttachments = new ArrayList<>();
-	    	for (String attachment : attachments) {
-	    		FileAttachment theAttachment = new FileAttachment();
-	    		theAttachment.name = attachment;
-	    		theAttachment.contentType = "text/plain";
-	    		theAttachment.oDataType = "#microsoft.graph.fileAttachment";
-	    		theAttachment.contentBytes = Files.readAllBytes(Paths.get(attachment));
-	    		theAttachments.add(theAttachment);
-	    	}
-		    message.hasAttachments = true;
-		    AttachmentCollectionResponse attachmentCollectionResponse = new AttachmentCollectionResponse();
-		    attachmentCollectionResponse.value = theAttachments;
-		    AttachmentCollectionPage attachmentCollectionPage = new AttachmentCollectionPage(attachmentCollectionResponse, null);
-		    message.attachments = attachmentCollectionPage;
-	    }
-	    
+		if (attachments != null && attachments.size() > 0) {
+			List<Attachment> theAttachments = new ArrayList<>();
+			for (String attachment : attachments) {
+				Resource attachmentResource = new ClassPathResource(attachmentsFolder + attachment);
+				byte[] fileData = attachmentResource.getInputStream().readAllBytes();
+				
+				FileAttachment theAttachment = new FileAttachment();
+				theAttachment.name = attachment;
+				theAttachment.contentType = "text/plain";
+				theAttachment.oDataType = "#microsoft.graph.fileAttachment";
+				theAttachment.contentBytes = fileData;
+				theAttachments.add(theAttachment);
+			}
+			message.hasAttachments = true;
+			AttachmentCollectionResponse attachmentCollectionResponse = new AttachmentCollectionResponse();
+			attachmentCollectionResponse.value = theAttachments;
+			AttachmentCollectionPage attachmentCollectionPage = new AttachmentCollectionPage(
+					attachmentCollectionResponse, null);
+			message.attachments = attachmentCollectionPage;
+		}
+ 	    
 	    // Add receivers' email addresses
 	    List<Recipient> toList = new ArrayList<>();
 	    for (String receiver : receivers) {

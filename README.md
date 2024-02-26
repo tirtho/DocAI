@@ -51,11 +51,14 @@ If you do not want to install the end to end solution but learn some of the tech
 
 ## End to End Document AI Solution UI Screenshots
 
-![Review & Detect Data Inconsistencies][Review Page]
+![UI Screenshot I][UI Screenshot I]
 
-![Detect Anomaly & Fraud Page][Anomaly Page]
+![UI Screenshot II][UI Screenshot II]
 
-[Review Page]: <https://github.com/tirtho/DocAI/blob/main/images/detect-fix-ui.jpg>
-[Anomaly Page]: <https://github.com/tirtho/DocAI/blob/main/images/detect-anomaly-ui.jpg>
+![UI Screenshot III][UI Screenshot III]
+
+[UI Screenshot I]: <https://github.com/tirtho/DocAI/blob/main/images/UIScreen-I.jpg>
+[UI Screenshot II]: <https://github.com/tirtho/DocAI/blob/main/images/UIScreen-II.jpg>
+[UI Screenshot III]: <https://github.com/tirtho/DocAI/blob/main/images/UIScreen-III.jpg>
 [End2EndSolution]: <https://github.com/tirtho/DocAI/blob/main/images/End2EndSolution.jpg>
 [DocAIArchitecture]: <https://github.com/tirtho/DocAI/blob/main/images/DocAIArchitecture.jpg>

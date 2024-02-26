@@ -5,18 +5,18 @@
         	<table id="sendEmailFormTable">
         		<div class="input-group" style="margin-bottom: 20px !important;">
         		<form method="post">
-		        	<tr>
-						<td>Demo User Full Name</td>
-						<td>
-							<input matInput placeholder='e.g. John Smith' ng-model="newEmailDemoUserName" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the full name of the demo user</div></mat-hint>
-						</td>
-		        	</tr>
-		        	<tr>
-						<td>Demo User Email Address</td>
-						<td>
-							<input matInput placeholder='e.g. John.Smith@microsoft.com' ng-model="newEmailDemoUserEmailAddress" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the email address of the demo user</div></mat-hint>
-						</td>
-		        	</tr>
+	        		<tr>
+	        			<td>From</td>
+	        			<td>
+	        				<div class="sendEmailFormTexStyle">fsi-demo@MngEnvMCAP330261.onmicrosoft.com</div>
+	        			</td>
+	        		</tr>
+	        		<tr>
+	        			<td>To</td>
+	        			<td>
+	        				<div class="sendEmailFormTexStyle">docai@MngEnvMCAP330261.onmicrosoft.com</div>
+	        			</td>
+	        		</tr>
 		        	<tr>
 						<td>Subject</td>
 						<td>
@@ -81,6 +81,22 @@
 			        				<mat-checkbox [indeterminate]="true"><a href="documents/ABCChemicals-NECommercialConstructionCompany-COMMERCIAL INSURANCE APPLICATION.pdf" target="_blank">ABC Chemicals Commercial Insurance Application Form (ACORD)</a></mat-checkbox>
 		        			</div>
 		        		</td>
+		        	</tr>
+		        	<tr>
+		        		<td>Demo User</td>
+		        		<td><hr></td>
+		        	</tr>
+		        	<tr>
+		        		<td></td>
+						<td>
+							<input matInput placeholder='e.g. John Smith' ng-model="newEmailDemoUserName" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the full name of the demo user</div></mat-hint>
+						</td>
+		        	</tr>
+		        	<tr>
+						<td></td>
+						<td>
+							<input matInput placeholder='e.g. John.Smith@microsoft.com' ng-model="newEmailDemoUserEmailAddress" class="form-control" ng-required="true"><mat-hint align=start><div class="footNoteTextStyleSmall">Enter the email address of the demo user</div></mat-hint>
+						</td>
 		        	</tr>
 		        	<tr>
 		        		<td>

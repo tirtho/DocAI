@@ -57,6 +57,14 @@ tr:hover {
 	margin-left: 0.5em
 }
 
+.sendEmailFormTexStyle {
+	color: #6d6d6d;
+	font-family: Monaco, "Lucida Console", Verdana;
+	font-size: 0.85em;
+	padding: 2px;
+	text-align: left
+}
+
 #sendEmailFormTable {
 	width: 100%;
 	/* border: 1px solid #ddd; */

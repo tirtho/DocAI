@@ -10,7 +10,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "office365"
+                                            "referenceName": "office365-1"
                                         }
                                     },
                                     "method": "get",
@@ -46,6 +46,37 @@
                             "f(getAttachmentClass)": {
                                 "inputs": {
                                     "body": {
+                                        "formRecognizerCategories": "@body('f(getAttachmentClassUsingFormRecognizerCustomModel)')",
+                                        "messageType": "email-attachment",
+                                        "openAICategories": "@body('f(getAttachmentClassUsingOpenAI)')"
+                                    },
+                                    "function": {
+                                        "connectionName": "azureFunctionOperation-5"
+                                    },
+                                    "method": "POST",
+                                    "queries": {
+                                        "messageId": "@{triggerBody()?['id']}"
+                                    }
+                                },
+                                "runAfter": {
+                                    "f(getAttachmentClassUsingFormRecognizerCustomModel)": [
+                                        "SUCCEEDED",
+                                        "TIMEDOUT",
+                                        "SKIPPED",
+                                        "FAILED"
+                                    ],
+                                    "f(getAttachmentClassUsingOpenAI)": [
+                                        "SUCCEEDED",
+                                        "TIMEDOUT",
+                                        "SKIPPED",
+                                        "FAILED"
+                                    ]
+                                },
+                                "type": "Function"
+                            },
+                            "f(getAttachmentClassUsingFormRecognizerCustomModel)": {
+                                "inputs": {
+                                    "body": {
                                         "attachmentName": "@item()?['name']",
                                         "messageType": "email-attachment",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
@@ -53,7 +84,31 @@
                                         "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
                                     },
                                     "function": {
-                                        "connectionName": "azureFunctionOperation-5"
+                                        "connectionName": "azureFunctionOperation-8"
+                                    },
+                                    "method": "POST",
+                                    "queries": {
+                                        "messageId": "@{triggerBody()?['id']}"
+                                    }
+                                },
+                                "runAfter": {
+                                    "saveAttachmentInBlobStore": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "type": "Function"
+                            },
+                            "f(getAttachmentClassUsingOpenAI)": {
+                                "inputs": {
+                                    "body": {
+                                        "attachmentName": "@item()?['name']",
+                                        "messageType": "email-attachment",
+                                        "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                        "sender": "@triggerBody()?['from']",
+                                        "uri": "https://trxdocaixblob.blob.core.windows.net/docai/logic-app-extracted-emails/"
+                                    },
+                                    "function": {
+                                        "connectionName": "azureFunctionOperation-9"
                                     },
                                     "method": "POST",
                                     "queries": {
@@ -259,7 +314,7 @@
                     },
                     "host": {
                         "connection": {
-                            "referenceName": "office365"
+                            "referenceName": "office365-1"
                         }
                     },
                     "subscribe": {

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,16 +38,25 @@ public class EmailClientController {
     private String azureCosmosContainerDemosName;
     @Value("${docai.receiver.email.address}")
     private String docAIEmailReceiver;
-    @Value("${spring.mail.username}")
+    @Value("${docai.sender.email.address}")
     private String docAIEmailSender;
+    @Value("${docai.logic.app.trigger.subject.prefix}")
+    private String docAISubjectPrefix;
     
-    @Value("${docai.app.client.id}")
+	/*
+	 * @Value("${docai.app.client.id}") private String clientId;
+	 * 
+	 * @Value("${docai.app.client.secret}") private String clientSecret;
+	 * 
+	 * @Value("${docai.app.tenant.id}") private String tenantId;
+	 */    
+    @Value("${office365.graph.api.aad.client-id}")
 	private String clientId;
-    @Value("${docai.app.client.secret}")
+    @Value("${office365.graph.api.aad.client-secret}")
 	private String clientSecret;
-    @Value("${docai.app.tenant.id}")
+    @Value("${office365.graph.api.aad.tenant-id}")
 	private String tenantId;	
-    
+
     private String LOCAL_ATTACHMENTS_FOLDER = "static\\documents\\";
     
     public EmailClientController() {
@@ -64,12 +72,18 @@ public class EmailClientController {
         try {
         	List<String> filesToAttach = addLocaFilePaths(emailClientItem.getAttachments());
         	List<String> emailReceivers = new ArrayList<>();
+        	String subject = emailClientItem.getSubject();
+        	if (subject == null) {
+        		subject = docAISubjectPrefix;
+        	} else {
+        		subject = docAISubjectPrefix + " " + subject;
+        	}
         	emailReceivers.add(docAIEmailReceiver);
         	SendOutlookEmail soe = new SendOutlookEmail(clientId, clientSecret, tenantId);
         	soe.sendMailWithAttachments(
         						docAIEmailSender,
         						emailReceivers,
-        						emailClientItem.getSubject(), 
+        						subject, 
         						emailClientItem.getBody(),
         						LOCAL_ATTACHMENTS_FOLDER,
         						filesToAttach

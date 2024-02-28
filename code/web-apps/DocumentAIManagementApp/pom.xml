@@ -59,6 +59,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- 
+		<dependency>
+		   <groupId>com.azure.spring</groupId>
+		   <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
+		</dependency>
+		<dependency>
+		   <groupId>org.springframework.boot</groupId>
+		   <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+		   <groupId>org.springframework.boot</groupId>
+		   <artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		-->
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-mail</artifactId>
@@ -142,13 +156,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
-				<!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
-			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
 			<!--
@@ -341,6 +353,10 @@
 						<property>
 							<name>DOCAI_EMAIL_RECEIVER_ADDRESS</name>
 							<value>${env.DOCAI_EMAIL_RECEIVER_ADDRESS}</value>
+						</property>
+						<property>
+							<name>DOCAI_EMAIL_SUBJECT_PREFIX</name>
+							<value>${env.DOCAI_EMAIL_SUBJECT_PREFIX}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

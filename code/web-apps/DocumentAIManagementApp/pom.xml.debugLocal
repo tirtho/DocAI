@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.azure.spring.samples</groupId>
 	<artifactId>DocumentAIManagementApp</artifactId>
 	<version>2.0-SNAPSHOT</version>
@@ -10,26 +10,25 @@
 	<name>DocumentAIManagementApp</name>
 	<description>A Simple Spring Boot application using AngularJS and
         Azure Cosmos DB Spring boot starter</description>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.11</version>
+		<version>3.2.3</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.build.timestamp.format>yyMMddHHmmssSSS</maven.build.timestamp.format>
 		<java.version>17</java.version>
-		<azure.spring.version>3.14.0</azure.spring.version>
+		<spring-cloud-azure.version>5.9.1</spring-cloud-azure.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.azure.spring</groupId>
-				<artifactId>azure-spring-boot-bom</artifactId>
-				<version>${azure.spring.version}</version>
+				<artifactId>spring-cloud-azure-dependencies</artifactId>
+				<version>${spring-cloud-azure.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -40,7 +39,6 @@
 			    <exclusions>
 			    	<exclusion>
 			    		<groupId>com.azure</groupId>
-			    		<!-- -->
 						<artifactId>azure-core</artifactId>
 			       	</exclusion>
 			    </exclusions>
@@ -56,23 +54,22 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
+			<groupId>com.azure.spring</groupId>
+			<artifactId>spring-cloud-azure-starter-active-directory</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- 
 		<dependency>
-		   <groupId>com.azure.spring</groupId>
-		   <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
-		<dependency>
-		   <groupId>org.springframework.boot</groupId>
-		   <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
-		<dependency>
-		   <groupId>org.springframework.boot</groupId>
-		   <artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-		-->
 	    <dependency>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-mail</artifactId>
@@ -91,7 +88,7 @@
 		<dependency>
 		    <groupId>com.azure</groupId>
 		    <artifactId>azure-identity</artifactId>
-		    <version>1.7.2</version>
+		    <!--version>1.7.2<version -->
 		</dependency>
 		<dependency>
 		    <groupId>com.azure</groupId>
@@ -115,11 +112,6 @@
 			<!--version>2.8.5</version> -->
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 		    <groupId>com.azure</groupId>
 		    <artifactId>azure-ai-textanalytics</artifactId>
 		    <version>5.4.2</version>
@@ -132,7 +124,7 @@
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
-		    <version>3.11</version>
+		    <version>3.14.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>
@@ -211,14 +203,12 @@
 			<!-- mvn install "-DRESOURCEGROUP_NAME=xxxx"       -->
 			<!-- "-DWEBAPP_NAME=yyyy" "-DREGION=zzzz" azure-webapp:deploy --> 
 			<!--************************************************* -->
-
 			<plugin>
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-webapp-maven-plugin</artifactId>
 				<version>2.12.0</version>
 				<configuration>
 					<schemaVersion>v2</schemaVersion>
-
 					<!-- Web App information -->
 					<resourceGroup>${RESOURCEGROUP_NAME}</resourceGroup>
 					<appName>${WEBAPP_NAME}</appName>
@@ -240,7 +230,10 @@
 							</resource>
 						</resources>
 					</deployment>
-
+					<!-- These property settings below are needed, 
+						 so the deployment to Azure App Service will 
+						 push these to the environment variables in the app 
+					-->
 					<appSettings>
 						<property>
 							<name>OPENAI_API_ENDPOINT</name>
@@ -283,24 +276,24 @@
 							<value>${env.AI_VIDEO_API_VERSION}</value>
 						</property>
 						<property>
-							<name>COSMOS_URI</name>
-							<value>${env.COSMOS_URI}</value>
+							<name>COSMOSDB_URI</name>
+							<value>${env.COSMOSDB_URI}</value>
 						</property>
 						<property>
-							<name>COSMOS_KEY</name>
-							<value>${env.COSMOS_KEY}</value>
+							<name>COSMOSDB_API_KEY</name>
+							<value>${env.COSMOSDB_API_KEY}</value>
 						</property>
 						<property>
-							<name>COSMOS_DATABASE</name>
-							<value>${env.COSMOS_DATABASE}</value>
+							<name>COSMOSDB_DATABASE</name>
+							<value>${env.COSMOSDB_DATABASE}</value>
 						</property>
 						<property>
-							<name>COSMOS_CONTAINER</name>
-							<value>${env.COSMOS_CONTAINER}</value>
+							<name>COSMOSDB_CONTAINER</name>
+							<value>${env.COSMOSDB_CONTAINER}</value>
 						</property>
 						<property>
-							<name>COSMOS_CONTAINER_DEMOS</name>
-							<value>${env.COSMOS_CONTAINER_DEMOS}</value>
+							<name>COSMOSDB_CONTAINER_DEMOS</name>
+							<value>${env.COSMOSDB_CONTAINER_DEMOS}</value>
 						</property>
 						<property>
 							<name>BING_KEY</name>
@@ -343,12 +336,20 @@
 							<value>${env.DOCAI_APP_CLIENT_SECRET}</value>
 						</property>
 						<property>
-							<name>DOCAI_EMAIL_SENDER_USER_NAME</name>
-							<value>${env.DOCAI_EMAIL_SENDER_USER_NAME}</value>
+							<name>GRAPH_API_TENANT_ID</name>
+							<value>${env.GRAPH_API_TENANT_ID}</value>
 						</property>
 						<property>
-							<name>DOCAI_EMAIL_SENDER_PASSWORD</name>
-							<value>${env.DOCAI_EMAIL_SENDER_PASSWORD}</value>
+							<name>GRAPH_API_CLIENT_ID</name>
+							<value>${env.GRAPH_API_CLIENT_ID}</value>
+						</property>
+						<property>
+							<name>GRAPH_API_CLIENT_SECRET</name>
+							<value>${env.GRAPH_API_CLIENT_SECRET}</value>
+						</property>
+						<property>
+							<name>DOCAI_EMAIL_SENDER_ADDRESS</name>
+							<value>${env.DOCAI_EMAIL_SENDER_ADDRESS}</value>
 						</property>
 						<property>
 							<name>DOCAI_EMAIL_RECEIVER_ADDRESS</name>
@@ -357,6 +358,10 @@
 						<property>
 							<name>DOCAI_EMAIL_SUBJECT_PREFIX</name>
 							<value>${env.DOCAI_EMAIL_SUBJECT_PREFIX}</value>
+						</property>
+						<property>
+							<name>DOCAI_DEMO_USERS</name>
+							<value>${env.DOCAI_DEMO_USERS}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

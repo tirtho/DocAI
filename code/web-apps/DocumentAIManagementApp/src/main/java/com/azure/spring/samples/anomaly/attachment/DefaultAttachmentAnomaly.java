@@ -192,7 +192,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 		String reviewMessage = null;
 
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
-	  	String fileUrl = StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
+	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; //StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
 	  	String filename = aed.getAttachmentName();
 		// TODO: Check if text or image or video by the content of the file and not just by the file extension
 		// Get url of image/video file
@@ -295,7 +295,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	@SuppressWarnings("unchecked")
 	public <U, V> ReturnEntity<U, V> updateVideoExtractionData(String attachmentId) {
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
-	  	String fileUrl = StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
+	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; //StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
   		List<ExtractData> extracts = aed.getExtracts();
   		List<ExtractData> updatedExtracts = null;
 		Map<String, ?> ingestionStatusField = null;

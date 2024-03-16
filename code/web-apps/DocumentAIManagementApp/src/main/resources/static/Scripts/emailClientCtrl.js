@@ -10,8 +10,6 @@ angular.module('documentAIManagementApp')
         $scope.error = '';
         $scope.loadingMessage = '';
         $scope.newEmailClient = null;
-        $scope.newEmailDemoUserName = '';
-        $scope.newEmailDemoUserEmailAddress = '';
         $scope.newEmailSubject = '';
         $scope.newEmailBody = '';
         $scope.item = null;
@@ -30,11 +28,8 @@ angular.module('documentAIManagementApp')
 			$scope.attachments.push('ABCChemicals-NECommercialConstructionCompany-COMMERCIAL INSURANCE APPLICATION.pdf:' + $scope.newEmailCommercialInsuranceApplicationForm),
 
 			emailClientSvc.postItem({
-				'username': $scope.newEmailDemoUserName,
-				'sender': $scope.newEmailDemoUserEmailAddress,
 				'subject': $scope.newEmailSubject,
 				'body': $scope.newEmailBody,
-				'receiver': 'abc@x.com',
 				'attachments': $scope.attachments
 			}).success(function (results) {
 				$scope.populate();
@@ -48,8 +43,6 @@ angular.module('documentAIManagementApp')
         
         $scope.populate = function () {
 	        $scope.error = '';
-	        $scope.newEmailDemoUserName = '';
-	        $scope.newEmailDemoUserEmailAddress = '';
 	        $scope.loadingMessage = '';
 	        $scope.newEmailClient = null;
 	        $scope.newEmailSubject = '';

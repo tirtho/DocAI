@@ -15,12 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.adls.AzureADLSOperation;
 import com.azure.spring.samples.ai.AzureAIOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
@@ -39,9 +42,11 @@ import com.azure.spring.samples.model.AttachmentSearchResult;
 import com.azure.spring.samples.model.EmailData;
 import com.azure.spring.samples.model.EmailSearchResult;
 import com.azure.spring.samples.model.ExtractData;
+import com.azure.spring.samples.model.LoggedInUserProfile;
 import com.azure.spring.samples.model.SearchItem;
 import com.azure.spring.samples.utils.Category;
 import com.azure.spring.samples.utils.ReturnEntity;
+import com.azure.spring.samples.utils.Transform;
 
 @RestController
 public class EmailMessageReviewController {
@@ -92,6 +97,11 @@ public class EmailMessageReviewController {
     @Value("${azure.ai.video.api.version}")
     private String aiVideoAPIVersion;
     
+    // Demo users who are allowed to use this App
+    @Value("${docai.approved.demo.users}")
+    private String demoUsers;
+
+    
     public EmailMessageReviewController() {
     }
   
@@ -99,7 +109,18 @@ public class EmailMessageReviewController {
      * HTTP - let AOAI identify any email with potential errors
      */
     @RequestMapping(value = "/api/emailMessageReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getEmailMessageReviewSummary(@PathVariable String id) {
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> getEmailMessageReviewSummary(
+    		OAuth2AuthenticationToken authToken,
+    		@PathVariable String id
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: GET request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("GET request access '/api/emailMessageReview' path with item: {}", id);
 
     	CosmosDBOperation cosmosDB = new CosmosDBOperation(
@@ -124,7 +145,18 @@ public class EmailMessageReviewController {
      * HTTP - let AOAI identify any email with potential errors
      */
     @RequestMapping(value = "/api/attachmentReview/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getAttachmentReviewSummary(@PathVariable String id) {
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> getAttachmentReviewSummary(
+    		OAuth2AuthenticationToken authToken,
+    		@PathVariable String id
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: GET request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("GET request access '/api/attachmentReview' path with attachment id : {}", id);
 
         // Read the attachment category and call the AttachmentAnomaly.review method
@@ -162,7 +194,7 @@ public class EmailMessageReviewController {
             											AOAIConnectionType.HTTP
             										);
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, blobStoreSASToken);
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, Transform.b64Decode(blobStoreSASToken));
         }
         @SuppressWarnings("unchecked")
 		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);
@@ -174,7 +206,18 @@ public class EmailMessageReviewController {
     
     @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/attachmentExtracts/{id}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getAttachmentExtracts(@PathVariable String id) {
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> getAttachmentExtracts(
+    		OAuth2AuthenticationToken authToken,
+    		@PathVariable String id
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: GET request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("GET request access '/api/attachmentExtracts' path with attachment id : {}", id);
         // Read the attachment category
         // If attachment is a video and status is "Running", check if now it is "Completed" and call GPT-4 to provide description
@@ -207,7 +250,7 @@ public class EmailMessageReviewController {
 														AOAIConnectionType.HTTP
 													);
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, blobStoreSASToken);
+            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, Transform.b64Decode(blobStoreSASToken));
         	// Check status, if 'Running', try to read status again
         	// If still in 'Running' State then just return
         	// If it is now 'Completed', then 
@@ -229,7 +272,18 @@ public class EmailMessageReviewController {
      * HTTP DELETE
      */
     @RequestMapping(value = "/api/emailMessageReview/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteItem(@PathVariable("id") String id) {
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<String> deleteItem(
+    		OAuth2AuthenticationToken authToken,
+    		@PathVariable("id") String id
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: DELETE request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("DELETE request access '/api/emailMessageReview/{}' path.", id);
         try {
         	CosmosDBOperation cosmosDB = new CosmosDBOperation(
@@ -239,8 +293,8 @@ public class EmailMessageReviewController {
     				azureCosmosContainerName
     			);
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-            String cleanedSASToken = StringUtils.replace(blobStoreSASToken, "%%", "%");
-            AzureADLSOperation adlsOps = new AzureADLSOperation(cleanedSASToken);
+            String decodedSASToken = Transform.b64Decode(blobStoreSASToken);
+            AzureADLSOperation adlsOps = new AzureADLSOperation(decodedSASToken);
         	CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, aiOps, adlsOps, id);
             return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
         } catch (Exception e) {
@@ -251,8 +305,19 @@ public class EmailMessageReviewController {
     /**
      * HTTP POST NEW ONE
      */
-    @RequestMapping(value = "/api/emailMessageReview", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getEmailMessageDetails(@RequestBody SearchItem searchItem) {
+    @RequestMapping(value = "/api/emailMessageReview/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> getEmailMessageDetails(
+    		OAuth2AuthenticationToken authToken,
+    		@RequestBody SearchItem searchItem
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: POST request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("POST request access '/api/emailMessageReview' path with item: {}", searchItem);
         
         try {

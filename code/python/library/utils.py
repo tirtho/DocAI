@@ -49,6 +49,19 @@ def needHelp(commandLineShortOptions, commandLineLongOptions, helpText):
         print("{}".format(getHelpText(helpText)))
         return True
 
+# Find presence of valueless agruments
+def isThisNoValueArgumentPresent(commandLineShortOptions, commandLineLongOptions, shortArgChar, longArgName):
+    try:
+        opts, args = getCommandLineArgs(commandLineShortOptions, commandLineLongOptions)
+        # If help was an argument, process help
+        for opt, val in opts:
+            if opt == shortArgChar or opt == longArgName:
+                return True
+        return False
+    except getopt.GetoptError:
+        print("Invalid arguments")
+        return False
+
 # Returns True/False, ValueOfArgument
 def getArgumentValue(shortName, longName, commandLineShortOptions, commandLineLongOptions, defaulValue):
     try:

@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.azure.ai.textanalytics.TextAnalyticsClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.model.BingWebPages;
+import com.azure.spring.samples.model.LoggedInUserProfile;
 import com.azure.spring.samples.model.SearchItem;
 import com.azure.spring.samples.model.SearchResult;
+import com.azure.spring.samples.utils.ReturnEntity;
 
 @RestController
 public class SearchAndReviewController {
@@ -47,9 +52,14 @@ public class SearchAndReviewController {
     @Value("${azure.bing.query.count}")
     private Integer azureBingQueryCount;
     
+    // Demo users who are allowed to use this App
+    @Value("${docai.approved.demo.users}")
+    private String demoUsers;
+
+    
     static String bingSearchHost = "https://api.bing.microsoft.com";
     static String bingSearchPath = "/v7.0/search";
-        
+    
     public SearchAndReviewController() {
     }
 
@@ -65,7 +75,18 @@ public class SearchAndReviewController {
      * HTTP GET SCORE
      */
     @RequestMapping(value = "/api/searchAndReview/{keyPhrases}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getInsurnaceScore(@PathVariable String keyPhrases) {
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> getInsurnaceScore(
+    		OAuth2AuthenticationToken authToken,
+    		@PathVariable String keyPhrases
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: GET request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("GET request access '/api/searchAndReview' path with item: {}", keyPhrases);
         String score = Double.toString(Math.random());
 
@@ -75,8 +96,19 @@ public class SearchAndReviewController {
     /**
      * HTTP POST NEW ONE
      */
-    @RequestMapping(value = "/api/searchAndReview", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchOnlineForInsurability(@RequestBody SearchItem searchItem) {
+    @RequestMapping(value = "/api/searchAndReview/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> searchOnlineForInsurability(
+    		OAuth2AuthenticationToken authToken,
+    		@RequestBody SearchItem searchItem
+    	) {
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: POST request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
         logger.info("POST request access '/api/searchAndReview' path with item: {}", searchItem);
         try {
         	BingWebPages webPages = searchWeb(searchItem.getDescription());

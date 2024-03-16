@@ -1,6 +1,5 @@
 package com.azure.spring.samples.cosmosdb;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

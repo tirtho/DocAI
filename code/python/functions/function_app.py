@@ -5,6 +5,7 @@ import json
 import os
 import datetime
 import ast
+import base64
 
 import azure.functions as func
 import requests
@@ -120,7 +121,7 @@ def composePromptWithRAGData(body, fName):
     i = 0
     for aRAG in ragArray:
         i = i + 1
-        aShot = f'\n\Email {i}: {aRAG["body"]}\nCategory: {aRAG["categories"]}'
+        aShot = f'\nEmail {i}: {aRAG["body"]}\nCategory: {aRAG["categories"]}'
         allShots = allShots + aShot
         theCategoriesString = aRAG["categories"]
         # RAG might return for categories something like "auto-insurance, request-new-claim"
@@ -137,7 +138,7 @@ def composePromptWithRAGData(body, fName):
     thePrompt = [
                     {
                     "role": "user", 
-                    "content": f"Classify the following email from the following categories: \n\{allCategoriesString}\n{allShots}\nEmail {i+1}: {body}\nCategory: "
+                    "content": f"Classify the following email from the following categories: \n{allCategoriesString}\n{allShots}\nEmail {i+1}: {body}\nCategory: "
                     }
                 ]       
     return thePrompt
@@ -351,10 +352,13 @@ def getExtractsFromAOAI(url, categories, fName):
     aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
     aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
     aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
-    blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN').replace("%%", "%").replace("^", "")
+    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+    decodedBytes = base64.b64decode(rawToken)
+    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
     endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
     #extract insights on the image
-    gotPrompt = composeMultiModalExtractionPrompt(f'{url}{blobStoreSASToken}', categories, fName)
+    gotPrompt = composeMultiModalExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
     logging.info(f'{fName}Got Prompt: {gotPrompt}')
     headers = {
                 "Content-Type": "application/json",   
@@ -476,7 +480,10 @@ def createVideoIndex(index, fName):
 def getExtractsFromAOAIVideo(url, fName):
     fName = f'{fName}f(getExtractsFromAOAIVideo)->'
     AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION = os.getenv('AI_VIDEO_API_VERSION')
-    blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN').replace("%%", "%").replace("^", "")
+    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+    decodedBytes = base64.b64decode(rawToken)
+    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
     cognitiveServiceEndpoint = os.getenv('COGNITIVE_SERVICE_ENDPOINT')
     cognitiveServiceAPIKey = os.getenv('COGNITIVE_SERVICE_KEY')
     docaiVideoIndex = f'{shortuuid.uuid()}'
@@ -492,7 +499,7 @@ def getExtractsFromAOAIVideo(url, fName):
         # We are setting the ingestionName same as the documentId
         # It does not have to be so, but just for convenience.
         endpoint = f'{cognitiveServiceEndpoint}computervision/retrieval/indexes/{docaiVideoIndex}/ingestions/{videoDocumentId}?api-version={AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION}'
-        videoFileUrl = f'{url}{blobStoreSASToken}'
+        videoFileUrl = f'{url}?{blobStoreSASToken}'
         headers = {
                     "Content-Type": "application/json",
                     "Ocp-Apim-Subscription-Key": cognitiveServiceAPIKey 
@@ -917,7 +924,10 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
                 aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
                 aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
                 aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
-                blobStoreSASToken = os.getenv('BLOB_STORE_SAS_TOKEN').replace("%%", "%").replace("^", "")
+                rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+                decodedBytes = base64.b64decode(rawToken)
+                blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+                logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
                 endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
                 #classifiedCategory
                 # Process video files. For video we can't do realtime AOAI calls to get 
@@ -927,7 +937,7 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
                     logging.info(f'{fName}Category of the video file is {category}')
                 # Else process image files
                 else:
-                    gotPrompt = composeMultiModalPrompt(f'{url}{blobStoreSASToken}', fName)
+                    gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
                     logging.info(f'{fName}Got Prompt: {gotPrompt}')
                     headers = {
                                 "Content-Type": "application/json",   

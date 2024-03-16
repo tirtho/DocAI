@@ -13,13 +13,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
+import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.model.EmailClientItem;
+import com.azure.spring.samples.model.LoggedInUserProfile;
+import com.azure.spring.samples.utils.ReturnEntity;
 
 import core.azure.spring.samples.messaging.SendOutlookEmail;
 
@@ -36,20 +42,16 @@ public class EmailClientController {
     private String azureCosmosDatabaseName;
     @Value("${azure.cosmos.container.demos}")
     private String azureCosmosContainerDemosName;
+    
     @Value("${docai.receiver.email.address}")
     private String docAIEmailReceiver;
     @Value("${docai.sender.email.address}")
     private String docAIEmailSender;
     @Value("${docai.logic.app.trigger.subject.prefix}")
     private String docAISubjectPrefix;
+    @Value("${docai.approved.demo.users}")
+    private String demoUsers;
     
-	/*
-	 * @Value("${docai.app.client.id}") private String clientId;
-	 * 
-	 * @Value("${docai.app.client.secret}") private String clientSecret;
-	 * 
-	 * @Value("${docai.app.tenant.id}") private String tenantId;
-	 */    
     @Value("${office365.graph.api.aad.client-id}")
 	private String clientId;
     @Value("${office365.graph.api.aad.client-secret}")
@@ -65,10 +67,23 @@ public class EmailClientController {
     /**
      * HTTP POST NEW ONE
      */
-    @RequestMapping(value = "/api/emailClient", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> emailClient(@RequestBody EmailClientItem emailClientItem) {
-        logger.info("POST request access '/api/emailClient' path with item: {}", emailClientItem);
-    	String responseMessage;
+    @RequestMapping(value = "/api/emailClient/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('APPROLE_DocAIDemo-DemoUser')")
+    public ResponseEntity<?> emailClient(
+    		OAuth2AuthenticationToken authToken,
+    		@RequestBody EmailClientItem emailClientItem
+    	) {
+    	
+		String responseMessage;
+    	ReturnEntity<Boolean, LoggedInUserProfile> callingUser = DocumentAIManagementAppAuthorization.authorizeUser(authToken, demoUsers);
+        if (callingUser.getStatus() == false || callingUser.getEntity() == null) {
+        	responseMessage = "AUTHORIZATION FAILED: POST request access for user: " + callingUser.getEntity().getPreferredUserName();
+        	logger.info("{}", responseMessage);
+        	return new ResponseEntity<>(responseMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        
+    	logger.info("POST request access '/api/emailClient/' path by {} with item: {}", callingUser, emailClientItem);
+
         try {
         	List<String> filesToAttach = addLocaFilePaths(emailClientItem.getAttachments());
         	List<String> emailReceivers = new ArrayList<>();

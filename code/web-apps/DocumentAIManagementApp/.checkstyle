@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
-  <local-check-config name="maven-checkstyle-plugin validate" location="file:/C:/Users/tibarar/OneDrive%20-%20Microsoft/Desktop/MyProjects/DocAI-main/DocAI/code/web-apps/DocumentAIManagementApp/checkstyle.xml" type="remote" description="maven-checkstyle-plugin configuration validate">
+  <local-check-config name="maven-checkstyle-plugin validate" location="file:/C:/Users/tibarar/OneDrive%20-%20Microsoft/Desktop/MyProjects/DocAI/code/web-apps/DocumentAIManagementApp/checkstyle.xml" type="remote" description="maven-checkstyle-plugin configuration validate">
     <property name="checkstyle.header.file" value="C:\Users\tibarar\OneDrive - Microsoft\Desktop\ProjectWorkspaces\eclipse-workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\DocumentAIManagementApp\com.basistech.m2e.code.quality.checkstyleConfigurator\checkstyle-header-validate.txt"/>
     <property name="samedir" value=""/>
     <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>

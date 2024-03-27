@@ -28,9 +28,17 @@ public class DocumentAIManagementAppAuthorization {
 			if (preferredUserName != null && allTheDemoUsers != null && allTheDemoUsers.length > 0) {
 				// Authorize
 				for (String demoUser : allTheDemoUsers) {
+					// Exact Match
 					if (StringUtils.compare(demoUser.toLowerCase(), preferredUserName.toLowerCase()) == 0) {
 						// Current logged in user is in the demo user list. Authorized!
 						return new ReturnEntity<Boolean, LoggedInUserProfile>(true, new LoggedInUserProfile(userName, preferredUserName));
+					}
+					// Check if logged in user email address is in the same FQDN as passed by the configed user
+					// If '<user name>@domain.com' matches '@domain.com'
+					if (demoUser != null && demoUser.startsWith("*@") == true) {
+						if (preferredUserName.endsWith(demoUser.substring(1)) == true) {
+							return new ReturnEntity<Boolean, LoggedInUserProfile>(true, new LoggedInUserProfile(userName, preferredUserName));
+						}
 					}
 				}
 			}

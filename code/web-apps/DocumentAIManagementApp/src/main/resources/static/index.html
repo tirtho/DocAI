@@ -22,10 +22,17 @@
                 <li ng-class="{ active: isActive('/EmailClient') }"><a class="nav-link" href="#/EmailClient">Send Email</a></li>
                 <li ng-class="{ active: isActive('/EmailMessageReview') }"><a class="nav-link" href="#/EmailMessageReview">Review Documents</a></li>
                 <li ng-class="{ active: isActive('/SearchAndReview') }"><a class="nav-link" href="#/SearchAndReview">Bing Search</a></li>
-            </ul>
+                <li ng-class="{ active: isActive('/Account') }"><a class="nav-link" href="#/Account">Account</a></li>
+			</ul>
         </div>
     </div>
 </nav>
+<!-- 
+<div class="popup" ng-click=getAccountProfile()>Account<span class=popuptext" id="accountPopup">{{loggedInUserProfile.preferredUserName}}</span></div>
+                	<div class="popup" id="home" ng-click=getAccountProfile()><a class="nav-link">{{loggedInUserProfile}}</a>
+                		<span class=popuptext" id="accountPopup" data-ng="loggedInUserProfile in home">HElo{{loggedInUserProfile}}</span>
+                	</div>
+-->
 
 <div class="container" role="main" style="margin-top: 80px !important;">
     <div ng-view class="panel-body">
@@ -64,6 +71,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="Scripts/app.js"></script>
 <script src="Scripts/homeCtrl.js"></script>
+<script src="Scripts/accountCtrl.js"></script>
+<script src="Scripts/accountSvc.js"></script>
 <script src="Scripts/emailMessageReviewCtrl.js"></script>
 <script src="Scripts/emailMessageReviewSvc.js"></script>
 <script src="Scripts/searchAndReviewCtrl.js"></script>

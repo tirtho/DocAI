@@ -63,13 +63,13 @@ public class SearchAndReviewController {
     public SearchAndReviewController() {
     }
 
-    @RequestMapping("/home")
-    public Map<String, Object> home() {
-        logger.info("Request '/home' path.");
-        final Map<String, Object> model = new HashMap<String, Object>();
-        model.put("content", "home");
-        return model;
-    }
+//    @RequestMapping("/home")
+//    public Map<String, Object> home() {
+//        logger.info("Request '/home' path.");
+//        final Map<String, Object> model = new HashMap<String, Object>();
+//        model.put("content", "home");
+//        return model;
+//    }
     
     /**
      * HTTP GET SCORE

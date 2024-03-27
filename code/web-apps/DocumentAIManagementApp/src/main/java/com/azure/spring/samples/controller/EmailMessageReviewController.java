@@ -134,8 +134,9 @@ public class EmailMessageReviewController {
         List<String> reviewRemarks = new ArrayList<>();
         String intentContentReviewRemarks = eAnomaly.checkIntentContentGap(id);
         reviewRemarks.add(intentContentReviewRemarks);
-        String contentModerationReviewRemark = eAnomaly.checkContentModeration(id);
-        reviewRemarks.add(contentModerationReviewRemark);
+        // TODO: Add content moderation
+        //String contentModerationReviewRemark = eAnomaly.checkContentModeration(id);
+        //reviewRemarks.add(contentModerationReviewRemark);
         
         logger.info("Got review remark as {}", reviewRemarks);
         return new ResponseEntity<>(reviewRemarks, HttpStatus.OK);

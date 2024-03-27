@@ -12,16 +12,21 @@ angular.module('documentAIManagementApp', ['ngRoute'])
             controller: 'homeCtrl',
             templateUrl: 'Views/Home.html',
         })
-         .when('/EmailMessageReview', {
+        .when('/EmailMessageReview', {
 			controller: 'emailMessageReviewCtrl',
 			templateUrl: 'Views/EmailMessageReview.html',
 		})
-         .when('/EmailClient', {
+        .when('/EmailClient', {
 			controller: 'emailClientCtrl',
 			templateUrl: 'Views/EmailClient.html',
 		})
         .when('/SearchAndReview', {
             controller: 'searchAndReviewCtrl',
             templateUrl: 'Views/SearchAndReview.html',
-        }).otherwise({redirectTo: '/Home'});
+        })
+        .when('/Account', {
+            controller: 'accountCtrl',
+            templateUrl: 'Views/Account.html',
+        })
+        .otherwise({redirectTo: '/Home'});
     }]);

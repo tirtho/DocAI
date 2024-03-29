@@ -7,7 +7,7 @@
         <div class="input-group" style="margin-bottom: 20px !important;">
             <input ng-model="newSearchString" class="form-control"/>
             <span class="input-group-btn">
-                <button ng-click="add()" class="btn btn-primary">Search</button>
+                <button id="bingSearchBtn" ng-click="add()" class="btn btn-primary"><i id="bingSearchIcn" class="fa fa-search"></i> Search</button>
             </span>
         </div>
         <ul class="list-group" id="searchAndReview">
@@ -29,7 +29,7 @@
                  <tr>
                    	<td><b><font color='red'>Score: </font>{{item.score}}</b></td>
                    	<td>
-                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore(item)>Get Score</button>
+                   		<button type="button" id="scoreBtn" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore("123", item)><i id="scoreIcn" class="fa fa-circle-o-notch"></i> Get Score</button>
                    	</td>
                  </tr>
                  </table>

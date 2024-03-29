@@ -7,7 +7,7 @@
         <div class="input-group" style="margin-bottom: 20px !important;">
             <input ng-model="newSearchString" class="form-control"/>
             <span class="input-group-btn">
-                <button ng-click="add()" class="btn float-right btn-primary"><i class="fa fa-search"></i> Sender Email Address</button>
+                <button ng-click="add()" id="emailSearchBtn" class="btn float-right btn-primary"><i id="emailSearchIcn" class="fa fa-search"></i> Sender Email Address</button>
             </span>
         </div>
         <ul class="list-group" id="emailMessageReview"}>
@@ -51,7 +51,7 @@
 			               </ol>
 	                   	</font></td>
 	                   	<td>
-	                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedEmailMessageReviewSummary(item)><i class="fa fa-eye"></i> Review</button>
+	                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedEmailMessageReviewSummary(item)><i class="fa fa-circle-o-notch"></i> Review</button>
 	                   	</td>
 	                 </tr>
 	                 </table>
@@ -88,7 +88,7 @@
 								   </font>
 								</td>
 			                   	<td>
-			                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedAttachmentReviewSummary(attachment)><i class="fa fa-eye"></i> Review</button>
+			                   		<button type="button" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedAttachmentReviewSummary(attachment)><i class="fa fa-circle-o-notch"></i> Review</button>
 			                   	</td>
 			                 </tr>
 	            			</table>

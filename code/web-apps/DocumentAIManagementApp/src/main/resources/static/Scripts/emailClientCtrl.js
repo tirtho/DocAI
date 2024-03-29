@@ -27,6 +27,9 @@ angular.module('documentAIManagementApp')
 			$scope.attachments.push('CarClaim480p.mp4:' + $scope.newEmailAutoInsuranceClaimVideo),
 			$scope.attachments.push('ABCChemicals-NECommercialConstructionCompany-COMMERCIAL INSURANCE APPLICATION.pdf:' + $scope.newEmailCommercialInsuranceApplicationForm),
 
+			document.getElementById("sendEmailBtn").setAttribute("disabled", "disabled");
+			document.getElementById("sendEmailIcn").className = "fa fa-circle-o-notch fa-spin";
+
 			emailClientSvc.postItem({
 				'subject': $scope.newEmailSubject,
 				'body': $scope.newEmailBody,
@@ -34,10 +37,18 @@ angular.module('documentAIManagementApp')
 			}).success(function (results) {
 				$scope.populate();
 				$scope.loadingMessage = results;
+
+				document.getElementById("sendEmailBtn").removeAttribute("disabled");
+				document.getElementById("sendEmailIcn").className = "fa fa-circle-o-notch";
+
 			}).error(function (err) {
 				$scope.attachments = [];
 				$scope.error = err;
 				$scope.loadingMessage = '';
+
+				document.getElementById("sendEmailBtn").removeAttribute("disabled");
+				document.getElementById("sendEmailIcn").className = "fa fa-circle-o-notch";
+
 			})
         };
         

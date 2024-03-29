@@ -64,13 +64,25 @@ angular.module('documentAIManagementApp')
             })
         };
         $scope.add = function () {
+
+			document.getElementById("emailSearchBtn").setAttribute("disabled", "disabled");
+			document.getElementById("emailSearchIcn").className = "fa fa-spinner fa-spin";
+
 			emailMessageReviewSvc.postItem({
 				'description': $scope.newSearchString
 			}).success(function (results) {
 				$scope.emailMessageReview = results;
+
+				document.getElementById("emailSearchBtn").removeAttribute("disabled");
+				document.getElementById("emailSearchIcn").className = "fa fa-search";
+
 			}).error(function (err) {
 				$scope.error = err;
 				$scope.loadingMessage = '';
+
+				document.getElementById("emailSearchBtn").removeAttribute("disabled");
+				document.getElementById("emailSearchIcn").className = "fa fa-search";
+
 			})
         };
     }]);

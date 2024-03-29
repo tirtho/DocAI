@@ -59,12 +59,14 @@ public class CosmosDBCommonQueries {
 		String sqlStatement = "SELECT * FROM EmailExtracts e WHERE e.attachmentName = '" + attachmentName + "' "
 				+ " AND e.messageType IN ('email-attachment-extracts') " + " AND e.messageId IN ('" + messageId + "') ";
 		Iterator<AttachmentExtractsData> iterateAED = cosmosDB.query(sqlStatement, AttachmentExtractsData.class);
-		if (iterateAED == null) {
+		if (iterateAED == null || iterateAED.hasNext() == false) {
 			reviewMessage = String.format("Attachment extracted data not found in database. Attachment name: %s, Message Id: %s",
 					attachmentName, messageId);
 			logger.info(reviewMessage);
 			return null;
 		}
+		// TODO: Check if this is null. Could happen in extreme case.
+		// If null, let the process continue
 		AttachmentExtractsData aed = iterateAED.next();
 		logger.info("Found attachment extracted data for attachment {}\n {}", attachmentName, aed);
 		return new ReturnEntity<String, AttachmentExtractsData>(reviewMessage, aed);

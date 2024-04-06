@@ -296,8 +296,13 @@ public class EmailMessageReviewController {
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
             String decodedSASToken = Transform.b64Decode(blobStoreSASToken);
             AzureADLSOperation adlsOps = new AzureADLSOperation(decodedSASToken);
-        	CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, aiOps, adlsOps, id);
-            return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
+        	ReturnEntity<Integer, String> res = CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, aiOps, adlsOps, id);
+            if (res.getStatus() == HttpStatus.NO_CONTENT.value()) {
+            	return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
+            } else {
+            	logger.error("Delete Failed. Error Code {}: {}", res.getStatus(), res.getEntity());
+                return new ResponseEntity<>(res.getEntity(), HttpStatus.valueOf(res.getStatus()));
+            }
         } catch (Exception e) {
             logger.error("Delete errors: ", e);
             return new ResponseEntity<>("Email Message deletion failed", HttpStatus.NOT_FOUND);

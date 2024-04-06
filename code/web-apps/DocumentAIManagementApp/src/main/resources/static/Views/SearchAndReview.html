@@ -4,14 +4,16 @@
         <div class="alert alert-success" data-ng-show="loadingMessage && loadingMessage !== ''"><strong>Success!</strong>&nbsp;{{loadingMessage}}</div>
     </div>
     <div class="panel">
+        <mat-hint align=start><div class="footNoteTextStyleSmall"><font color=red>Search by Organization or Individual Name</font></div></mat-hint>
         <div class="input-group" style="margin-bottom: 20px !important;">
-            <input ng-model="newSearchString" class="form-control"/>
+            <input matInput placeholder="Hello Nostrand LLC" ng-model="newSearchString" class="form-control"/>
             <span class="input-group-btn">
                 <button id="bingSearchBtn" ng-click="add()" class="btn btn-primary"><i id="bingSearchIcn" class="fa fa-search"></i> Search</button>
             </span>
         </div>
         <ul class="list-group" id="searchAndReview">
             <div class="list-group-item list-group-item-action flex-column align-items-start" data-ng-repeat="item in searchAndReview">
+	        <div style="overflow-x:auto;">        
                  <table>
                  <tr>
                  	<td><b>Search Id:</b> {{item.searchId}}</td>
@@ -27,13 +29,13 @@
                  	<td><b>Key Phrases: {{item.keyPhrases}}</b></td>
                  </tr>
                  <tr>
-                   	<td><b><font color='red'>Score: </font>{{item.score}}</b></td>
+                   	<td><b><font color='red'>Score </font>{{item.score}}</b></td>
                    	<td>
-                   		<button type="button" id="scoreBtn" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore("123", item)><i id="scoreIcn" class="fa fa-circle-o-notch"></i> Get Score</button>
+                   		<button type="button" id="scoreBtn-{{item.searchId}}" class="btn btn-primary float-right btn-sm" ng-click=getUpdatedScore(item)><i id="scoreIcn-{{item.searchId}}" class="fa fa-circle-o-notch"></i> Get Score</button>
                    	</td>
                  </tr>
                  </table>
-                </div>
+            </div>
             </div>
         </ul>
     </div>

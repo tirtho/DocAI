@@ -18,39 +18,100 @@ angular.module('documentAIManagementApp')
 		$scope.itemAttachmentExtract = null;
 
 		$scope.getUpdatedEmailMessageReviewSummary = function (item) {
+			
+			document.getElementById("emailReviewBtn-".concat(item.id)).setAttribute("disabled", "disabled");
+			document.getElementById("emailReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch fa-spin";
+			
 			emailMessageReviewSvc.getEmailMessageReviewSummary(item.id)
 			.success(function (result) {
 				item.emailMessageReviewSummary = result;
+
+				document.getElementById("emailReviewBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("emailReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch";
+				
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
             }).error(function (err) {
+
+				document.getElementById("emailReviewBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("emailReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch";
+				
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
 		};
-        $scope.delete = function (id) {
-            emailMessageReviewSvc.deleteItem(id)
+        $scope.delete = function (item) {
+			
+			document.getElementById("deleteBtn-".concat(item.id)).setAttribute("disabled", "disabled");
+			document.getElementById("deleteIcn-".concat(item.id)).className = "fa fa-close fa-spin";
+			
+            emailMessageReviewSvc.deleteItem(item.id)
             .success(function (results) {
-                $scope.populate();
+
+				document.getElementById("deleteBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("deleteIcn-".concat(item.id)).className = "fa fa-close";
+				item = null;
+                $scope.add();
                 $scope.loadingMessage = results;
                 $scope.error = '';
             }).error(function (err) {
+
+				document.getElementById("deleteBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("deleteIcn-".concat(item.id)).className = "fa fa-close";
+				
                 $scope.error = err;
                 $scope.loadingMessage = '';
+				/*
+				item = null;
+                $scope.add();
+                */
             })
         };
 		$scope.getUpdatedAttachmentReviewSummary = function (item) {
+			
+			document.getElementById("attachmentReviewBtn-".concat(item.id)).setAttribute("disabled", "disabled");
+			document.getElementById("attachmentReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch fa-spin";
+			
 			emailMessageReviewSvc.getAttachmentReviewSummary(item.id)
 			.success(function (result) {
 				item.attachmentReviewSummary = result;
+
+				document.getElementById("attachmentReviewBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("attachmentReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch";
+								
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
             }).error(function (err) {
+
+				document.getElementById("attachmentReviewBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("attachmentReviewIcn-".concat(item.id)).className = "fa fa-circle-o-notch";
+								
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
 		};
 		$scope.getUpdatedAttachmentExtracts = function (item) {
+			
+			document.getElementById("attachmentRefreshBtn-".concat(item.id)).setAttribute("disabled", "disabled");
+			document.getElementById("attachmentRefreshIcn-".concat(item.id)).className = "fa fa-refresh fa-spin";
+			
 			emailMessageReviewSvc.getUpdatedAttachmentExtracts(item.id)
 			.success(function (result) {
 				item.extracts = result;
+
+				document.getElementById("attachmentRefreshBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("attachmentRefreshIcn-".concat(item.id)).className = "fa fa-refresh";
+								
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
             }).error(function (err) {
+
+				document.getElementById("attachmentRefreshBtn-".concat(item.id)).removeAttribute("disabled");
+				document.getElementById("attachmentRefreshIcn-".concat(item.id)).className = "fa fa-refresh";
+								
                 $scope.error = err;
                 $scope.loadingMessage = '';
             })
@@ -58,6 +119,10 @@ angular.module('documentAIManagementApp')
         $scope.populate = function () {
             emailMessageReviewSvc.getItems().success(function (results) {
                 $scope.emailMessageReview = results;
+				
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';
@@ -75,8 +140,13 @@ angular.module('documentAIManagementApp')
 
 				document.getElementById("emailSearchBtn").removeAttribute("disabled");
 				document.getElementById("emailSearchIcn").className = "fa fa-search";
+				
+				$scope.error = '';
+				$scope.loadingMessage = '';
 
 			}).error(function (err) {
+				$scope.emailMessageReview = null;
+
 				$scope.error = err;
 				$scope.loadingMessage = '';
 

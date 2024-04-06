@@ -94,8 +94,10 @@ public class CosmosDBCommonQueries {
   		return null;
 	}
 	
-	public static String deleteMessageWithDependecies(CosmosDBOperation cosmosDB, AzureAIOperation aiOps, AzureADLSOperation adlsOps, String id) {
-		String errorResponse = String.format("Failed to delete email message and all dependencies by id: %s", id);
+	public static ReturnEntity<Integer, String> deleteMessageWithDependecies(CosmosDBOperation cosmosDB, AzureAIOperation aiOps, AzureADLSOperation adlsOps, String id) {
+		String er = String.format("Failed: Delete Message[%s]. ", id);
+		StringBuffer erb = new StringBuffer();
+		erb.append(er);
 		
 		// Get the email item
 		EmailData ed = CosmosDBCommonQueries.getItemById(cosmosDB, EmailData.class, id);
@@ -120,7 +122,9 @@ public class CosmosDBCommonQueries {
 								if (videoIndex != null) {
 									status = aiOps.deleteVideoIndex(videoIndex);
 									if (status != HttpStatus.SC_NO_CONTENT) {
-										logger.info("Failed to delete video index id: {}", videoIndex);
+										er = String.format("Delete Video Index[%s] failed", videoIndex);
+										erb.append(er);
+										logger.info("{}", er);
 										deletedStatus = status;
 									}
 								}
@@ -131,14 +135,18 @@ public class CosmosDBCommonQueries {
 
 					status = cosmosDB.delete(aedReturnEntity.getEntity());
 					if (status != HttpStatus.SC_NO_CONTENT) {
-						logger.info("Failed to delete AttachmentExtractsData with id: {}", aedId);
+						er = String.format("Failed to delete AttachmentExtractsData id[%s]. ", aedId);
+						erb.append(er);
+						logger.info("{}", er);
 						deletedStatus = status;
 					}
 
 					String adId = ad.getId();
 					status = cosmosDB.delete(ad);
 					if (status != HttpStatus.SC_NO_CONTENT) {
-						logger.info("Failed to delete AttachmentData with id: {}", adId);
+						er = String.format("Failed to delete AttachmentData id[%s]. ", adId);
+						erb.append(er);
+						logger.info("{}", er);
 						deletedStatus = status;
 					}
 				}
@@ -148,26 +156,36 @@ public class CosmosDBCommonQueries {
 			try {
 				status = adlsOps.deleteBlob(urlToRemove);
 				if (status != HttpStatus.SC_ACCEPTED && status != HttpStatus.SC_OK) {
-					logger.info("Failed to delete Blob Storage folder: {}", urlToRemove);
+					er = String.format("Failed to delete Blob Storage folder [%s]. ", urlToRemove);
+					erb.append(er);
+					logger.info("{}", er);
 					deletedStatus = HttpStatus.SC_BAD_REQUEST;
 				}
 			} catch (Exception e) {
-				logger.info("Delete Blob Storage folder: {} raised exception: {}", urlToRemove, e);
+				er = String.format("Delete Blob Storage folder [%s] raised exception: %s. ", urlToRemove, e);
+				erb.append(er);
+				logger.info("{}", er);
 				deletedStatus = HttpStatus.SC_BAD_REQUEST;
 			}
 
 			status = cosmosDB.delete(ed);
-			if (deletedStatus != HttpStatus.SC_NO_CONTENT) {
-				logger.info("Failed to delete EmailData with id: {}", id);
+			if (status != HttpStatus.SC_NO_CONTENT) {
+				er = String.format("Failed Cosmos DB delete EmailData[%s]. ", id);
+				erb.append(er);
+				logger.info("{}", er);
 				deletedStatus = status;
 			}
 			 
 		}
 		
-		if (deletedStatus != HttpStatus.SC_NO_CONTENT) 
-			return errorResponse;
-		else 
-			return String.format("Success: Deleted email message and all dependencies by id: %s", id);
+		if (deletedStatus != HttpStatus.SC_NO_CONTENT) {
+			return new ReturnEntity<Integer, String>(deletedStatus, erb.toString());
+		}
+		else { 
+			er = String.format("Success: Deleted email message and all dependencies by id: %s", id);
+			logger.info("{}", er);
+			return new ReturnEntity<Integer, String>(HttpStatus.SC_NO_CONTENT, er);
+		}
 	}
 	
 	public static <T> T getItemById(CosmosDBOperation cosmosDB, Class<T> itemClass, String id) {

@@ -13,32 +13,38 @@ angular.module('documentAIManagementApp')
         $scope.newSearchString = '';
         $scope.item = null;
 		$scope.itemScore = {};
-		$scope.myNum = '';
+		$scope.index = 0;
 		
-		$scope.getUpdatedScore = function (myNum, item) {
+		$scope.getUpdatedScore = function (item) {
 			
-			document.getElementById("scoreBtn").setAttribute("disabled", "disabled");
-			document.getElementById("scoreIcn").className = "fa fa-circle-o-notch fa-spin";
-
+			document.getElementById("scoreBtn-".concat(item.searchId)).setAttribute("disabled", "disabled");
+			document.getElementById("scoreIcn-".concat(item.searchId)).className = "fa fa-circle-o-notch fa-spin";
+						
 			searchAndReviewSvc.getScore(item.keyPhrases)
 			.success(function (result) {
 				item.score = result;
 
-				document.getElementById("scoreBtn").removeAttribute("disabled");
-				document.getElementById("scoreIcn").className = "fa fa-circle-o-notch";
+				document.getElementById("scoreBtn-".concat(item.searchId)).removeAttribute("disabled");
+				document.getElementById("scoreIcn-".concat(item.searchId)).className = "fa fa-circle-o-notch";
 
+                $scope.error = '';
+                $scope.loadingMessage = '';
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';
 
-				document.getElementById("scoreBtn").removeAttribute("disabled");
-				document.getElementById("scoreIcn").className = "fa fa-circle-o-notch";
+				document.getElementById("scoreBtn-".concat(item.searchId)).removeAttribute("disabled");
+				document.getElementById("scoreIcn-".concat(item.searchId)).className = "fa fa-circle-o-notch";
 
             })
 		}
         $scope.populate = function () {
             searchAndReviewSvc.getItems().success(function (results) {
                 $scope.searchAndReview = results;
+				
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
             }).error(function (err) {
                 $scope.error = err;
                 $scope.loadingMessage = '';
@@ -57,6 +63,9 @@ angular.module('documentAIManagementApp')
 				document.getElementById("bingSearchBtn").removeAttribute("disabled");
 				document.getElementById("bingSearchIcn").className = "fa fa-search";
 				
+				$scope.error = '';
+				$scope.loadingMessage = '';
+
 			}).error(function (err) {
 				$scope.error = err;
 				$scope.loadingMessage = '';

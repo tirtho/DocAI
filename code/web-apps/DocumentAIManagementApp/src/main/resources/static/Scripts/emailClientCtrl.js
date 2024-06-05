@@ -18,6 +18,11 @@ angular.module('documentAIManagementApp')
 		$scope.newEmailAutoInsuranceClaimImageBack = '';
 		$scope.newEmailAutoInsuranceClaimVideo = '';
 		$scope.newEmailCommercialInsuranceApplicationForm = '';
+		$scope.newEmailBloodTestReport = '';
+		$scope.newEmailCrazyPrescription = '';
+		$scope.newEmailGoodPrescription = '';
+		$scope.newEmailGreatPrescription = '';
+		
         $scope.attachments = [];
 
         $scope.add = function () {
@@ -26,6 +31,10 @@ angular.module('documentAIManagementApp')
 			$scope.attachments.push('2011LexusIS350C-broken-back.png:' + $scope.newEmailAutoInsuranceClaimImageBack),
 			$scope.attachments.push('CarClaim480p.mp4:' + $scope.newEmailAutoInsuranceClaimVideo),
 			$scope.attachments.push('ABCChemicals-NECommercialConstructionCompany-COMMERCIAL INSURANCE APPLICATION.pdf:' + $scope.newEmailCommercialInsuranceApplicationForm),
+			$scope.attachments.push('BloodTestReport.png:' + $scope.newEmailBloodTestReport),
+			$scope.attachments.push('CrazyPrescription.png:' + $scope.newEmailCrazyPrescription),
+			$scope.attachments.push('GoodPrescription.png:' + $scope.newEmailGoodPrescription),
+			$scope.attachments.push('GreatPrescription.png:' + $scope.newEmailGreatPrescription),
 
 			document.getElementById("sendEmailBtn").setAttribute("disabled", "disabled");
 			document.getElementById("sendEmailIcn").className = "fa fa-circle-o-notch fa-spin";
@@ -64,6 +73,10 @@ angular.module('documentAIManagementApp')
 			$scope.newEmailAutoInsuranceClaimImageBack = '';
 			$scope.newEmailAutoInsuranceClaimVideo = '';
 			$scope.newEmailCommercialInsuranceApplicationForm = '';
+			$scope.newEmailBloodTestReport = '';
+			$scope.newEmailCrazyPrescription = '';
+			$scope.newEmailGoodPrescription = '';
+			$scope.newEmailGreatPrescription = '';
 	        $scope.attachments = [];
         };
 

@@ -115,6 +115,26 @@ def composePromptWithRAGData(body, fName):
         "categories": "workers-compensation,request-new-quote"
     }
     ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi Sam, Please find enclosed my medical records. Based on this information can you please provide a quote for Life Insurance?.\n\nRegards,\n\n- JK",
+        "categories": "life-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi Erin, I have attached my blood test report and all the recent prescriptions. Please provide a life insurance quote, as discussed.\n\nRegards,\n\n- Akashi",
+        "categories": "life-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi, As discussed here are all my recent health records for you to peruse and provide a life insurance quote. Thanks!",
+        "categories": "life-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
+    resultFromSearch = {
+        "body": "Hi Dr House, Here are all the prescriptions and lab reports. Please email me back a life insurance quote.\n\nRegards,\n\n- Iqbal",
+        "categories": "life-insurance,request-new-quote"
+    }
+    ragArray.append(resultFromSearch)
     
     allShots = ''
     allCategoriesArray = ['unknown']
@@ -308,7 +328,7 @@ def composeMultiModalPrompt(url, fName):
             { "role": "user", "content": [  
                 { 
                     "type": "text", 
-                    "text": "Classify this picture in one word ONLY from one of the classes 'automobile', 'home', 'other':" 
+                    "text": "Classify this picture in one word ONLY from one of the classes 'automobile', 'home', 'medical-rx-note', 'medical-lab-report', 'financial-report', 'other':" 
                 },
                 { 
                     "type": "image_url",
@@ -323,9 +343,9 @@ def composeMultiModalPrompt(url, fName):
     }
     return theMultiModalPrompt  
 
-def composeMultiModalExtractionPrompt(url, categories, fName):
-    fName = f'{fName}f(composeMultiModalExtractionPrompt)->'
-    theMultiModalExtractionPrompt = { 
+def composeImageExtractionPrompt(url, categories, fName):
+    fName = f'{fName}f(composeImageExtractionPrompt)->'
+    theImageExtractionPrompt = { 
         "messages": [ 
             { "role": "system", "content": "You are a helpful assistant." }, 
             { "role": "user", "content": [  
@@ -344,25 +364,150 @@ def composeMultiModalExtractionPrompt(url, categories, fName):
         "temperature":0.0,
         "max_tokens": 4096 
     }
-    return theMultiModalExtractionPrompt  
+    return theImageExtractionPrompt  
+
+def hasHandwrittenTextPrompt(url, categories, fName):
+    fName = f'{fName}f(hasHandwrittenTextPrompt)->'
+    checkIfHandwritttenPrompt = { 
+        "messages": [ 
+            { "role": "system", "content": "You are a helpful assistant." }, 
+            { "role": "user", "content": [  
+                { 
+                    "type": "text", 
+                    "text": "Is there any hand written text in this document? Answer just True or False." 
+                },
+                { 
+                    "type": "image_url",
+                    "image_url": {
+                        "url": url
+                    }
+                }
+            ] } 
+        ],
+        "temperature":0.0,
+        "max_tokens": 4096 
+    }
+    return checkIfHandwritttenPrompt 
+
+def composeOmniExtractionPrompt(url, categories, fName):
+    fName = f'{fName}f(composeOmniExtractionPrompt)->'
+    theOmniExtractionPrompt = { 
+        "messages": [ 
+            { "role": "system", "content": "You are a helpful assistant." }, 
+            { "role": "user", "content": [  
+                { 
+                    "type": "text", 
+                    "text": "Describe image in less than 10 sentences:" 
+                },
+                { 
+                    "type": "image_url",
+                    "image_url": {
+                        "url": url
+                    }
+                }
+            ] } 
+        ],
+        "temperature":0.0,
+        "max_tokens": 4096 
+    }
+    return theOmniExtractionPrompt 
     
-def getExtractsFromAOAI(url, categories, fName):
-    fName = f'{fName}f(getExtractsFromAOAI)->'
-    aoaiVisionAPIKey = os.getenv('OPENAI_VISION_API_KEY')
-    aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
+def getExtractsFromAOAIgpt4o(url, categories, fName):
+    fName = f'{fName}f(getExtractsFromAOAIgpt4o)->'
+    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
+    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+    decodedBytes = base64.b64decode(rawToken)
+    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
+    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiOmniAPIEngine}/chat/completions?api-version={aoaiOmniAPIVersion}'
+    #extract insights on the image
+    gotPrompt = composeOmniExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
+    logging.info(f'{fName}Got Prompt: {gotPrompt}')
+    headers = {
+                "Content-Type": "application/json",   
+                "api-key": aoaiMultiModalAPIKey 
+            }
+    response = runHttpRequest(endpoint=endpoint,
+                              headers=headers,
+                              requestType="POST",
+                              jsonRequestBody=gotPrompt,
+                              fName=fName
+                            )
+    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
+    jsonResponse = json.loads(response.content.decode('utf-8'))
+    logging.info(f'{fName} GPT4 Omni API response:{jsonResponse}')
+    summary = jsonResponse['choices'][0]['message']['content']
+
+    gotPrompt = hasHandwrittenTextPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
+    logging.info(f'{fName}Got Prompt: {gotPrompt}')
+    headers = {
+                "Content-Type": "application/json",   
+                "api-key": aoaiMultiModalAPIKey 
+            }
+    response = runHttpRequest(endpoint=endpoint,
+                              headers=headers,
+                              requestType="POST",
+                              jsonRequestBody=gotPrompt,
+                              fName=fName
+                            )
+    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
+    jsonResponse = json.loads(response.content.decode('utf-8'))
+    logging.info(f'{fName} GPT4 Omni API response:{jsonResponse}')
+    isHandwritten = jsonResponse['choices'][0]['message']['content']
+
+    aoaiAPIVersion = aoaiOmniAPIVersion
+    modelId = aoaiOmniAPIEngine
+    formDocuments = []
+    formFields = []
+    name = "Description"
+    value_type = "string"
+    # TODO: Compute confidence for what is returned by GPT4
+    #    "fieldConfidence":confidence,
+    aField = {
+        "fieldName":f'{name}',
+        "fieldValueType":f'{value_type}',
+        "fieldValue":f'{summary}'
+    }
+    formFields.append(aField)
+    createdDateTime = getCurrentUTCTimeString()
+    aField = {
+        "fieldName":"CreatedTime",
+        "fieldValueType":"string",
+        "fieldConfidence":0.99,
+        "fieldValue":f'{createdDateTime}'
+    }
+    formFields.append(aField)
+    # TODO: compute confidence for doc
+    # "documentConfidence":confidence,
+    aDocument = {
+        "documentId":0,
+        "documentType":f'{aoaiOmniAPIEngine}',
+        "fields":formFields
+    }
+    formDocuments.append(aDocument)
+    logging.info(f'{fName}formDocuments:{formDocuments}')
+    return aoaiAPIVersion, modelId, isHandwritten, formDocuments
+
+def getExtractsFromAOAIgpt4v(url, categories, fName):
+    fName = f'{fName}f(getExtractsFromAOAIgpt4v)->'
+    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
     aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
     aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
     rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
     decodedBytes = base64.b64decode(rawToken)
     blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
     logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
+    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
     #extract insights on the image
-    gotPrompt = composeMultiModalExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
+    gotPrompt = composeImageExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
     logging.info(f'{fName}Got Prompt: {gotPrompt}')
     headers = {
                 "Content-Type": "application/json",   
-                "api-key": aoaiVisionAPIKey 
+                "api-key": aoaiMultiModalAPIKey 
             }
     response = runHttpRequest(endpoint=endpoint,
                               headers=headers,
@@ -398,7 +543,7 @@ def getExtractsFromAOAI(url, categories, fName):
         "fieldValue":f'{createdDateTime}'
     }
     formFields.append(aField)
-    # TODO: compute cofidence for doc
+    # TODO: compute confidence for doc
     # "documentConfidence":confidence,
     aDocument = {
         "documentId":0,
@@ -583,12 +728,15 @@ def getExtractsFromAOAIVideo(url, fName):
 def getExtractsFromModel(url, documentCategories, fName):
     fName = f'{fName}f(getExtractsFromModel)->'
     try:
-        # If it is an image then call the GPT-4 Vision API to extract
-        if containsCategory(documentCategories, "image-", fName):
-            return getExtractsFromAOAI(url, documentCategories, fName)
+        # If video call GPT-4v
         if containsCategory(documentCategories, "video-", fName):
             return getExtractsFromAOAIVideo(url, fName)
-        theModelType, extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
+        # If it is an image then call the GPT-4o 
+        elif containsCategory(documentCategories, "image-", fName):
+            return getExtractsFromAOAIgpt4o(url, documentCategories, fName)
+        else:
+            # Check if this class of the document maps to a custom Form Recognizer model or not
+            theModelType, extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
     except Exception as e:
         logging.error(f'{fName}Getting right extraction model for the attachment raised exception {e}')
         raise
@@ -920,15 +1068,15 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(f'{categories}', status_code=200)    
         if messageType == 'email-attachment':
             try:
-                aoaiVisionAPIKey = os.getenv('OPENAI_VISION_API_KEY')
-                aoaiVisionAPIEndpoint = os.getenv('OPENAI_VISION_API_ENDPOINT')
+                aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
+                aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
                 aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
                 aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
                 rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
                 decodedBytes = base64.b64decode(rawToken)
                 blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
                 logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-                endpoint = f'{aoaiVisionAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
+                endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
                 #classifiedCategory
                 # Process video files. For video we can't do realtime AOAI calls to get 
                 # more data about the video. So, just adding the extension as part of category
@@ -941,7 +1089,7 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
                     logging.info(f'{fName}Got Prompt: {gotPrompt}')
                     headers = {
                                 "Content-Type": "application/json",   
-                                "api-key": aoaiVisionAPIKey 
+                                "api-key": aoaiMultiModalAPIKey 
                             }
                     response = runHttpRequest(endpoint=endpoint,
                                    headers=headers,
@@ -954,7 +1102,7 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
                     logging.info(f'{fName} GPT4 Vision API response:{jsonResponse}')
                     categoryRaw = jsonResponse['choices'][0]['message']['content']
                     category = categoryRaw.lower()
-                    if category == 'home' or category == 'automobile' or category == 'other':
+                    if category == 'medical-rx-note' or category == 'medical-lab-report' or category == 'financial-report' or category == 'home' or category == 'automobile' or category == 'other':
                         category = f'image-{category}'
                     else:
                         category = 'image-other'
@@ -1049,8 +1197,9 @@ def saveAttachmentProperties(req: func.HttpRequest,
         logging.error(errorMessage)
         return func.HttpResponse(errorMessage, status_code=400)
     # If this is a GPT4 detected category
+    # call GPT-4o to get description from image
     if containsCategory(attachmentClasses, "image-", fName):
-        theModelType = "gpt4-vision"
+        theModelType = "gpt4-o"
     elif containsCategory(attachmentClasses, "video-", fName):
         theModelType = "gpt4-vision-enhanced"
     else:

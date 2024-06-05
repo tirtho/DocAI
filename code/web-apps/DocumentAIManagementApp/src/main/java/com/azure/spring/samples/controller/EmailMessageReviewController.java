@@ -78,14 +78,18 @@ public class EmailMessageReviewController {
     private String aoaiVersion;
 
     // GPT4 VISION API access
-    @Value("${azure.aoai.vision.endpoint}")
-    private String aoaiVisionEndpoint;
-    @Value("${azure.aoai.vision.key}")
-    private String aoaiVisionKey;
+    @Value("${azure.aoai.multi-modal.endpoint}")
+    private String aoaiMultiModalEndpoint;
+    @Value("${azure.aoai.multi-modal.key}")
+    private String aoaiMultiModalKey;
+    @Value("${azure.aoai.omni.engine}")
+    private String aoaiOmniModel;
+    @Value("${azure.aoai.omni.version}")
+    private String aoaiOmniVersion;
     @Value("${azure.aoai.vision.engine}")
-    private String aoaiVisionModel;
+    private String aoaiVideoModel;
     @Value("${azure.aoai.vision.version}")
-    private String aoaiVisionVersion;
+    private String aoaiVideoVersion;
     
     // All common Azure Cognitive Services access
     @Value("${azure.cognitive.service.endpoint}")
@@ -176,7 +180,15 @@ public class EmailMessageReviewController {
             cosmosDB.close();
             return new ResponseEntity<>(reviewSummary, HttpStatus.OK);
         }
-        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(aoaiEndpoint, aoaiKey, aoaiModel, aoaiVersion, AOAIConnectionType.SDK);
+        AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(
+        									aoaiEndpoint, 
+        									aoaiKey, 
+        									aoaiModel, 
+        									aoaiVersion, 
+        									null, 
+        									null, 
+        									AOAIConnectionType.SDK
+        								);
         AttachmentAnomaly anomaly;
         if (StringUtils.compareIgnoreCase("workers-compensation-application", attachmentCategory) == 0) {
         	anomaly = new WorkersCompensationApplicationAnomaly(cosmosDB, aoaiOps);
@@ -186,19 +198,21 @@ public class EmailMessageReviewController {
         	anomaly = new  AutoInsuranceClaimAnomaly(cosmosDB, aoaiOps);
         } else {
         	// For the files with unknown classification, need to run the content
-        	// by GPT4 regular if content is text, else by Vision API if image/video
-            AzureOpenAIOperation aoaiVisionOps = new AzureOpenAIOperation (
-            											aoaiVisionEndpoint, 
-            											aoaiVisionKey, 
-            											aoaiVisionModel, 
-            											aoaiVisionVersion, 
+        	// by GPT4 regular if content is text, else by GPT-4o API if image and GTP-4 Vision if video
+            AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
+            											aoaiMultiModalEndpoint, 
+            											aoaiMultiModalKey,
+            											aoaiOmniModel,
+            											aoaiOmniVersion,
+            											aoaiVideoModel, 
+            											aoaiVideoVersion, 
             											AOAIConnectionType.HTTP
             										);
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, Transform.b64Decode(blobStoreSASToken));
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, aiOps, Transform.b64Decode(blobStoreSASToken));
         }
         @SuppressWarnings("unchecked")
-		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id);
+		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id, attachmentCategory);
 
         cosmosDB.close();
         logger.info("Got review remark as {}", reviewSummary);
@@ -244,10 +258,12 @@ public class EmailMessageReviewController {
     	// by GPT4 regular if content is text, else by Vision API if image/video
         if (attachmentCategory.startsWith("video-")) {
             AzureOpenAIOperation aoaiVisionOps = new AzureOpenAIOperation (
-														aoaiVisionEndpoint, 
-														aoaiVisionKey, 
-														aoaiVisionModel, 
-														aoaiVisionVersion, 
+														aoaiMultiModalEndpoint, 
+														aoaiMultiModalKey,
+														null,
+														null,
+														aoaiVideoModel, 
+														aoaiVideoVersion, 
 														AOAIConnectionType.HTTP
 													);
             AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);

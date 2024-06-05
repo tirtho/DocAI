@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 public interface AttachmentAnomaly {
     
-	List<?> getAttachmentAnomaly (String attachmentId);
+	List<?> getAttachmentAnomaly (String attachmentId, String attachmentCategory);
 	
 	default String attachmentExtractsDataRquiredFieldsReview (AttachmentExtractsData aed, AzureOpenAIOperation aoaiOps, String prompt) {
   	  	// Make the AOAI call and let it find missing required fields		

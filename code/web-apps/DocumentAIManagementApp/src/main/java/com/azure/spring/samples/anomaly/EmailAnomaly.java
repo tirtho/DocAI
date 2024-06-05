@@ -14,7 +14,11 @@ import com.azure.spring.samples.utils.Category;
 
 public class EmailAnomaly {
 
-    private static Logger logger = LoggerFactory.getLogger(EmailAnomaly.class);
+    private static final String LIFE_INSURANCE_CATEGORY = "life-insurance";
+
+	private static final String MEDICAL_LAB_REPORT = "medical-lab-report";
+
+	private static Logger logger = LoggerFactory.getLogger(EmailAnomaly.class);
     
     private CosmosDBOperation cosmosDB;
 
@@ -79,6 +83,8 @@ public class EmailAnomaly {
 						// Found category match
 						// like for email::attachment the categories match
 						// workers-compensation::workers-compensation-application
+						correspondingAttachmentName = ad.getAttachmentName();
+					} else if (emailCategory.contains(LIFE_INSURANCE_CATEGORY) && attachmentCategory.contains(MEDICAL_LAB_REPORT)) {
 						correspondingAttachmentName = ad.getAttachmentName();
 					}
 				}

@@ -38,7 +38,7 @@ public class WorkersCompensationApplicationAnomaly implements AttachmentAnomaly 
 	}
 
 	@Override
-	public List<?> getAttachmentAnomaly(String attachmentId) {
+	public List<?> getAttachmentAnomaly(String attachmentId, String attachmentCategory) {
   		String reviewMessage;
 		List<String> reviewSummary = new ArrayList<>();
 

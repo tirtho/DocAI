@@ -4,6 +4,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 import com.azure.spring.samples.model.ExtractData;
+import com.azure.spring.samples.utils.Category;
 import com.azure.spring.samples.utils.FileType;
 import com.azure.spring.samples.utils.ReturnEntity;
 import com.google.gson.JsonElement;
@@ -29,45 +31,57 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
     public static Logger logger = LoggerFactory.getLogger(DefaultAttachmentAnomaly.class);
     
-	private static String FIND_IMAGE_ENHANCEMENTS_REVIEW_PROMPT = 
-			"{"
-			+ "    \"enhancements\": {\r\n"
-			+ "        \"ocr\": {\r\n"
-			+ "          \"enabled\": true\r\n"
-			+ "        },\r\n"
-			+ "        \"grounding\": {\r\n"
-			+ "          \"enabled\": true\r\n"
-			+ "        }\r\n"
-			+ "    },\r\n"
-			+ "    \"dataSources\": [\r\n"
-			+ "    {\r\n"
-			+ "        \"type\": \"AzureComputerVision\",\r\n"
-			+ "        \"parameters\": {\r\n"
-			+ "            \"endpoint\": \"%s\",\r\n"
-			+ "            \"key\": \"%s\"\r\n"
-			+ "        }\r\n"
-			+ "    }],\r\n"
-			+ "    \"messages\": [ \r\n"
-			+ "        { \"role\": \"system\", \"content\": \"You are a helpful assistant.\" }, \r\n"
-			+ "        { \"role\": \"user\", \r\n"
-			+ "        \"content\": [  \r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"text\", \r\n"
-			+ "                \"text\": \"Identify image is a CAR, HOME or OTHER. Detect any damage to the car or home, else say NONE. Also return any text detected in the image. Return JSON data ONLY in the format:"
-			+ "							 { 'imageOf': 'CAR or HOME or OTHER', 'damageAssessment': [list all damaged, discolored, broken and missing items in the image of the car or home. List NONE if no damaged items found.], 'surroundings': <any location or surrounding or background information>, 'anyText': <return any text detected in the image>}\" \r\n"
-			+ "            },\r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"image_url\", \r\n"
-			+ "                \"image_url\": {\r\n"
-			+ "                    \"url\" : \"%s\"\r\n"
-			+ "                }\r\n"
-			+ "            }\r\n"
-			+ "        ]} \r\n"
-			+ "    ], \r\n"
-			+ "	   \"stream\": false,\r\n"
-			+ "	   \"temperature\": 0.0,\r\n"
-			+ "    \"max_tokens\": 4096 \r\n"
-			+ "}   \r\n";
+    private static String AOAI_OMNI_PROMPT = 
+					"{"
+					+ "    \"messages\": [ \r\n"
+					+ "        { \"role\": \"system\", \"content\": \"You are a helpful assistant.\" }, \r\n"
+					+ "        { \"role\": \"user\", \r\n"
+					+ "        \"content\": [  \r\n"
+					+ "            { \r\n"
+					+ "                \"type\": \"text\", \r\n"
+					+ "                \"text\": \"%s\" \r\n"
+					+ "            },\r\n"
+					+ "            { \r\n"
+					+ "                \"type\": \"image_url\", \r\n"
+					+ "                \"image_url\": {\r\n"
+					+ "                    \"url\" : \"%s\"\r\n"
+					+ "                }\r\n"
+					+ "            }\r\n"
+					+ "        ]} \r\n"
+					+ "    ], \r\n"
+					+ "	   \"temperature\": 0.0,\r\n"
+					+ "    \"max_tokens\": 4096 \r\n"
+					+ "}   \r\n";
+
+//    private static String MEDICAL_REVIEW_USER_PROMPT = 
+//    		"List the data from the document as key / value pair in a JSON format. \r\n"
+//    		+ "If the value does not match the key, return the nearest matched value for that key. \r\n"
+//    		+ "The response should be in this JSON format: \r\n"
+//    		+ "{ "
+//    		+ "	[ "
+//    		+ "		{ "
+//    		+ " 		<key>: <value>,"
+//    		+ " 		\"doesMatch\": [yes/no],"
+//    		+ " 		\"nextNearestValue\": <next closest value that maches the key>"
+//    		+ "		}, "
+//    		+ "		..."
+//    		+ " ]"
+//    		+ "}";
+        
+    private static String MEDICAL_REVIEW_USER_PROMPT = 
+    		"List the data from the document as key/value pair in a JSON format.";
+    
+    private static String FINANCIAL_REPORT_REVIEW_USER_PROMPT;
+    
+	private static String CAR_HOME_IMAGE_REVIEW_PROMPT = 
+			"Identify image is a CAR, HOME or OTHER. Detect any damage to the car or home, else say NONE. "
+			+ "Also return any text detected in the image. Return JSON data ONLY in the format:"
+			+ "{ "
+			+ "'imageOf': 'CAR or HOME or OTHER', "
+			+ "'damageAssessment': [list all damaged, discolored, broken and missing items in the image of the car or home. List NONE if no damaged items found.], "
+			+ "'surroundings': <any location or surrounding or background information>,"
+			+ " 'anyText': <return any text detected in the image>"
+			+ "}";
 	
 	private static String FIND_VIDEO_ENHANCEMENTS_REVIEW_PROMPT = 
 			"{\r\n"
@@ -149,7 +163,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ "}   \r\n";
 	
     private CosmosDBOperation cosmosDB;
-    private AzureOpenAIOperation aoaiVisionOps;
+    private AzureOpenAIOperation aoaiOps;
     private AzureAIOperation aiOps;
     private String blobStoreSASToken;
 	
@@ -162,13 +176,13 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
      */
     public DefaultAttachmentAnomaly(
     				CosmosDBOperation cosmosDB,
-    				AzureOpenAIOperation aoaiVisionOps,
+    				AzureOpenAIOperation aoaiOps,
     				AzureAIOperation aiOps,
     				String blobStoreSASToken
     			) {
 		super();
 		this.cosmosDB = cosmosDB;
-		this.aoaiVisionOps = aoaiVisionOps;
+		this.aoaiOps = aoaiOps;
 		this.aiOps = aiOps;
 		this.blobStoreSASToken = blobStoreSASToken;
 	}
@@ -186,7 +200,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
      * 
      */
 	@Override
-	public List<?> getAttachmentAnomaly(String attachmentId) {
+	public List<?> getAttachmentAnomaly(String attachmentId, String attachmentCategory) {
 
 		List<String> reviewSummary = new ArrayList<>();
 		String reviewMessage = null;
@@ -201,12 +215,32 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
 	  	FileType ft = FileType.fromFilename(filename);	
 	  	if (ft.isImage()) {
-	  		// pass prompt for image for GPT 4 Vision API
-	  		//String prompt = String.format(FIND_IMAGE_PROMPT, fileUrl);
-	  		// Use the GPT4 Vision API with Image Enhancement with Azure Vision API
-	  		String prompt = String.format(FIND_IMAGE_ENHANCEMENTS_REVIEW_PROMPT, aiOps.getAiEndpoint(), aiOps.getAiKey(), fileUrl);
-	  		logger.info(prompt);
-	  		reviewMessage = String.format("Image Review: %s", aoaiVisionOps.getAOAIVisionCompletion(prompt, true));
+	  		// Pass prompt for image for GPT-4 Omni API
+	  		String prompt = null;	  		
+
+	  		// Detect the image category and then generate the right prompt
+	  		List<String> attachmentCategories = Arrays.asList(attachmentCategory);
+	  		
+	  		// For Auto and Home
+	  		List<String> carHomeCategory = new ArrayList<>();
+	  		carHomeCategory.add("image-automobile");
+	  		carHomeCategory.add("image-home");
+	  		// For Medical
+	  		List<String> medicalCategory = new ArrayList<>();
+	  		medicalCategory.add("image-medical-rx-note");
+	  		medicalCategory.add("image-medical-lab-report");
+	  			  		
+	  		if (Category.hasAny(carHomeCategory, attachmentCategories)) {
+	  			prompt = String.format(AOAI_OMNI_PROMPT, CAR_HOME_IMAGE_REVIEW_PROMPT, fileUrl);
+		  		logger.info(prompt);	  			
+		  		reviewMessage = String.format("Image Review: %s", aoaiOps.getAOAIOmniCompletion(prompt, false));
+	  		} else if (Category.hasAny(medicalCategory, attachmentCategories)) {
+	  			prompt = String.format(AOAI_OMNI_PROMPT, MEDICAL_REVIEW_USER_PROMPT, fileUrl);
+		  		logger.info(prompt);	  			
+		  		reviewMessage = String.format("Image Review: %s", aoaiOps.getAOAIOmniCompletion(prompt, false));
+	  		} else {
+				reviewMessage = String.format("Image Review: Image category unknown.");
+	  		}	  		
 	  	} else if (ft.isAudio()) {
 	  		// TODO: pass prompt for audio
 	  	} else if (ft.isVideo()) {
@@ -274,7 +308,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 		  										fileUrl,
 		  										videoDocumentId
 		  									);
-				String message = aoaiVisionOps.getAOAIVideoCompletion(prompt);
+				String message = aoaiOps.getAOAIVideoCompletion(prompt);
 				logger.info(message);
 				return message;
 			} else if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0) {
@@ -341,7 +375,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 				String prompt = String.format(FIND_VIDEO_ENHANCEMENTS_DESCRIPTION_PROMPT, aiOps.getAiEndpoint(),
 						aiOps.getAiKey(), videoDocumentId, fileUrl, videoDocumentId);
 				// Call GPT4 Vision to get description of the video
-				String description = aoaiVisionOps.getAOAIVideoCompletion(prompt);
+				String description = aoaiOps.getAOAIVideoCompletion(prompt);
 				
 				// Now update the status and description fields in cosmosdb
 				List<Map<String, ?>> updatedFields = new ArrayList<>();

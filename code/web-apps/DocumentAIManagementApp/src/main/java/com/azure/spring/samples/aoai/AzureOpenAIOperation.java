@@ -43,10 +43,12 @@ public class AzureOpenAIOperation {
     private static OpenAIServiceVersion AOAI_DEFAULT_VERSION = OpenAIServiceVersion.V2023_07_01_PREVIEW;
     		
     private OpenAIClient aoaiClient;
-    private String deployedModel;
     private String endpoint;
     private String key;
-    private String version;
+    private String deployedModel;
+    private String modelVersion;
+    private String deployedVideoModel;
+    private String videoModelVersion;
     private AOAIConnectionType type;
 
     /**
@@ -62,19 +64,24 @@ public class AzureOpenAIOperation {
      */
 	public AzureOpenAIOperation(
 			String endpoint, 
-			String key, 
+			String key,
 			String deployedModel,
-			String version,
+			String modelVersion,
+			String deployedVideoModel,
+			String videoModelVersion,
 			AOAIConnectionType connectionType) {
 		super();
-		this.type = connectionType;
-		this.deployedModel = deployedModel;
 		this.endpoint = endpoint;
 		this.key = key;
+		this.deployedModel = deployedModel;
+		this.modelVersion = modelVersion;
+		this.deployedVideoModel = deployedVideoModel;
+		this.videoModelVersion = videoModelVersion;
+		this.type = connectionType;
 		
 		if (type.equals(AOAIConnectionType.SDK)) {
 			OpenAIServiceVersion usingAPIVersion = AOAI_DEFAULT_VERSION;
-			String transformedVersion = StringUtils.replace(version, "-", "_");
+			String transformedVersion = StringUtils.replace(modelVersion, "-", "_");
 			transformedVersion = "V" + transformedVersion;
 			for (OpenAIServiceVersion aVersion : OpenAIServiceVersion.values()) {
 				if (StringUtils.compare(transformedVersion.toLowerCase(), aVersion.getVersion().toLowerCase()) == 0) {
@@ -88,9 +95,9 @@ public class AzureOpenAIOperation {
 							    .endpoint(endpoint)
 								.serviceVersion(usingAPIVersion)
 							    .buildClient();
-			this.version = usingAPIVersion.toString();
+			this.modelVersion = usingAPIVersion.toString();
 		} else {
-			this.version = version;
+			this.modelVersion = modelVersion;
 		}
 	}
 
@@ -119,6 +126,50 @@ public class AzureOpenAIOperation {
 		return completionBuffer.toString();
 	}
 	
+	public String getAOAIOmniCompletion(String prompt, boolean withExtensions) {
+		try {
+			String extensionUri = "";
+			if (withExtensions) {
+				extensionUri = "extensions/";
+			}
+			String baseUrl = String.format(
+											"%sopenai/deployments/%s/%schat/completions?api-version=%s", 
+											this.endpoint, 
+											this.deployedModel,
+											extensionUri,
+											this.modelVersion
+										  );
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPost aoaiOmniPost = new HttpPost(baseUrl);
+			aoaiOmniPost.setHeader("Content-Type", "application/json");
+			aoaiOmniPost.setHeader("api-key", this.key);
+			logger.info("Prompt sent to GPT-4 Omni API: {}", prompt);
+			StringEntity entity = new StringEntity(prompt);
+			aoaiOmniPost.setEntity(entity);
+			
+			String promptCompletion;
+			// Send the request and get the response
+			HttpResponse response = httpClient.execute(aoaiOmniPost);
+			
+			StatusLine statusOfTheCall = response.getStatusLine();
+			int statusCode = statusOfTheCall.getStatusCode();
+			if ( statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED) {
+				promptCompletion = String.format("GPT-4 Omni API call failed with error code: %s and reason: %s", statusCode, statusOfTheCall.getReasonPhrase());
+				logger.info(promptCompletion);
+			} else {
+				promptCompletion = getCompletionFromHttpResponse(response);
+				logger.info("GPT-4 Omni API returned: {}", promptCompletion);
+			}
+			
+			return promptCompletion;			
+		}
+		catch (Exception e) {
+			String promptFailedMessage = String.format("Connecting to AOAI GPT-4 Omni API over HTTP raised exception: %s", e);
+			logger.info(promptFailedMessage);
+			return promptFailedMessage;
+		}
+	}
+	
 	/**
 	 * This makes a call to the Vision API with enhancements. 
 	 * And this is using direct http connection
@@ -134,9 +185,9 @@ public class AzureOpenAIOperation {
 			String baseUrl = String.format(
 											"%sopenai/deployments/%s/%schat/completions?api-version=%s", 
 											this.endpoint, 
-											this.deployedModel,
+											this.deployedVideoModel,
 											extensionUri,
-											this.version
+											this.videoModelVersion
 										  );
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost aoaiVisionPost = new HttpPost(baseUrl);

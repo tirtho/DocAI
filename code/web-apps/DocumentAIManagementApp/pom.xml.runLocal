@@ -254,12 +254,20 @@
 							<value>${env.OPENAI_API_VERSION}</value>
 						</property>
 						<property>
-							<name>OPENAI_VISION_API_ENDPOINT</name>
-							<value>${env.OPENAI_VISION_API_ENDPOINT}</value>
+							<name>OPENAI_MULTI_MODAL_API_ENDPOINT</name>
+							<value>${env.OPENAI_MULTI_MODAL_API_ENDPOINT}</value>
 						</property>
 						<property>
-							<name>OPENAI_VISION_API_KEY</name>
-							<value>${env.OPENAI_VISION_API_KEY}</value>
+							<name>OPENAI_MULTI_MODAL_API_KEY</name>
+							<value>${env.OPENAI_MULTI_MODAL_API_KEY}</value>
+						</property>
+						<property>
+							<name>OPENAI_OMNI_API_ENGINE</name>
+							<value>${env.OPENAI_OMNI_API_ENGINE}</value>
+						</property>
+						<property>
+							<name>OPENAI_OMNI_API_VERSION</name>
+							<value>${env.OPENAI_OMNI_API_VERSION}</value>
 						</property>
 						<property>
 							<name>OPENAI_VISION_API_ENGINE</name>

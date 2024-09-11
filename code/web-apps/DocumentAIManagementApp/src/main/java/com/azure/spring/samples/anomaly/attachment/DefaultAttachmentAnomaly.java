@@ -23,9 +23,6 @@ import com.azure.spring.samples.model.ExtractData;
 import com.azure.spring.samples.utils.Category;
 import com.azure.spring.samples.utils.FileType;
 import com.azure.spring.samples.utils.ReturnEntity;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
@@ -101,7 +98,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ "        }\r\n"
 			+ "    }],\r\n"
 			+ "    \"messages\": [ \r\n"
-			+ "        { \"role\": \"system\", \"content\": \"You are a helpful assistant.\" }, \r\n"
+			+ "        { \"role\": \"system\", \"content\": [{\"You are a car insurance and accident expert.\"}] }, \r\n"
 			+ "        { \"role\": \"user\", \r\n"
 			+ "        \"content\": [  \r\n"
 			+ "            { \r\n"
@@ -110,8 +107,16 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ "            }, \r\n"
 			+ "            { \r\n"
 			+ "                \"type\": \"text\", \r\n"
-			+ "                \"text\": \"Identify image is a CAR, HOME or OTHER. Detect any damage to the car or home, else say NONE. Also return any text detected in the image. Return JSON data ONLY in the format:"
-			+ "							 { 'imageOf': 'CAR or HOME or OTHER', 'damageAssessment': [list all damaged, discolored, broken and missing items in the image of the car or home. List NONE if no damaged items found.], 'surroundings': <any location or surrounding or background information>, 'anyText': <return any text detected in the image>}\" \r\n"
+			+ "                \"text\": \"Return the following information from the video image frames.\r\n"
+			+ "                            detectAnomaly = \r\n"
+			+ "                            {"
+			+ "                               'imageOf': 'CAR or HOME or OTHER',\r\n"
+			+ "                               'make': <Maker of CAR or HOME or OTHER>,\r\n"
+			+ "                               'model': <Model of CAR or HOME or OTHER>,\r\n"
+			+ "                               'licensePlate': <car front license plate number in the image or NONE>,\r\n"
+			+ "                               'transcript': <Provide the transcript.>,\r\n"
+			+ "                               'transcriptMatchesVisualContent': <FALSE if transcript match the visual content of the frames provided. Else TRUE>\r\n"
+			+ "                            }\" \r\n"
 			+ "            } \r\n"
 			+ "        ]}\r\n"
 			+ "    ], \r\n"
@@ -149,7 +154,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ "                \"type\": \"text\", \r\n"
 			+ "                \"text\": \"Extract and render information in the format: \r\n"
 			+ "\\n"
-			+ "							   Description: Describe the video. \r\n"
+			+ "                            Description: Describe the video. \r\n"
 			+ "\\n"
 			+ "                            Transcript: Provide the transcript. \r\n"
 			+ "\\n"
@@ -210,7 +215,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	  	String filename = aed.getAttachmentName();
 		// TODO: Check if text or image or video by the content of the file and not just by the file extension
 		// Get url of image/video file
-		// If image/video, pass to AOAI Vision API with enhancements
+		// If image/video, pass to AOAI GPT-4o / GPT-4 Vision API with enhancements
 		// Else read content and pass to regular AOAI API
 
 	  	FileType ft = FileType.fromFilename(filename);	
@@ -244,7 +249,7 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	  	} else if (ft.isAudio()) {
 	  		// TODO: pass prompt for audio
 	  	} else if (ft.isVideo()) {
-	  		// Check if the video ingestion status from 
+	  		// Check the video ingestion status from 
 	  		// the form extract data.
 	  		// If state is 'failed', return 'ingestion failed'
 	  		// If state is 'running', make the GET ingestion status call

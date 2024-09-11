@@ -1,4 +1,5 @@
-env.bat
+echo off
+env dev
 
 copy pom.xml.debugLocal pom.xml
 

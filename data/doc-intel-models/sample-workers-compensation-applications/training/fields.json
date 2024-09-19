@@ -1,0 +1,492 @@
+{
+	"$schema": "https://schema.cognitiveservices.azure.com/formrecognizer/2021-03-01/fields.json",
+	"fields": [
+		{
+			"fieldKey": "FormType",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicationDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "InsurerName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Underwriter",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantOfficePhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantMobilePhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantMailingAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "YearsInBusiness",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SIC",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NAICS",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "InsurerWebsite",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyOfficePhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Code",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SubCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerId",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "FederalEmployerIdNumber",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfSubmissionQuote",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfSubmissionIssuePolicy",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfSubmissionBound",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfSubmissionAssignedRisk",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Locations",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "Number",
+					"fieldType": "Locations_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "HIGHEST FLOOR",
+					"fieldType": "Locations_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "Address",
+					"fieldType": "Locations_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "horizontal"
+		},
+		{
+			"fieldKey": "PolicyStartDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PolicyExpirationDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TotalEstimatedAnnualPremium",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TotalMinimumPremium",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TotalDepositPremium",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "InsuranceForIndividuals",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "STATE",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LocationNumber",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "NAME",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "DATE OF BIRTH",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "Title",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "PercentOfOwnership",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "DUTIES",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "IncludedOrExcluded",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "CLASS CODE",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "Salary",
+					"fieldType": "InsuranceForIndividuals_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "horizontal"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage2",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "RemarksPage2",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage3",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PriorCarrierInformation",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "YEAR",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "CarrierAndPolicyNumber",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "AnnualPremium",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "MOD",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "NumberOfClaims",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "AmountPaid",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "Reserve",
+					"fieldType": "PriorCarrierInformation_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "horizontal"
+		},
+		{
+			"fieldKey": "NatureOfBusiness",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage4",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantSignature",
+			"fieldType": "signature",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantSignatureDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerSignature",
+			"fieldType": "signature",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NationalProducerNumber",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage5",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "DatePage5",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantNamePage5",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProposedEffectiveDatePage5",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SupplementalInformation",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage6",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AnyVoluntaryCoverageOffersYes",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AnyVoluntaryCoverageOffersNo",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "RemarksPage6",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage7",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantCommunicationsEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage8",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerNamePage8",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerEmailAddressPage8",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerSignaturePage8",
+			"fieldType": "signature",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerSignatureDatePage8",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		}
+	],
+	"definitions": {
+		"Locations_object": {
+			"fieldKey": "Locations_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		},
+		"InsuranceForIndividuals_object": {
+			"fieldKey": "InsuranceForIndividuals_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		},
+		"PriorCarrierInformation_object": {
+			"fieldKey": "PriorCarrierInformation_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW4",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW5",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW6",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		}
+	}
+}

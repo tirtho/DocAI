@@ -1,0 +1,5438 @@
+{
+	"status": "succeeded",
+	"createdDateTime": "2023-11-29T00:16:09Z",
+	"lastUpdatedDateTime": "2023-11-29T00:16:19Z",
+	"analyzeResult": {
+		"apiVersion": "2023-10-31-preview",
+		"modelId": "prebuilt-layout",
+		"stringIndexType": "utf16CodeUnit",
+		"content": "TR INSURED A Test P&C INSURANCE Company\nAuto Insurance Claim Document\nCustomer Information\nName William Wordsworth Address 39 Washington Street, New York City, NY 10003\nPhone Number +1 123 465 1637 Email dummy3@3.com Policy Number TRI 813654329\nIncident Information\nDate of Incident 5/31/2023 Time of Incident 11 pm BST Location of Incident 2 Daffodil Street, New York City, NY 1002\nDescription of Incident Another Car changed lane and hit my car on the driver side.\nVehicle Information\nVehicle Owner's Name (if different from customer) NA Make and Model of the Vehicle 2011 Kia Sorento Vehicle Identification Number (VIN) 5XYKU4A12BG001739 License Plate Number FWK-2762\nWitnesses (if any)\nName of Witness William Shakespeare Contact Information of Witness +1 000 111 0000\nPolice Report (if filed)\nPolice Report Number NYPD 3256 Name of Reporting Officer Queen Elizabeth Police Department Contact Information +1 980 765 1234\nDamage and Injuries\nExtent of Vehicle Damage Huge dent in driver side front to back. Driver Side window glass broken Injuries Sustained Customer Suffering from writer's block\nAdditional Comments\nLost my poetry book which was in the car\nClaim Filed by self? :selected: Yes :unselected: No :selected: The above information is correct to the best of my knowledge, and I agree with the Terms and Conditions detailed in my policy document with TR Insured.\nSignature\nDate 5/31/2023",
+		"pages": [
+			{
+				"pageNumber": 1,
+				"angle": 0,
+				"width": 8.2639,
+				"height": 10.6389,
+				"unit": "inch",
+				"words": [
+					{
+						"content": "TR",
+						"polygon": [
+							1.782,
+							1.533,
+							2.1191,
+							1.533,
+							2.1052,
+							1.8332,
+							1.7728,
+							1.8332
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 0,
+							"length": 2
+						}
+					},
+					{
+						"content": "INSURED",
+						"polygon": [
+							2.2945,
+							1.5284,
+							3.6887,
+							1.5284,
+							3.6887,
+							1.8193,
+							2.2853,
+							1.8332
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 3,
+							"length": 7
+						}
+					},
+					{
+						"content": "A",
+						"polygon": [
+							1.7682,
+							2.0594,
+							1.8513,
+							2.0548,
+							1.8513,
+							2.198,
+							1.7728,
+							2.1933
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 11,
+							"length": 1
+						}
+					},
+					{
+						"content": "Test",
+						"polygon": [
+							1.9021,
+							2.0548,
+							2.1745,
+							2.0502,
+							2.1791,
+							2.2026,
+							1.9021,
+							2.198
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 13,
+							"length": 4
+						}
+					},
+					{
+						"content": "P&C",
+						"polygon": [
+							2.2068,
+							2.0502,
+							2.4838,
+							2.0502,
+							2.4838,
+							2.2026,
+							2.2068,
+							2.2026
+						],
+						"confidence": 0.98,
+						"span": {
+							"offset": 18,
+							"length": 3
+						}
+					},
+					{
+						"content": "INSURANCE",
+						"polygon": [
+							2.5115,
+							2.0502,
+							3.3194,
+							2.0502,
+							3.3148,
+							2.2118,
+							2.5115,
+							2.2026
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 22,
+							"length": 9
+						}
+					},
+					{
+						"content": "Company",
+						"polygon": [
+							3.3702,
+							2.0502,
+							3.9796,
+							2.0594,
+							3.9796,
+							2.2211,
+							3.3656,
+							2.2164
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 32,
+							"length": 7
+						}
+					},
+					{
+						"content": "Auto",
+						"polygon": [
+							0.9834,
+							2.8121,
+							1.7543,
+							2.8029,
+							1.7497,
+							3.1122,
+							0.9787,
+							3.1122
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 40,
+							"length": 4
+						}
+					},
+					{
+						"content": "Insurance",
+						"polygon": [
+							1.879,
+							2.7982,
+							3.4948,
+							2.789,
+							3.4995,
+							3.1122,
+							1.8744,
+							3.1122
+						],
+						"confidence": 0.951,
+						"span": {
+							"offset": 45,
+							"length": 9
+						}
+					},
+					{
+						"content": "Claim",
+						"polygon": [
+							3.6426,
+							2.789,
+							4.4089,
+							2.789,
+							4.4136,
+							3.1122,
+							3.6426,
+							3.1122
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 55,
+							"length": 5
+						}
+					},
+					{
+						"content": "Document",
+						"polygon": [
+							4.6813,
+							2.789,
+							6.4311,
+							2.7982,
+							6.4403,
+							3.103,
+							4.6859,
+							3.1122
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 61,
+							"length": 8
+						}
+					},
+					{
+						"content": "Customer",
+						"polygon": [
+							0.9834,
+							3.4309,
+							2.0637,
+							3.4216,
+							2.0637,
+							3.6525,
+							0.9787,
+							3.6479
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 70,
+							"length": 8
+						}
+					},
+					{
+						"content": "Information",
+						"polygon": [
+							2.1052,
+							3.4216,
+							3.4487,
+							3.417,
+							3.4533,
+							3.6433,
+							2.1052,
+							3.6525
+						],
+						"confidence": 0.97,
+						"span": {
+							"offset": 79,
+							"length": 11
+						}
+					},
+					{
+						"content": "Name",
+						"polygon": [
+							0.988,
+							3.888,
+							1.4543,
+							3.8788,
+							1.4543,
+							4.0819,
+							0.9834,
+							4.0727
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 91,
+							"length": 4
+						}
+					},
+					{
+						"content": "William",
+						"polygon": [
+							1.5651,
+							3.8741,
+							2.3961,
+							3.8603,
+							2.3961,
+							4.0866,
+							1.5604,
+							4.0819
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 96,
+							"length": 7
+						}
+					},
+					{
+						"content": "Wordsworth",
+						"polygon": [
+							2.5346,
+							3.8603,
+							3.7949,
+							3.8511,
+							3.7995,
+							4.0773,
+							2.5346,
+							4.0866
+						],
+						"confidence": 0.685,
+						"span": {
+							"offset": 104,
+							"length": 10
+						}
+					},
+					{
+						"content": "Address",
+						"polygon": [
+							0.988,
+							4.1281,
+							1.6343,
+							4.1189,
+							1.6297,
+							4.322,
+							0.9834,
+							4.3036
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 115,
+							"length": 7
+						}
+					},
+					{
+						"content": "39",
+						"polygon": [
+							1.7266,
+							4.1143,
+							1.999,
+							4.1096,
+							1.999,
+							4.3313,
+							1.722,
+							4.322
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 123,
+							"length": 2
+						}
+					},
+					{
+						"content": "Washington",
+						"polygon": [
+							2.1237,
+							4.1096,
+							3.4256,
+							4.0912,
+							3.4256,
+							4.3544,
+							2.1237,
+							4.3359
+						],
+						"confidence": 0.95,
+						"span": {
+							"offset": 126,
+							"length": 10
+						}
+					},
+					{
+						"content": "Street,",
+						"polygon": [
+							3.5179,
+							4.0912,
+							4.2658,
+							4.0819,
+							4.2658,
+							4.359,
+							3.5179,
+							4.359
+						],
+						"confidence": 0.936,
+						"span": {
+							"offset": 137,
+							"length": 7
+						}
+					},
+					{
+						"content": "New",
+						"polygon": [
+							4.3166,
+							4.0819,
+							4.7875,
+							4.0773,
+							4.7921,
+							4.359,
+							4.3166,
+							4.359
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 145,
+							"length": 3
+						}
+					},
+					{
+						"content": "York",
+						"polygon": [
+							4.8798,
+							4.0773,
+							5.3554,
+							4.0727,
+							5.3554,
+							4.359,
+							4.8798,
+							4.359
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 149,
+							"length": 4
+						}
+					},
+					{
+						"content": "City,",
+						"polygon": [
+							5.48,
+							4.0727,
+							5.9602,
+							4.0681,
+							5.9648,
+							4.3544,
+							5.48,
+							4.359
+						],
+						"confidence": 0.971,
+						"span": {
+							"offset": 154,
+							"length": 5
+						}
+					},
+					{
+						"content": "NY",
+						"polygon": [
+							6.0109,
+							4.0681,
+							6.3156,
+							4.0635,
+							6.3203,
+							4.3451,
+							6.0109,
+							4.3544
+						],
+						"confidence": 0.958,
+						"span": {
+							"offset": 160,
+							"length": 2
+						}
+					},
+					{
+						"content": "10003",
+						"polygon": [
+							6.408,
+							4.0635,
+							7.0635,
+							4.0635,
+							7.0682,
+							4.3313,
+							6.4126,
+							4.3451
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 163,
+							"length": 5
+						}
+					},
+					{
+						"content": "Phone",
+						"polygon": [
+							0.9834,
+							4.5483,
+							1.4589,
+							4.5391,
+							1.4589,
+							4.7053,
+							0.9834,
+							4.7007
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 169,
+							"length": 5
+						}
+					},
+					{
+						"content": "Number",
+						"polygon": [
+							1.5004,
+							4.5391,
+							2.1421,
+							4.5252,
+							2.1421,
+							4.7099,
+							1.5004,
+							4.7053
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 175,
+							"length": 6
+						}
+					},
+					{
+						"content": "+1",
+						"polygon": [
+							2.1837,
+							4.5252,
+							2.4099,
+							4.5206,
+							2.4099,
+							4.7099,
+							2.1837,
+							4.7099
+						],
+						"confidence": 0.959,
+						"span": {
+							"offset": 182,
+							"length": 2
+						}
+					},
+					{
+						"content": "123",
+						"polygon": [
+							2.5023,
+							4.516,
+							2.8716,
+							4.5114,
+							2.8716,
+							4.7099,
+							2.5023,
+							4.7099
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 185,
+							"length": 3
+						}
+					},
+					{
+						"content": "465",
+						"polygon": [
+							3.0147,
+							4.5114,
+							3.4071,
+							4.5068,
+							3.4071,
+							4.7053,
+							3.0147,
+							4.7099
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 189,
+							"length": 3
+						}
+					},
+					{
+						"content": "1637",
+						"polygon": [
+							3.5964,
+							4.5068,
+							4.215,
+							4.5021,
+							4.215,
+							4.6961,
+							3.5964,
+							4.7053
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 193,
+							"length": 4
+						}
+					},
+					{
+						"content": "Email",
+						"polygon": [
+							0.988,
+							4.7469,
+							1.4404,
+							4.7376,
+							1.4404,
+							4.9408,
+							0.988,
+							4.9223
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 198,
+							"length": 5
+						}
+					},
+					{
+						"content": "dummy3@3.com",
+						"polygon": [
+							1.5974,
+							4.733,
+							3.5918,
+							4.7561,
+							3.5872,
+							4.9408,
+							1.5928,
+							4.9454
+						],
+						"confidence": 0.812,
+						"span": {
+							"offset": 204,
+							"length": 12
+						}
+					},
+					{
+						"content": "Policy",
+						"polygon": [
+							0.9787,
+							4.9731,
+							1.4219,
+							4.9685,
+							1.4266,
+							5.144,
+							0.9834,
+							5.1394
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 217,
+							"length": 6
+						}
+					},
+					{
+						"content": "Number",
+						"polygon": [
+							1.4635,
+							4.9639,
+							2.1191,
+							4.9593,
+							2.1237,
+							5.144,
+							1.4681,
+							5.144
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 224,
+							"length": 6
+						}
+					},
+					{
+						"content": "TRI",
+						"polygon": [
+							2.2345,
+							4.9593,
+							2.6038,
+							4.9547,
+							2.6084,
+							5.144,
+							2.2391,
+							5.144
+						],
+						"confidence": 0.983,
+						"span": {
+							"offset": 231,
+							"length": 3
+						}
+					},
+					{
+						"content": "813654329",
+						"polygon": [
+							2.7146,
+							4.9547,
+							4.035,
+							4.9639,
+							4.0396,
+							5.1486,
+							2.7192,
+							5.144
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 235,
+							"length": 9
+						}
+					},
+					{
+						"content": "Incident",
+						"polygon": [
+							0.9695,
+							5.4026,
+							1.9205,
+							5.3979,
+							1.9252,
+							5.6057,
+							0.9741,
+							5.6057
+						],
+						"confidence": 0.961,
+						"span": {
+							"offset": 245,
+							"length": 8
+						}
+					},
+					{
+						"content": "Information",
+						"polygon": [
+							1.9621,
+							5.3979,
+							3.2825,
+							5.4026,
+							3.2779,
+							5.6011,
+							1.9667,
+							5.6057
+						],
+						"confidence": 0.962,
+						"span": {
+							"offset": 254,
+							"length": 11
+						}
+					},
+					{
+						"content": "Date",
+						"polygon": [
+							0.9926,
+							5.8874,
+							1.3388,
+							5.8782,
+							1.3435,
+							6.0398,
+							0.9972,
+							6.0306
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 266,
+							"length": 4
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.385,
+							5.8736,
+							1.5189,
+							5.8736,
+							1.5189,
+							6.0444,
+							1.385,
+							6.0398
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 271,
+							"length": 2
+						}
+					},
+					{
+						"content": "Incident",
+						"polygon": [
+							1.5558,
+							5.8689,
+							2.2206,
+							5.8597,
+							2.2252,
+							6.0583,
+							1.5558,
+							6.0444
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 274,
+							"length": 8
+						}
+					},
+					{
+						"content": "5/31/2023",
+						"polygon": [
+							2.313,
+							5.8551,
+							3.421,
+							5.8597,
+							3.421,
+							6.0629,
+							2.313,
+							6.0583
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 283,
+							"length": 9
+						}
+					},
+					{
+						"content": "Time",
+						"polygon": [
+							0.988,
+							6.0952,
+							1.3573,
+							6.0906,
+							1.3573,
+							6.2614,
+							0.988,
+							6.2383
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 293,
+							"length": 4
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.3989,
+							6.0906,
+							1.5327,
+							6.0906,
+							1.5327,
+							6.2707,
+							1.3989,
+							6.2614
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 298,
+							"length": 2
+						}
+					},
+					{
+						"content": "Incident",
+						"polygon": [
+							1.5697,
+							6.0906,
+							2.2483,
+							6.0906,
+							2.2483,
+							6.2938,
+							1.5697,
+							6.2707
+						],
+						"confidence": 0.981,
+						"span": {
+							"offset": 301,
+							"length": 8
+						}
+					},
+					{
+						"content": "11",
+						"polygon": [
+							2.2945,
+							6.0906,
+							2.4515,
+							6.0906,
+							2.4515,
+							6.2938,
+							2.2945,
+							6.2938
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 310,
+							"length": 2
+						}
+					},
+					{
+						"content": "pm",
+						"polygon": [
+							2.4838,
+							6.0952,
+							2.7562,
+							6.0952,
+							2.7562,
+							6.2938,
+							2.4838,
+							6.2938
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 313,
+							"length": 2
+						}
+					},
+					{
+						"content": "BST",
+						"polygon": [
+							2.8947,
+							6.0998,
+							3.264,
+							6.1044,
+							3.264,
+							6.2891,
+							2.8947,
+							6.2938
+						],
+						"confidence": 0.368,
+						"span": {
+							"offset": 316,
+							"length": 3
+						}
+					},
+					{
+						"content": "Location",
+						"polygon": [
+							0.9834,
+							6.3261,
+							1.5928,
+							6.3076,
+							1.5974,
+							6.4785,
+							0.9834,
+							6.46
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 320,
+							"length": 8
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.6435,
+							6.303,
+							1.7913,
+							6.2984,
+							1.7913,
+							6.4831,
+							1.6435,
+							6.4785
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 329,
+							"length": 2
+						}
+					},
+					{
+						"content": "Incident",
+						"polygon": [
+							1.8374,
+							6.2984,
+							2.53,
+							6.2799,
+							2.5346,
+							6.5062,
+							1.8374,
+							6.4877
+						],
+						"confidence": 0.982,
+						"span": {
+							"offset": 332,
+							"length": 8
+						}
+					},
+					{
+						"content": "2",
+						"polygon": [
+							2.59,
+							6.2799,
+							2.7285,
+							6.2753,
+							2.7285,
+							6.5108,
+							2.59,
+							6.5062
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 341,
+							"length": 1
+						}
+					},
+					{
+						"content": "Daffodil",
+						"polygon": [
+							2.8162,
+							6.2707,
+							3.9334,
+							6.2522,
+							3.9334,
+							6.5292,
+							2.8162,
+							6.5108
+						],
+						"confidence": 0.976,
+						"span": {
+							"offset": 343,
+							"length": 8
+						}
+					},
+					{
+						"content": "Street,",
+						"polygon": [
+							4.0211,
+							6.2522,
+							4.7229,
+							6.2476,
+							4.7229,
+							6.5385,
+							4.0258,
+							6.5339
+						],
+						"confidence": 0.926,
+						"span": {
+							"offset": 352,
+							"length": 7
+						}
+					},
+					{
+						"content": "New",
+						"polygon": [
+							4.7737,
+							6.2476,
+							5.2677,
+							6.243,
+							5.2723,
+							6.5385,
+							4.7737,
+							6.5385
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 360,
+							"length": 3
+						}
+					},
+					{
+						"content": "York",
+						"polygon": [
+							5.3277,
+							6.243,
+							5.8863,
+							6.243,
+							5.8909,
+							6.5385,
+							5.3277,
+							6.5385
+						],
+						"confidence": 0.989,
+						"span": {
+							"offset": 364,
+							"length": 4
+						}
+					},
+					{
+						"content": "City,",
+						"polygon": [
+							5.9786,
+							6.243,
+							6.4495,
+							6.2476,
+							6.4541,
+							6.5385,
+							5.9786,
+							6.5385
+						],
+						"confidence": 0.984,
+						"span": {
+							"offset": 369,
+							"length": 5
+						}
+					},
+					{
+						"content": "NY",
+						"polygon": [
+							6.5003,
+							6.2476,
+							6.8419,
+							6.2522,
+							6.8466,
+							6.5339,
+							6.5003,
+							6.5385
+						],
+						"confidence": 0.987,
+						"span": {
+							"offset": 375,
+							"length": 2
+						}
+					},
+					{
+						"content": "1002",
+						"polygon": [
+							6.8881,
+							6.2522,
+							7.239,
+							6.2568,
+							7.2436,
+							6.5292,
+							6.8927,
+							6.5339
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 378,
+							"length": 4
+						}
+					},
+					{
+						"content": "Description",
+						"polygon": [
+							0.9834,
+							6.7555,
+							1.8097,
+							6.714,
+							1.8144,
+							6.9079,
+							0.9834,
+							6.9125
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 383,
+							"length": 11
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.8605,
+							6.714,
+							2.0036,
+							6.7093,
+							2.0083,
+							6.9079,
+							1.8651,
+							6.9079
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 395,
+							"length": 2
+						}
+					},
+					{
+						"content": "Incident",
+						"polygon": [
+							2.0498,
+							6.7047,
+							2.71,
+							6.6816,
+							2.7192,
+							6.9125,
+							2.059,
+							6.9079
+						],
+						"confidence": 0.976,
+						"span": {
+							"offset": 398,
+							"length": 8
+						}
+					},
+					{
+						"content": "Another",
+						"polygon": [
+							2.7608,
+							6.6816,
+							3.7349,
+							6.6585,
+							3.7441,
+							6.9125,
+							2.77,
+							6.9125
+						],
+						"confidence": 0.985,
+						"span": {
+							"offset": 407,
+							"length": 7
+						}
+					},
+					{
+						"content": "Car",
+						"polygon": [
+							3.8226,
+							6.6539,
+							4.215,
+							6.6493,
+							4.2289,
+							6.9171,
+							3.8365,
+							6.9171
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 415,
+							"length": 3
+						}
+					},
+					{
+						"content": "changed",
+						"polygon": [
+							4.3028,
+							6.6493,
+							5.3092,
+							6.6447,
+							5.3277,
+							6.9264,
+							4.3212,
+							6.9171
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 419,
+							"length": 7
+						}
+					},
+					{
+						"content": "lane",
+						"polygon": [
+							5.3969,
+							6.6447,
+							5.9186,
+							6.6493,
+							5.9463,
+							6.931,
+							5.42,
+							6.9264
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 427,
+							"length": 4
+						}
+					},
+					{
+						"content": "and",
+						"polygon": [
+							6.0756,
+							6.6493,
+							6.5003,
+							6.6539,
+							6.528,
+							6.9402,
+							6.0987,
+							6.9356
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 432,
+							"length": 3
+						}
+					},
+					{
+						"content": "hit",
+						"polygon": [
+							6.588,
+							6.6585,
+							6.9804,
+							6.6632,
+							7.0128,
+							6.9448,
+							6.6157,
+							6.9402
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 436,
+							"length": 3
+						}
+					},
+					{
+						"content": "my",
+						"polygon": [
+							1.0711,
+							6.9679,
+							1.385,
+							6.9494,
+							1.3804,
+							7.1434,
+							1.0665,
+							7.1388
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 440,
+							"length": 2
+						}
+					},
+					{
+						"content": "car",
+						"polygon": [
+							1.4958,
+							6.9448,
+							1.9021,
+							6.931,
+							1.8975,
+							7.148,
+							1.4958,
+							7.1434
+						],
+						"confidence": 0.963,
+						"span": {
+							"offset": 443,
+							"length": 3
+						}
+					},
+					{
+						"content": "on",
+						"polygon": [
+							2.0452,
+							6.9217,
+							2.2945,
+							6.9171,
+							2.2945,
+							7.1526,
+							2.0452,
+							7.148
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 447,
+							"length": 2
+						}
+					},
+					{
+						"content": "the",
+						"polygon": [
+							2.4099,
+							6.9125,
+							2.8716,
+							6.9079,
+							2.8762,
+							7.1572,
+							2.4099,
+							7.1526
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 450,
+							"length": 3
+						}
+					},
+					{
+						"content": "driver",
+						"polygon": [
+							2.987,
+							6.9033,
+							3.878,
+							6.9079,
+							3.8826,
+							7.1665,
+							2.9916,
+							7.1572
+						],
+						"confidence": 0.987,
+						"span": {
+							"offset": 454,
+							"length": 6
+						}
+					},
+					{
+						"content": "side.",
+						"polygon": [
+							4.0211,
+							6.9079,
+							4.7136,
+							6.9264,
+							4.7229,
+							7.1711,
+							4.0304,
+							7.1665
+						],
+						"confidence": 0.95,
+						"span": {
+							"offset": 461,
+							"length": 5
+						}
+					},
+					{
+						"content": "Vehicle",
+						"polygon": [
+							0.988,
+							7.3881,
+							1.7728,
+							7.3881,
+							1.7728,
+							7.5959,
+							0.988,
+							7.5959
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 467,
+							"length": 7
+						}
+					},
+					{
+						"content": "Information",
+						"polygon": [
+							1.8559,
+							7.3881,
+							3.1717,
+							7.3927,
+							3.1671,
+							7.5959,
+							1.8559,
+							7.5959
+						],
+						"confidence": 0.973,
+						"span": {
+							"offset": 475,
+							"length": 11
+						}
+					},
+					{
+						"content": "Vehicle",
+						"polygon": [
+							0.988,
+							7.8683,
+							1.5327,
+							7.8637,
+							1.5327,
+							8.03,
+							0.988,
+							8.03
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 487,
+							"length": 7
+						}
+					},
+					{
+						"content": "Owner's",
+						"polygon": [
+							1.5743,
+							7.8637,
+							2.1929,
+							7.8637,
+							2.1929,
+							8.03,
+							1.5743,
+							8.03
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 495,
+							"length": 7
+						}
+					},
+					{
+						"content": "Name",
+						"polygon": [
+							2.2299,
+							7.8637,
+							2.6638,
+							7.8591,
+							2.6638,
+							8.0346,
+							2.2299,
+							8.0346
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 503,
+							"length": 4
+						}
+					},
+					{
+						"content": "(if",
+						"polygon": [
+							2.7008,
+							7.8591,
+							2.8993,
+							7.8591,
+							2.8993,
+							8.0346,
+							2.7008,
+							8.0346
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 508,
+							"length": 3
+						}
+					},
+					{
+						"content": "different",
+						"polygon": [
+							2.9316,
+							7.8591,
+							3.5779,
+							7.8545,
+							3.5779,
+							8.0392,
+							2.9316,
+							8.0346
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 512,
+							"length": 9
+						}
+					},
+					{
+						"content": "from",
+						"polygon": [
+							3.6149,
+							7.8545,
+							3.9473,
+							7.8545,
+							3.9473,
+							8.0392,
+							3.6149,
+							8.0392
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 522,
+							"length": 4
+						}
+					},
+					{
+						"content": "customer)",
+						"polygon": [
+							4.035,
+							7.8545,
+							4.8383,
+							7.8499,
+							4.8383,
+							8.0438,
+							4.035,
+							8.0392
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 527,
+							"length": 9
+						}
+					},
+					{
+						"content": "NA",
+						"polygon": [
+							4.9029,
+							7.8499,
+							5.263,
+							7.8499,
+							5.263,
+							8.0438,
+							4.9029,
+							8.0438
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 537,
+							"length": 2
+						}
+					},
+					{
+						"content": "Make",
+						"polygon": [
+							0.9926,
+							8.0992,
+							1.4081,
+							8.09,
+							1.4081,
+							8.247,
+							0.9972,
+							8.247
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 540,
+							"length": 4
+						}
+					},
+					{
+						"content": "and",
+						"polygon": [
+							1.445,
+							8.09,
+							1.722,
+							8.0808,
+							1.722,
+							8.247,
+							1.445,
+							8.247
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 545,
+							"length": 3
+						}
+					},
+					{
+						"content": "Model",
+						"polygon": [
+							1.7636,
+							8.0808,
+							2.2714,
+							8.0715,
+							2.2714,
+							8.2516,
+							1.7682,
+							8.2516
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 549,
+							"length": 5
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							2.3083,
+							8.0715,
+							2.4422,
+							8.0669,
+							2.4422,
+							8.2516,
+							2.3083,
+							8.2516
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 555,
+							"length": 2
+						}
+					},
+					{
+						"content": "the",
+						"polygon": [
+							2.4792,
+							8.0669,
+							2.7423,
+							8.0623,
+							2.7377,
+							8.2516,
+							2.4792,
+							8.2516
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 558,
+							"length": 3
+						}
+					},
+					{
+						"content": "Vehicle",
+						"polygon": [
+							2.7793,
+							8.0623,
+							3.3517,
+							8.0577,
+							3.3471,
+							8.2562,
+							2.7746,
+							8.2516
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 562,
+							"length": 7
+						}
+					},
+					{
+						"content": "2011",
+						"polygon": [
+							3.3933,
+							8.0577,
+							3.7949,
+							8.0577,
+							3.7903,
+							8.2608,
+							3.3933,
+							8.2562
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 570,
+							"length": 4
+						}
+					},
+					{
+						"content": "Kia",
+						"polygon": [
+							3.8642,
+							8.0577,
+							4.2381,
+							8.053,
+							4.2381,
+							8.2608,
+							3.8596,
+							8.2608
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 575,
+							"length": 3
+						}
+					},
+					{
+						"content": "Sorento",
+						"polygon": [
+							4.3812,
+							8.0577,
+							5.3231,
+							8.0623,
+							5.3184,
+							8.2701,
+							4.3766,
+							8.2608
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 579,
+							"length": 7
+						}
+					},
+					{
+						"content": "Vehicle",
+						"polygon": [
+							0.988,
+							8.3024,
+							1.5143,
+							8.3024,
+							1.5143,
+							8.464,
+							0.988,
+							8.4502
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 587,
+							"length": 7
+						}
+					},
+					{
+						"content": "Identification",
+						"polygon": [
+							1.5512,
+							8.3024,
+							2.5761,
+							8.2978,
+							2.5761,
+							8.4825,
+							1.5512,
+							8.464
+						],
+						"confidence": 0.983,
+						"span": {
+							"offset": 595,
+							"length": 14
+						}
+					},
+					{
+						"content": "Number",
+						"polygon": [
+							2.6408,
+							8.2978,
+							3.2363,
+							8.2978,
+							3.2363,
+							8.4871,
+							2.6408,
+							8.4825
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 610,
+							"length": 6
+						}
+					},
+					{
+						"content": "(VIN)",
+						"polygon": [
+							3.2686,
+							8.2978,
+							3.7395,
+							8.2978,
+							3.7395,
+							8.4917,
+							3.2732,
+							8.4917
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 617,
+							"length": 5
+						}
+					},
+					{
+						"content": "5XYKU4A12BG001739",
+						"polygon": [
+							3.7811,
+							8.2978,
+							6.5973,
+							8.2978,
+							6.5973,
+							8.4871,
+							3.7811,
+							8.4917
+						],
+						"confidence": 0.938,
+						"span": {
+							"offset": 623,
+							"length": 17
+						}
+					},
+					{
+						"content": "License",
+						"polygon": [
+							0.9926,
+							8.5287,
+							1.5327,
+							8.5194,
+							1.5327,
+							8.6857,
+							0.9926,
+							8.6764
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 641,
+							"length": 7
+						}
+					},
+					{
+						"content": "Plate",
+						"polygon": [
+							1.5651,
+							8.5194,
+							1.9529,
+							8.5148,
+							1.9529,
+							8.6903,
+							1.5651,
+							8.6857
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 649,
+							"length": 5
+						}
+					},
+					{
+						"content": "Number",
+						"polygon": [
+							1.9898,
+							8.5148,
+							2.6315,
+							8.5102,
+							2.6315,
+							8.6995,
+							1.9898,
+							8.6903
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 655,
+							"length": 6
+						}
+					},
+					{
+						"content": "FWK-2762",
+						"polygon": [
+							2.7192,
+							8.5102,
+							3.9981,
+							8.5056,
+							3.9981,
+							8.6995,
+							2.7192,
+							8.6995
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 662,
+							"length": 8
+						}
+					},
+					{
+						"content": "Witnesses",
+						"polygon": [
+							0.988,
+							8.9673,
+							2.1191,
+							8.9535,
+							2.1237,
+							9.2028,
+							0.9834,
+							9.1566
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 671,
+							"length": 9
+						}
+					},
+					{
+						"content": "(if",
+						"polygon": [
+							2.1837,
+							8.9535,
+							2.4468,
+							8.9489,
+							2.4515,
+							9.2121,
+							2.1837,
+							9.2028
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 681,
+							"length": 3
+						}
+					},
+					{
+						"content": "any)",
+						"polygon": [
+							2.493,
+							8.9535,
+							2.9639,
+							8.9535,
+							2.9732,
+							9.2121,
+							2.4976,
+							9.2121
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 685,
+							"length": 4
+						}
+					}
+				],
+				"lines": [
+					{
+						"content": "TR INSURED",
+						"polygon": [
+							1.7359,
+							1.533,
+							3.7395,
+							1.5238,
+							3.7441,
+							1.8193,
+							1.7359,
+							1.8332
+						],
+						"spans": [
+							{
+								"offset": 0,
+								"length": 10
+							}
+						]
+					},
+					{
+						"content": "A Test P&C INSURANCE Company",
+						"polygon": [
+							1.7497,
+							2.0456,
+							3.9842,
+							2.0502,
+							3.9842,
+							2.2164,
+							1.7497,
+							2.2026
+						],
+						"spans": [
+							{
+								"offset": 11,
+								"length": 28
+							}
+						]
+					},
+					{
+						"content": "Auto Insurance Claim Document",
+						"polygon": [
+							0.9603,
+							2.789,
+							6.4495,
+							2.7844,
+							6.4495,
+							3.103,
+							0.9603,
+							3.1122
+						],
+						"spans": [
+							{
+								"offset": 40,
+								"length": 29
+							}
+						]
+					},
+					{
+						"content": "Customer Information",
+						"polygon": [
+							0.9741,
+							3.4216,
+							3.4764,
+							3.4124,
+							3.4764,
+							3.6433,
+							0.9741,
+							3.6525
+						],
+						"spans": [
+							{
+								"offset": 70,
+								"length": 20
+							}
+						]
+					},
+					{
+						"content": "Name William Wordsworth",
+						"polygon": [
+							0.9787,
+							3.8649,
+							3.9242,
+							3.8511,
+							3.9242,
+							4.0773,
+							0.9787,
+							4.0866
+						],
+						"spans": [
+							{
+								"offset": 91,
+								"length": 23
+							}
+						]
+					},
+					{
+						"content": "Address 39 Washington Street, New York City, NY 10003",
+						"polygon": [
+							0.9787,
+							4.0773,
+							7.0774,
+							4.0588,
+							7.0774,
+							4.3498,
+							0.9787,
+							4.359
+						],
+						"spans": [
+							{
+								"offset": 115,
+								"length": 53
+							}
+						]
+					},
+					{
+						"content": "Phone Number +1 123 465 1637",
+						"polygon": [
+							0.9834,
+							4.5252,
+							4.2243,
+							4.4975,
+							4.2243,
+							4.6961,
+							0.9834,
+							4.7099
+						],
+						"spans": [
+							{
+								"offset": 169,
+								"length": 28
+							}
+						]
+					},
+					{
+						"content": "Email dummy3@3.com",
+						"polygon": [
+							0.988,
+							4.7284,
+							3.6472,
+							4.7376,
+							3.6472,
+							4.9593,
+							0.988,
+							4.95
+						],
+						"spans": [
+							{
+								"offset": 198,
+								"length": 18
+							}
+						]
+					},
+					{
+						"content": "Policy Number TRI 813654329",
+						"polygon": [
+							0.9741,
+							4.9547,
+							4.0442,
+							4.9547,
+							4.0442,
+							5.144,
+							0.9741,
+							5.144
+						],
+						"spans": [
+							{
+								"offset": 217,
+								"length": 27
+							}
+						]
+					},
+					{
+						"content": "Incident Information",
+						"polygon": [
+							0.9695,
+							5.3979,
+							3.3286,
+							5.3979,
+							3.3286,
+							5.6011,
+							0.9695,
+							5.6011
+						],
+						"spans": [
+							{
+								"offset": 245,
+								"length": 20
+							}
+						]
+					},
+					{
+						"content": "Date of Incident 5/31/2023",
+						"polygon": [
+							0.9834,
+							5.8505,
+							3.4348,
+							5.8505,
+							3.4348,
+							6.0583,
+							0.9834,
+							6.0536
+						],
+						"spans": [
+							{
+								"offset": 266,
+								"length": 26
+							}
+						]
+					},
+					{
+						"content": "Time of Incident 11 pm BST",
+						"polygon": [
+							0.9834,
+							6.086,
+							3.2963,
+							6.0998,
+							3.2917,
+							6.2938,
+							0.9834,
+							6.2707
+						],
+						"spans": [
+							{
+								"offset": 293,
+								"length": 26
+							}
+						]
+					},
+					{
+						"content": "Location of Incident 2 Daffodil Street, New York City, NY 1002",
+						"polygon": [
+							0.9834,
+							6.243,
+							7.2436,
+							6.243,
+							7.2436,
+							6.5339,
+							0.9834,
+							6.5339
+						],
+						"spans": [
+							{
+								"offset": 320,
+								"length": 62
+							}
+						]
+					},
+					{
+						"content": "Description of Incident Another Car changed lane and hit",
+						"polygon": [
+							0.9787,
+							6.6585,
+							7.0358,
+							6.6401,
+							7.0358,
+							6.9402,
+							0.9787,
+							6.9448
+						],
+						"spans": [
+							{
+								"offset": 383,
+								"length": 56
+							}
+						]
+					},
+					{
+						"content": "my car on the driver side.",
+						"polygon": [
+							1.0249,
+							6.9033,
+							4.7413,
+							6.8987,
+							4.7413,
+							7.1665,
+							1.0249,
+							7.1711
+						],
+						"spans": [
+							{
+								"offset": 440,
+								"length": 26
+							}
+						]
+					},
+					{
+						"content": "Vehicle Information",
+						"polygon": [
+							0.9741,
+							7.3881,
+							3.2225,
+							7.3881,
+							3.2225,
+							7.5913,
+							0.9741,
+							7.5913
+						],
+						"spans": [
+							{
+								"offset": 467,
+								"length": 19
+							}
+						]
+					},
+					{
+						"content": "Vehicle Owner's Name (if different from customer) NA",
+						"polygon": [
+							0.9787,
+							7.8453,
+							5.2907,
+							7.8453,
+							5.2907,
+							8.0392,
+							0.9787,
+							8.0438
+						],
+						"spans": [
+							{
+								"offset": 487,
+								"length": 52
+							}
+						]
+					},
+					{
+						"content": "Make and Model of the Vehicle 2011 Kia Sorento",
+						"polygon": [
+							0.9926,
+							8.0577,
+							5.3508,
+							8.053,
+							5.3508,
+							8.2655,
+							0.9926,
+							8.2701
+						],
+						"spans": [
+							{
+								"offset": 540,
+								"length": 46
+							}
+						]
+					},
+					{
+						"content": "Vehicle Identification Number (VIN) 5XYKU4A12BG001739",
+						"polygon": [
+							0.9834,
+							8.2932,
+							6.6157,
+							8.2932,
+							6.6157,
+							8.4963,
+							0.9834,
+							8.4825
+						],
+						"spans": [
+							{
+								"offset": 587,
+								"length": 53
+							}
+						]
+					},
+					{
+						"content": "License Plate Number FWK-2762",
+						"polygon": [
+							0.9926,
+							8.5056,
+							4.0488,
+							8.5056,
+							4.0488,
+							8.6949,
+							0.9926,
+							8.6949
+						],
+						"spans": [
+							{
+								"offset": 641,
+								"length": 29
+							}
+						]
+					},
+					{
+						"content": "Witnesses (if any)",
+						"polygon": [
+							0.9834,
+							8.9489,
+							2.9824,
+							8.9535,
+							2.9778,
+							9.2121,
+							0.9787,
+							9.1844
+						],
+						"spans": [
+							{
+								"offset": 671,
+								"length": 18
+							}
+						]
+					}
+				],
+				"spans": [
+					{
+						"offset": 0,
+						"length": 689
+					}
+				]
+			},
+			{
+				"pageNumber": 2,
+				"angle": 0.0825585275888443,
+				"width": 8.2639,
+				"height": 10.625,
+				"unit": "inch",
+				"words": [
+					{
+						"content": "Name",
+						"polygon": [
+							0.9131,
+							1.0196,
+							1.3512,
+							1.015,
+							1.3558,
+							1.1718,
+							0.9177,
+							1.1718
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 690,
+							"length": 4
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.4019,
+							1.015,
+							1.5679,
+							1.015,
+							1.5725,
+							1.1718,
+							1.4065,
+							1.1718
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 695,
+							"length": 2
+						}
+					},
+					{
+						"content": "Witness",
+						"polygon": [
+							1.6002,
+							1.015,
+							2.2043,
+							1.015,
+							2.2089,
+							1.1765,
+							1.6048,
+							1.1718
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 698,
+							"length": 7
+						}
+					},
+					{
+						"content": "William",
+						"polygon": [
+							2.3012,
+							0.9458,
+							3.1266,
+							0.9273,
+							3.1266,
+							1.2041,
+							2.3012,
+							1.1765
+						],
+						"confidence": 0.975,
+						"span": {
+							"offset": 706,
+							"length": 7
+						}
+					},
+					{
+						"content": "Shakespeare",
+						"polygon": [
+							3.3111,
+							0.9273,
+							4.9159,
+							1.0196,
+							4.9159,
+							1.2134,
+							3.3111,
+							1.2041
+						],
+						"confidence": 0.985,
+						"span": {
+							"offset": 714,
+							"length": 11
+						}
+					},
+					{
+						"content": "Contact",
+						"polygon": [
+							0.9223,
+							1.241,
+							1.4849,
+							1.2364,
+							1.4895,
+							1.3979,
+							0.9223,
+							1.3933
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 726,
+							"length": 7
+						}
+					},
+					{
+						"content": "Information",
+						"polygon": [
+							1.5218,
+							1.2364,
+							2.4257,
+							1.2272,
+							2.4303,
+							1.4025,
+							1.5218,
+							1.3979
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 734,
+							"length": 11
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							2.4902,
+							1.2272,
+							2.6655,
+							1.2272,
+							2.6655,
+							1.4071,
+							2.4902,
+							1.4025
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 746,
+							"length": 2
+						}
+					},
+					{
+						"content": "Witness",
+						"polygon": [
+							2.6978,
+							1.2272,
+							3.3065,
+							1.2272,
+							3.3065,
+							1.4117,
+							2.6978,
+							1.4071
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 749,
+							"length": 7
+						}
+					},
+					{
+						"content": "+1",
+						"polygon": [
+							3.3664,
+							1.2272,
+							3.5832,
+							1.2272,
+							3.5832,
+							1.4117,
+							3.3664,
+							1.4117
+						],
+						"confidence": 0.859,
+						"span": {
+							"offset": 757,
+							"length": 2
+						}
+					},
+					{
+						"content": "000",
+						"polygon": [
+							3.6708,
+							1.2272,
+							4.0443,
+							1.2272,
+							4.0443,
+							1.4164,
+							3.6662,
+							1.4117
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 760,
+							"length": 3
+						}
+					},
+					{
+						"content": "111",
+						"polygon": [
+							4.1319,
+							1.2272,
+							4.3902,
+							1.2318,
+							4.3902,
+							1.421,
+							4.1273,
+							1.4164
+						],
+						"confidence": 0.983,
+						"span": {
+							"offset": 764,
+							"length": 3
+						}
+					},
+					{
+						"content": "0000",
+						"polygon": [
+							4.4778,
+							1.2318,
+							4.9897,
+							1.2364,
+							4.9897,
+							1.4256,
+							4.4732,
+							1.421
+						],
+						"confidence": 0.988,
+						"span": {
+							"offset": 768,
+							"length": 4
+						}
+					},
+					{
+						"content": "Police",
+						"polygon": [
+							0.9177,
+							1.8869,
+							1.5864,
+							1.8869,
+							1.5818,
+							2.1315,
+							0.9131,
+							2.1176
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 773,
+							"length": 6
+						}
+					},
+					{
+						"content": "Report",
+						"polygon": [
+							1.6509,
+							1.8869,
+							2.4349,
+							1.8869,
+							2.4349,
+							2.1407,
+							1.6463,
+							2.1361
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 780,
+							"length": 6
+						}
+					},
+					{
+						"content": "(if",
+						"polygon": [
+							2.4856,
+							1.8869,
+							2.7439,
+							1.8869,
+							2.7485,
+							2.1407,
+							2.4856,
+							2.1407
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 787,
+							"length": 3
+						}
+					},
+					{
+						"content": "filed)",
+						"polygon": [
+							2.7946,
+							1.8869,
+							3.3895,
+							1.8823,
+							3.3895,
+							2.1407,
+							2.7946,
+							2.1407
+						],
+						"confidence": 0.986,
+						"span": {
+							"offset": 791,
+							"length": 6
+						}
+					},
+					{
+						"content": "Police",
+						"polygon": [
+							0.9131,
+							2.376,
+							1.3604,
+							2.376,
+							1.3604,
+							2.5559,
+							0.9085,
+							2.5513
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 798,
+							"length": 6
+						}
+					},
+					{
+						"content": "Report",
+						"polygon": [
+							1.4019,
+							2.376,
+							1.923,
+							2.3714,
+							1.9184,
+							2.5605,
+							1.3973,
+							2.5559
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 805,
+							"length": 6
+						}
+					},
+					{
+						"content": "Number",
+						"polygon": [
+							1.9599,
+							2.3714,
+							2.624,
+							2.3621,
+							2.624,
+							2.5559,
+							1.9553,
+							2.5605
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 812,
+							"length": 6
+						}
+					},
+					{
+						"content": "NYPD",
+						"polygon": [
+							2.6701,
+							2.3621,
+							3.3341,
+							2.3483,
+							3.3341,
+							2.5513,
+							2.6701,
+							2.5559
+						],
+						"confidence": 0.985,
+						"span": {
+							"offset": 819,
+							"length": 4
+						}
+					},
+					{
+						"content": "3256",
+						"polygon": [
+							3.4587,
+							2.3437,
+							3.9567,
+							2.3345,
+							3.9567,
+							2.5421,
+							3.454,
+							2.5513
+						],
+						"confidence": 0.979,
+						"span": {
+							"offset": 824,
+							"length": 4
+						}
+					},
+					{
+						"content": "Name",
+						"polygon": [
+							0.9223,
+							2.6113,
+							1.3512,
+							2.602,
+							1.3466,
+							2.7774,
+							0.9177,
+							2.7727
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 829,
+							"length": 4
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.3927,
+							2.602,
+							1.5679,
+							2.5974,
+							1.5679,
+							2.7774,
+							1.3881,
+							2.7774
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 834,
+							"length": 2
+						}
+					},
+					{
+						"content": "Reporting",
+						"polygon": [
+							1.6094,
+							2.5974,
+							2.3565,
+							2.579,
+							2.3565,
+							2.7774,
+							1.6048,
+							2.7774
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 837,
+							"length": 9
+						}
+					},
+					{
+						"content": "Officer",
+						"polygon": [
+							2.398,
+							2.579,
+							2.9514,
+							2.5697,
+							2.9514,
+							2.7774,
+							2.398,
+							2.7774
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 847,
+							"length": 7
+						}
+					},
+					{
+						"content": "Queen",
+						"polygon": [
+							3.0252,
+							2.5651,
+							3.7123,
+							2.5513,
+							3.7169,
+							2.7774,
+							3.0298,
+							2.7774
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 855,
+							"length": 5
+						}
+					},
+					{
+						"content": "Elizabeth",
+						"polygon": [
+							3.8691,
+							2.5513,
+							4.9113,
+							2.5328,
+							4.9205,
+							2.7727,
+							3.8737,
+							2.7774
+						],
+						"confidence": 0.984,
+						"span": {
+							"offset": 861,
+							"length": 9
+						}
+					},
+					{
+						"content": "Police",
+						"polygon": [
+							0.9131,
+							2.8235,
+							1.3789,
+							2.8189,
+							1.3789,
+							3.0034,
+							0.9131,
+							3.0034
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 871,
+							"length": 6
+						}
+					},
+					{
+						"content": "Department",
+						"polygon": [
+							1.425,
+							2.8189,
+							2.3288,
+							2.8143,
+							2.3242,
+							2.9942,
+							1.4204,
+							3.0034
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 878,
+							"length": 10
+						}
+					},
+					{
+						"content": "Contact",
+						"polygon": [
+							2.3657,
+							2.8143,
+							2.9329,
+							2.8097,
+							2.9329,
+							2.9896,
+							2.3611,
+							2.9942
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 889,
+							"length": 7
+						}
+					},
+					{
+						"content": "Information",
+						"polygon": [
+							2.9698,
+							2.8097,
+							3.8968,
+							2.805,
+							3.8921,
+							2.9896,
+							2.9698,
+							2.9896
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 897,
+							"length": 11
+						}
+					},
+					{
+						"content": "+1",
+						"polygon": [
+							3.9844,
+							2.805,
+							4.2103,
+							2.805,
+							4.2057,
+							2.9896,
+							3.9844,
+							2.9896
+						],
+						"confidence": 0.936,
+						"span": {
+							"offset": 909,
+							"length": 2
+						}
+					},
+					{
+						"content": "980",
+						"polygon": [
+							4.2749,
+							2.805,
+							4.6946,
+							2.8004,
+							4.6899,
+							2.9896,
+							4.2749,
+							2.9896
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 912,
+							"length": 3
+						}
+					},
+					{
+						"content": "765",
+						"polygon": [
+							4.8052,
+							2.8004,
+							5.1511,
+							2.8004,
+							5.1511,
+							2.9896,
+							4.8052,
+							2.9896
+						],
+						"confidence": 0.999,
+						"span": {
+							"offset": 916,
+							"length": 3
+						}
+					},
+					{
+						"content": "1234",
+						"polygon": [
+							5.2894,
+							2.8004,
+							5.8521,
+							2.7958,
+							5.8521,
+							2.9896,
+							5.2894,
+							2.9896
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 920,
+							"length": 4
+						}
+					},
+					{
+						"content": "Damage",
+						"polygon": [
+							0.9223,
+							3.2618,
+							1.8446,
+							3.2526,
+							1.8446,
+							3.5109,
+							0.9177,
+							3.5017
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 925,
+							"length": 6
+						}
+					},
+					{
+						"content": "and",
+						"polygon": [
+							1.9092,
+							3.2526,
+							2.3242,
+							3.2526,
+							2.3242,
+							3.5109,
+							1.9092,
+							3.5109
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 932,
+							"length": 3
+						}
+					},
+					{
+						"content": "Injuries",
+						"polygon": [
+							2.3888,
+							3.2526,
+							3.2373,
+							3.2572,
+							3.2465,
+							3.5063,
+							2.3934,
+							3.5109
+						],
+						"confidence": 0.938,
+						"span": {
+							"offset": 936,
+							"length": 8
+						}
+					},
+					{
+						"content": "Extent",
+						"polygon": [
+							0.9085,
+							3.7508,
+							1.3696,
+							3.737,
+							1.3696,
+							3.9123,
+							0.9085,
+							3.9077
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 945,
+							"length": 6
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							1.4157,
+							3.737,
+							1.5771,
+							3.7324,
+							1.5725,
+							3.9123,
+							1.4111,
+							3.9123
+						],
+						"confidence": 0.998,
+						"span": {
+							"offset": 952,
+							"length": 2
+						}
+					},
+					{
+						"content": "Vehicle",
+						"polygon": [
+							1.6187,
+							3.7324,
+							2.1905,
+							3.7231,
+							2.1859,
+							3.9169,
+							1.614,
+							3.9123
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 955,
+							"length": 7
+						}
+					},
+					{
+						"content": "Damage",
+						"polygon": [
+							2.232,
+							3.7231,
+							2.8038,
+							3.7139,
+							2.7992,
+							3.9261,
+							2.232,
+							3.9169
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 963,
+							"length": 6
+						}
+					},
+					{
+						"content": "Huge",
+						"polygon": [
+							2.8499,
+							3.7139,
+							3.4402,
+							3.7047,
+							3.4356,
+							3.9307,
+							2.8453,
+							3.9261
+						],
+						"confidence": 0.968,
+						"span": {
+							"offset": 970,
+							"length": 4
+						}
+					},
+					{
+						"content": "dent",
+						"polygon": [
+							3.5786,
+							3.7047,
+							4.1227,
+							3.7001,
+							4.1181,
+							3.9354,
+							3.5739,
+							3.9307
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 975,
+							"length": 4
+						}
+					},
+					{
+						"content": "in",
+						"polygon": [
+							4.1642,
+							3.7001,
+							4.4086,
+							3.7001,
+							4.404,
+							3.94,
+							4.1596,
+							3.9354
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 980,
+							"length": 2
+						}
+					},
+					{
+						"content": "driver",
+						"polygon": [
+							4.4594,
+							3.7001,
+							5.1373,
+							3.6955,
+							5.1326,
+							3.9446,
+							4.4548,
+							3.94
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 983,
+							"length": 6
+						}
+					},
+					{
+						"content": "side",
+						"polygon": [
+							5.2203,
+							3.6955,
+							5.6953,
+							3.7001,
+							5.6906,
+							3.9492,
+							5.2157,
+							3.9446
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 990,
+							"length": 4
+						}
+					},
+					{
+						"content": "front",
+						"polygon": [
+							5.8013,
+							3.7001,
+							6.3685,
+							3.7001,
+							6.3639,
+							3.9584,
+							5.8013,
+							3.9538
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 995,
+							"length": 5
+						}
+					},
+					{
+						"content": "to",
+						"polygon": [
+							6.4469,
+							3.7001,
+							6.6591,
+							3.7047,
+							6.6545,
+							3.9584,
+							6.4423,
+							3.9584
+						],
+						"confidence": 0.997,
+						"span": {
+							"offset": 1001,
+							"length": 2
+						}
+					},
+					{
+						"content": "back.",
+						"polygon": [
+							6.7098,
+							3.7047,
+							7.171,
+							3.7093,
+							7.1663,
+							3.963,
+							6.7052,
+							3.963
+						],
+						"confidence": 0.865,
+						"span": {
+							"offset": 1004,
+							"length": 5
+						}
+					},
+					{
+						"content": "Driver",
+						"polygon": [
+							1.0837,
+							3.9077,
+							1.7662,
+							3.9077,
+							1.7662,
+							4.1199,
+							1.0791,
+							4.0876
+						],
+						"confidence": 0.93,
+						"span": {
+							"offset": 1010,
+							"length": 6
+						}
+					},
+					{
+						"content": "Side",
+						"polygon": [
+							1.8492,
+							3.9123,
+							2.3242,
+							3.9123,
+							2.3242,
+							4.1384,
+							1.8446,
+							4.1245
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 1017,
+							"length": 4
+						}
+					},
+					{
+						"content": "window",
+						"polygon": [
+							2.4072,
+							3.9123,
+							3.2373,
+							3.9169,
+							3.2373,
+							4.1614,
+							2.4072,
+							4.143
+						],
+						"confidence": 0.964,
+						"span": {
+							"offset": 1022,
+							"length": 6
+						}
+					},
+					{
+						"content": "glass",
+						"polygon": [
+							3.3757,
+							3.9169,
+							4.0028,
+							3.9215,
+							4.0028,
+							4.1614,
+							3.3757,
+							4.1614
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 1029,
+							"length": 5
+						}
+					},
+					{
+						"content": "broken",
+						"polygon": [
+							4.1135,
+							3.9215,
+							4.9436,
+							3.9261,
+							4.9482,
+							4.1522,
+							4.1135,
+							4.1614
+						],
+						"confidence": 0.989,
+						"span": {
+							"offset": 1035,
+							"length": 6
+						}
+					},
+					{
+						"content": "Injuries",
+						"polygon": [
+							0.9085,
+							4.1614,
+							1.425,
+							4.1614,
+							1.425,
+							4.3506,
+							0.9039,
+							4.3275
+						],
+						"confidence": 0.948,
+						"span": {
+							"offset": 1042,
+							"length": 8
+						}
+					},
+					{
+						"content": "Sustained",
+						"polygon": [
+							1.4757,
+							4.1614,
+							2.2735,
+							4.1614,
+							2.2735,
+							4.3829,
+							1.4711,
+							4.3506
+						],
+						"confidence": 0.983,
+						"span": {
+							"offset": 1051,
+							"length": 9
+						}
+					},
+					{
+						"content": "Customer",
+						"polygon": [
+							2.3657,
+							4.1614,
+							3.5278,
+							4.1568,
+							3.5278,
+							4.4152,
+							2.3657,
+							4.3829
+						],
+						"confidence": 0.983,
+						"span": {
+							"offset": 1061,
+							"length": 8
+						}
+					},
+					{
+						"content": "Suffering",
+						"polygon": [
+							3.7169,
+							4.1568,
+							5.0773,
+							4.1476,
+							5.0819,
+							4.429,
+							3.7169,
+							4.4198
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 1070,
+							"length": 9
+						}
+					},
+					{
+						"content": "from",
+						"polygon": [
+							5.1695,
+							4.1476,
+							5.7368,
+							4.143,
+							5.7414,
+							4.429,
+							5.1695,
+							4.429
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1080,
+							"length": 4
+						}
+					},
+					{
+						"content": "writer's",
+						"polygon": [
+							5.8936,
+							4.1384,
+							6.7006,
+							4.1291,
+							6.7052,
+							4.4198,
+							5.8982,
+							4.429
+						],
+						"confidence": 0.94,
+						"span": {
+							"offset": 1085,
+							"length": 8
+						}
+					},
+					{
+						"content": "block",
+						"polygon": [
+							6.7513,
+							4.1291,
+							7.254,
+							4.1245,
+							7.2586,
+							4.4106,
+							6.7559,
+							4.4198
+						],
+						"confidence": 0.99,
+						"span": {
+							"offset": 1094,
+							"length": 5
+						}
+					},
+					{
+						"content": "Additional",
+						"polygon": [
+							0.9177,
+							4.7935,
+							2.1259,
+							4.7935,
+							2.1259,
+							5.0057,
+							0.9177,
+							5.0057
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1100,
+							"length": 10
+						}
+					},
+					{
+						"content": "Comments",
+						"polygon": [
+							2.1813,
+							4.7935,
+							3.3757,
+							4.8027,
+							3.3757,
+							4.9965,
+							2.1813,
+							5.0057
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 1111,
+							"length": 8
+						}
+					},
+					{
+						"content": "Lost",
+						"polygon": [
+							1.2128,
+							5.2779,
+							1.7662,
+							5.2733,
+							1.7616,
+							5.5824,
+							1.2082,
+							5.5778
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1120,
+							"length": 4
+						}
+					},
+					{
+						"content": "my",
+						"polygon": [
+							1.8354,
+							5.2733,
+							2.255,
+							5.2687,
+							2.2504,
+							5.5824,
+							1.8308,
+							5.5824
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 1125,
+							"length": 2
+						}
+					},
+					{
+						"content": "poetry",
+						"polygon": [
+							2.3288,
+							5.2687,
+							3.2004,
+							5.2594,
+							3.1912,
+							5.5824,
+							2.3242,
+							5.5824
+						],
+						"confidence": 0.958,
+						"span": {
+							"offset": 1128,
+							"length": 6
+						}
+					},
+					{
+						"content": "book",
+						"polygon": [
+							3.2696,
+							5.2594,
+							3.8921,
+							5.2548,
+							3.8875,
+							5.5778,
+							3.265,
+							5.5824
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 1135,
+							"length": 4
+						}
+					},
+					{
+						"content": "which",
+						"polygon": [
+							4.0489,
+							5.2548,
+							4.8375,
+							5.2502,
+							4.8283,
+							5.5686,
+							4.0397,
+							5.5778
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 1140,
+							"length": 5
+						}
+					},
+					{
+						"content": "was",
+						"polygon": [
+							4.9067,
+							5.2456,
+							5.3356,
+							5.2456,
+							5.3309,
+							5.5593,
+							4.9021,
+							5.5686
+						],
+						"confidence": 0.992,
+						"span": {
+							"offset": 1146,
+							"length": 3
+						}
+					},
+					{
+						"content": "in",
+						"polygon": [
+							5.4001,
+							5.2456,
+							5.6676,
+							5.241,
+							5.6584,
+							5.5547,
+							5.3909,
+							5.5593
+						],
+						"confidence": 0.977,
+						"span": {
+							"offset": 1150,
+							"length": 2
+						}
+					},
+					{
+						"content": "the",
+						"polygon": [
+							5.7275,
+							5.241,
+							6.1149,
+							5.241,
+							6.1103,
+							5.5455,
+							5.7183,
+							5.5547
+						],
+						"confidence": 0.96,
+						"span": {
+							"offset": 1153,
+							"length": 3
+						}
+					},
+					{
+						"content": "car",
+						"polygon": [
+							6.1795,
+							5.241,
+							6.7006,
+							5.2364,
+							6.6914,
+							5.5316,
+							6.1702,
+							5.5455
+						],
+						"confidence": 0.964,
+						"span": {
+							"offset": 1157,
+							"length": 3
+						}
+					},
+					{
+						"content": "Claim",
+						"polygon": [
+							0.9085,
+							6.0437,
+							1.4434,
+							6.0484,
+							1.4434,
+							6.2883,
+							0.9085,
+							6.2652
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1161,
+							"length": 5
+						}
+					},
+					{
+						"content": "Filed",
+						"polygon": [
+							1.6048,
+							6.0484,
+							2.1398,
+							6.0484,
+							2.1398,
+							6.3067,
+							1.6048,
+							6.2975
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1167,
+							"length": 5
+						}
+					},
+					{
+						"content": "by",
+						"polygon": [
+							2.2043,
+							6.0484,
+							2.4948,
+							6.0484,
+							2.4995,
+							6.3067,
+							2.2089,
+							6.3067
+						],
+						"confidence": 0.945,
+						"span": {
+							"offset": 1173,
+							"length": 2
+						}
+					},
+					{
+						"content": "self?",
+						"polygon": [
+							2.5594,
+							6.0484,
+							3.0667,
+							6.0437,
+							3.0713,
+							6.2975,
+							2.564,
+							6.3067
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1176,
+							"length": 5
+						}
+					},
+					{
+						"content": "Yes",
+						"polygon": [
+							1.5633,
+							6.5005,
+							1.7893,
+							6.5005,
+							1.7847,
+							6.6251,
+							1.5633,
+							6.6251
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1193,
+							"length": 3
+						}
+					},
+					{
+						"content": "No",
+						"polygon": [
+							2.5133,
+							6.5005,
+							2.6885,
+							6.5051,
+							2.6885,
+							6.6251,
+							2.5087,
+							6.6204
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1210,
+							"length": 2
+						}
+					},
+					{
+						"content": "The",
+						"polygon": [
+							1.1298,
+							7.3079,
+							1.3742,
+							7.3079,
+							1.3789,
+							7.4601,
+							1.1298,
+							7.4601
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1224,
+							"length": 3
+						}
+					},
+					{
+						"content": "above",
+						"polygon": [
+							1.4204,
+							7.3079,
+							1.8446,
+							7.3079,
+							1.8446,
+							7.4647,
+							1.4204,
+							7.4601
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1228,
+							"length": 5
+						}
+					},
+					{
+						"content": "information",
+						"polygon": [
+							1.8769,
+							7.3079,
+							2.7024,
+							7.3079,
+							2.707,
+							7.4739,
+							1.8769,
+							7.4647
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1234,
+							"length": 11
+						}
+					},
+					{
+						"content": "is",
+						"polygon": [
+							2.7485,
+							7.3079,
+							2.8684,
+							7.3079,
+							2.873,
+							7.4739,
+							2.7485,
+							7.4739
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1246,
+							"length": 2
+						}
+					},
+					{
+						"content": "correct",
+						"polygon": [
+							2.9053,
+							7.3079,
+							3.4033,
+							7.3032,
+							3.4079,
+							7.4786,
+							2.9053,
+							7.4739
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1249,
+							"length": 7
+						}
+					},
+					{
+						"content": "to",
+						"polygon": [
+							3.4402,
+							7.3032,
+							3.5832,
+							7.3032,
+							3.5878,
+							7.4786,
+							3.4402,
+							7.4786
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1257,
+							"length": 2
+						}
+					},
+					{
+						"content": "the",
+						"polygon": [
+							3.6293,
+							7.3032,
+							3.8645,
+							7.3032,
+							3.8645,
+							7.4786,
+							3.6293,
+							7.4786
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1260,
+							"length": 3
+						}
+					},
+					{
+						"content": "best",
+						"polygon": [
+							3.8968,
+							7.3032,
+							4.2196,
+							7.3079,
+							4.2242,
+							7.4832,
+							3.9014,
+							7.4832
+						],
+						"confidence": 0.991,
+						"span": {
+							"offset": 1264,
+							"length": 4
+						}
+					},
+					{
+						"content": "of",
+						"polygon": [
+							4.2518,
+							7.3079,
+							4.3994,
+							7.3079,
+							4.3994,
+							7.4832,
+							4.2565,
+							7.4832
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1269,
+							"length": 2
+						}
+					},
+					{
+						"content": "my",
+						"polygon": [
+							4.4317,
+							7.3079,
+							4.6577,
+							7.3079,
+							4.6577,
+							7.4832,
+							4.4363,
+							7.4832
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1272,
+							"length": 2
+						}
+					},
+					{
+						"content": "knowledge,",
+						"polygon": [
+							4.6899,
+							7.3079,
+							5.5154,
+							7.3079,
+							5.5154,
+							7.4878,
+							4.6899,
+							7.4832
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1275,
+							"length": 10
+						}
+					},
+					{
+						"content": "and",
+						"polygon": [
+							5.5477,
+							7.3079,
+							5.8059,
+							7.3079,
+							5.8059,
+							7.4878,
+							5.5523,
+							7.4878
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1286,
+							"length": 3
+						}
+					},
+					{
+						"content": "I",
+						"polygon": [
+							5.8474,
+							7.3079,
+							5.9166,
+							7.3079,
+							5.9212,
+							7.4878,
+							5.8521,
+							7.4878
+						],
+						"confidence": 0.86,
+						"span": {
+							"offset": 1290,
+							"length": 1
+						}
+					},
+					{
+						"content": "agree",
+						"polygon": [
+							5.9489,
+							7.3079,
+							6.3501,
+							7.3079,
+							6.3547,
+							7.4878,
+							5.9535,
+							7.4878
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1292,
+							"length": 5
+						}
+					},
+					{
+						"content": "with",
+						"polygon": [
+							6.387,
+							7.3079,
+							6.6775,
+							7.3125,
+							6.6775,
+							7.4878,
+							6.387,
+							7.4878
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1298,
+							"length": 4
+						}
+					},
+					{
+						"content": "the",
+						"polygon": [
+							6.719,
+							7.3125,
+							6.968,
+							7.3125,
+							6.968,
+							7.4878,
+							6.7236,
+							7.4878
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1303,
+							"length": 3
+						}
+					},
+					{
+						"content": "Terms",
+						"polygon": [
+							0.9177,
+							7.5339,
+							1.3466,
+							7.5339,
+							1.3466,
+							7.6908,
+							0.9223,
+							7.6816
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 1307,
+							"length": 5
+						}
+					},
+					{
+						"content": "and",
+						"polygon": [
+							1.3789,
+							7.5339,
+							1.6417,
+							7.5339,
+							1.6417,
+							7.6954,
+							1.3789,
+							7.6908
+						],
+						"confidence": 0.996,
+						"span": {
+							"offset": 1313,
+							"length": 3
+						}
+					},
+					{
+						"content": "Conditions",
+						"polygon": [
+							1.697,
+							7.5339,
+							2.4626,
+							7.5339,
+							2.4626,
+							7.7046,
+							1.697,
+							7.6954
+						],
+						"confidence": 0.987,
+						"span": {
+							"offset": 1317,
+							"length": 10
+						}
+					},
+					{
+						"content": "detailed",
+						"polygon": [
+							2.4948,
+							7.5339,
+							3.0621,
+							7.5339,
+							3.0621,
+							7.7092,
+							2.4948,
+							7.7046
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1328,
+							"length": 8
+						}
+					},
+					{
+						"content": "in",
+						"polygon": [
+							3.0943,
+							7.5339,
+							3.2281,
+							7.5339,
+							3.2281,
+							7.7092,
+							3.0943,
+							7.7092
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1337,
+							"length": 2
+						}
+					},
+					{
+						"content": "my",
+						"polygon": [
+							3.2696,
+							7.5339,
+							3.5002,
+							7.5339,
+							3.5002,
+							7.7139,
+							3.2696,
+							7.7092
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1340,
+							"length": 2
+						}
+					},
+					{
+						"content": "policy",
+						"polygon": [
+							3.5324,
+							7.5339,
+							3.9705,
+							7.5339,
+							3.9705,
+							7.7139,
+							3.5324,
+							7.7139
+						],
+						"confidence": 0.994,
+						"span": {
+							"offset": 1343,
+							"length": 6
+						}
+					},
+					{
+						"content": "document",
+						"polygon": [
+							4.0028,
+							7.5339,
+							4.7268,
+							7.5339,
+							4.7222,
+							7.7092,
+							4.0028,
+							7.7139
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1350,
+							"length": 8
+						}
+					},
+					{
+						"content": "with",
+						"polygon": [
+							4.7591,
+							7.5339,
+							5.0543,
+							7.5339,
+							5.0496,
+							7.7046,
+							4.7545,
+							7.7092
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1359,
+							"length": 4
+						}
+					},
+					{
+						"content": "TR",
+						"polygon": [
+							5.1188,
+							7.5385,
+							5.271,
+							7.5385,
+							5.271,
+							7.7,
+							5.1188,
+							7.7046
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1364,
+							"length": 2
+						}
+					},
+					{
+						"content": "Insured.",
+						"polygon": [
+							5.3171,
+							7.5385,
+							5.8889,
+							7.5385,
+							5.8843,
+							7.6908,
+							5.3125,
+							7.7
+						],
+						"confidence": 0.961,
+						"span": {
+							"offset": 1367,
+							"length": 8
+						}
+					},
+					{
+						"content": "Signature",
+						"polygon": [
+							0.9177,
+							8.5351,
+							1.6509,
+							8.5397,
+							1.6509,
+							8.7058,
+							0.9177,
+							8.7012
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1376,
+							"length": 9
+						}
+					},
+					{
+						"content": "Date",
+						"polygon": [
+							5.7552,
+							8.5443,
+							6.0965,
+							8.5443,
+							6.0965,
+							8.6781,
+							5.7552,
+							8.6781
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1386,
+							"length": 4
+						}
+					},
+					{
+						"content": "5/31/2023",
+						"polygon": [
+							5.769,
+							7.9399,
+							7.1663,
+							7.9861,
+							7.1663,
+							8.2398,
+							5.7598,
+							8.2398
+						],
+						"confidence": 0.961,
+						"span": {
+							"offset": 1391,
+							"length": 9
+						}
+					}
+				],
+				"selectionMarks": [
+					{
+						"state": "selected",
+						"polygon": [
+							1.4125,
+							6.4901,
+							1.5364,
+							6.4901,
+							1.5364,
+							6.6227,
+							1.4125,
+							6.6227
+						],
+						"confidence": 0.971,
+						"span": {
+							"offset": 1182,
+							"length": 10
+						}
+					},
+					{
+						"state": "unselected",
+						"polygon": [
+							2.368,
+							6.4999,
+							2.4809,
+							6.4999,
+							2.4809,
+							6.6177,
+							2.368,
+							6.6177
+						],
+						"confidence": 0.993,
+						"span": {
+							"offset": 1197,
+							"length": 12
+						}
+					},
+					{
+						"state": "selected",
+						"polygon": [
+							0.9169,
+							7.3276,
+							1.0507,
+							7.3276,
+							1.0507,
+							7.4589,
+							0.9169,
+							7.4589
+						],
+						"confidence": 0.995,
+						"span": {
+							"offset": 1213,
+							"length": 10
+						}
+					}
+				],
+				"lines": [
+					{
+						"content": "Name of Witness",
+						"polygon": [
+							0.9131,
+							1.0104,
+							2.232,
+							1.0104,
+							2.232,
+							1.1718,
+							0.9131,
+							1.1718
+						],
+						"spans": [
+							{
+								"offset": 690,
+								"length": 15
+							}
+						]
+					},
+					{
+						"content": "William Shakespeare",
+						"polygon": [
+							2.2597,
+							0.9227,
+							4.9344,
+							0.955,
+							4.9297,
+							1.2134,
+							2.2597,
+							1.1765
+						],
+						"spans": [
+							{
+								"offset": 706,
+								"length": 19
+							}
+						]
+					},
+					{
+						"content": "Contact Information of Witness +1 000 111 0000",
+						"polygon": [
+							0.9131,
+							1.2226,
+							5.0035,
+							1.2272,
+							5.0035,
+							1.421,
+							0.9131,
+							1.4071
+						],
+						"spans": [
+							{
+								"offset": 726,
+								"length": 46
+							}
+						]
+					},
+					{
+						"content": "Police Report (if filed)",
+						"polygon": [
+							0.9085,
+							1.8823,
+							3.3941,
+							1.8823,
+							3.3895,
+							2.1407,
+							0.9085,
+							2.1315
+						],
+						"spans": [
+							{
+								"offset": 773,
+								"length": 24
+							}
+						]
+					},
+					{
+						"content": "Police Report Number NYPD 3256",
+						"polygon": [
+							0.9039,
+							2.3575,
+							3.9567,
+							2.3298,
+							3.9567,
+							2.5421,
+							0.9039,
+							2.5605
+						],
+						"spans": [
+							{
+								"offset": 798,
+								"length": 30
+							}
+						]
+					},
+					{
+						"content": "Name of Reporting Officer Queen Elizabeth",
+						"polygon": [
+							0.9131,
+							2.5697,
+							4.9666,
+							2.5282,
+							4.9712,
+							2.7681,
+							0.9131,
+							2.7774
+						],
+						"spans": [
+							{
+								"offset": 829,
+								"length": 41
+							}
+						]
+					},
+					{
+						"content": "Police Department Contact Information +1 980 765 1234",
+						"polygon": [
+							0.9039,
+							2.8143,
+							5.8613,
+							2.7958,
+							5.8613,
+							2.985,
+							0.9039,
+							3.0034
+						],
+						"spans": [
+							{
+								"offset": 871,
+								"length": 53
+							}
+						]
+					},
+					{
+						"content": "Damage and Injuries",
+						"polygon": [
+							0.9131,
+							3.2526,
+							3.2419,
+							3.2479,
+							3.2419,
+							3.5063,
+							0.9131,
+							3.5063
+						],
+						"spans": [
+							{
+								"offset": 925,
+								"length": 19
+							}
+						]
+					},
+					{
+						"content": "Extent of Vehicle Damage Huge dent in driver side front to back.",
+						"polygon": [
+							0.9039,
+							3.6955,
+							7.1894,
+							3.6955,
+							7.1894,
+							3.9584,
+							0.9039,
+							3.9492
+						],
+						"spans": [
+							{
+								"offset": 945,
+								"length": 64
+							}
+						]
+					},
+					{
+						"content": "Driver Side window glass broken",
+						"polygon": [
+							1.0699,
+							3.9077,
+							4.9805,
+							3.9261,
+							4.9759,
+							4.1614,
+							1.0699,
+							4.1291
+						],
+						"spans": [
+							{
+								"offset": 1010,
+								"length": 31
+							}
+						]
+					},
+					{
+						"content": "Injuries Sustained Customer Suffering from writer's block",
+						"polygon": [
+							0.8993,
+							4.1199,
+							7.3001,
+							4.1199,
+							7.3001,
+							4.429,
+							0.8993,
+							4.4106
+						],
+						"spans": [
+							{
+								"offset": 1042,
+								"length": 57
+							}
+						]
+					},
+					{
+						"content": "Additional Comments",
+						"polygon": [
+							0.9085,
+							4.7935,
+							3.3757,
+							4.7935,
+							3.3757,
+							5.0011,
+							0.9085,
+							5.0011
+						],
+						"spans": [
+							{
+								"offset": 1100,
+								"length": 19
+							}
+						]
+					},
+					{
+						"content": "Lost my poetry book which was in the car",
+						"polygon": [
+							1.2082,
+							5.2733,
+							6.7236,
+							5.2364,
+							6.7282,
+							5.5501,
+							1.2082,
+							5.5824
+						],
+						"spans": [
+							{
+								"offset": 1120,
+								"length": 40
+							}
+						]
+					},
+					{
+						"content": "Claim Filed by self?",
+						"polygon": [
+							0.9085,
+							6.0391,
+							3.0805,
+							6.0437,
+							3.0759,
+							6.3067,
+							0.9085,
+							6.2883
+						],
+						"spans": [
+							{
+								"offset": 1161,
+								"length": 20
+							}
+						]
+					},
+					{
+						"content": "Yes",
+						"polygon": [
+							1.5403,
+							6.5005,
+							1.7893,
+							6.5051,
+							1.7939,
+							6.6251,
+							1.5403,
+							6.6251
+						],
+						"spans": [
+							{
+								"offset": 1193,
+								"length": 3
+							}
+						]
+					},
+					{
+						"content": "No",
+						"polygon": [
+							2.4995,
+							6.5005,
+							2.6978,
+							6.5051,
+							2.7024,
+							6.6251,
+							2.4995,
+							6.6204
+						],
+						"spans": [
+							{
+								"offset": 1210,
+								"length": 2
+							}
+						]
+					},
+					{
+						"content": "The above information is correct to the best of my knowledge, and I agree with the",
+						"polygon": [
+							1.0837,
+							7.3032,
+							6.9727,
+							7.3079,
+							6.9727,
+							7.4878,
+							1.0837,
+							7.4693
+						],
+						"spans": [
+							{
+								"offset": 1224,
+								"length": 82
+							}
+						]
+					},
+					{
+						"content": "Terms and Conditions detailed in my policy document with TR Insured.",
+						"polygon": [
+							0.9085,
+							7.5293,
+							5.8889,
+							7.5339,
+							5.8889,
+							7.7092,
+							0.9085,
+							7.7046
+						],
+						"spans": [
+							{
+								"offset": 1307,
+								"length": 68
+							}
+						]
+					},
+					{
+						"content": "Signature",
+						"polygon": [
+							0.9039,
+							8.5351,
+							1.6555,
+							8.5351,
+							1.6509,
+							8.7058,
+							0.9039,
+							8.7012
+						],
+						"spans": [
+							{
+								"offset": 1376,
+								"length": 9
+							}
+						]
+					},
+					{
+						"content": "Date",
+						"polygon": [
+							5.7506,
+							8.5443,
+							6.1195,
+							8.5443,
+							6.1195,
+							8.6781,
+							5.7552,
+							8.6781
+						],
+						"spans": [
+							{
+								"offset": 1386,
+								"length": 4
+							}
+						]
+					},
+					{
+						"content": "5/31/2023",
+						"polygon": [
+							5.7552,
+							7.9399,
+							7.1756,
+							7.9584,
+							7.171,
+							8.2398,
+							5.7506,
+							8.2352
+						],
+						"spans": [
+							{
+								"offset": 1391,
+								"length": 9
+							}
+						]
+					}
+				],
+				"spans": [
+					{
+						"offset": 690,
+						"length": 710
+					}
+				]
+			}
+		],
+		"tables": [],
+		"paragraphs": [
+			{
+				"spans": [
+					{
+						"offset": 0,
+						"length": 39
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							1.736,
+							1.5114,
+							3.9885,
+							1.5253,
+							3.9842,
+							2.2164,
+							1.7317,
+							2.2025
+						]
+					}
+				],
+				"content": "TR INSURED A Test P&C INSURANCE Company"
+			},
+			{
+				"spans": [
+					{
+						"offset": 40,
+						"length": 29
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.96,
+							2.789,
+							6.4495,
+							2.7844,
+							6.4498,
+							3.1076,
+							0.9603,
+							3.1122
+						]
+					}
+				],
+				"role": "title",
+				"content": "Auto Insurance Claim Document"
+			},
+			{
+				"spans": [
+					{
+						"offset": 70,
+						"length": 20
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9733,
+							3.4216,
+							3.4764,
+							3.4124,
+							3.4772,
+							3.6433,
+							0.9741,
+							3.6525
+						]
+					}
+				],
+				"role": "sectionHeading",
+				"content": "Customer Information"
+			},
+			{
+				"spans": [
+					{
+						"offset": 91,
+						"length": 77
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.978,
+							3.8555,
+							7.0771,
+							3.8463,
+							7.0778,
+							4.3498,
+							0.9787,
+							4.359
+						]
+					}
+				],
+				"content": "Name William Wordsworth Address 39 Washington Street, New York City, NY 10003"
+			},
+			{
+				"spans": [
+					{
+						"offset": 169,
+						"length": 75
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9688,
+							4.5253,
+							4.2243,
+							4.4975,
+							4.2298,
+							5.1424,
+							0.9743,
+							5.1702
+						]
+					}
+				],
+				"content": "Phone Number +1 123 465 1637 Email dummy3@3.com Policy Number TRI 813654329"
+			},
+			{
+				"spans": [
+					{
+						"offset": 245,
+						"length": 20
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9695,
+							5.3979,
+							3.3286,
+							5.3979,
+							3.3286,
+							5.6011,
+							0.9695,
+							5.6011
+						]
+					}
+				],
+				"content": "Incident Information"
+			},
+			{
+				"spans": [
+					{
+						"offset": 266,
+						"length": 116
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9834,
+							5.8505,
+							7.2436,
+							5.8505,
+							7.2436,
+							6.5339,
+							0.9834,
+							6.5339
+						]
+					}
+				],
+				"content": "Date of Incident 5/31/2023 Time of Incident 11 pm BST Location of Incident 2 Daffodil Street, New York City, NY 1002"
+			},
+			{
+				"spans": [
+					{
+						"offset": 383,
+						"length": 83
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9779,
+							6.6585,
+							7.0358,
+							6.6401,
+							7.0374,
+							7.1595,
+							0.9795,
+							7.1779
+						]
+					}
+				],
+				"content": "Description of Incident Another Car changed lane and hit my car on the driver side."
+			},
+			{
+				"spans": [
+					{
+						"offset": 467,
+						"length": 19
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9741,
+							7.3881,
+							3.2225,
+							7.3881,
+							3.2225,
+							7.5913,
+							0.9741,
+							7.5913
+						]
+					}
+				],
+				"role": "sectionHeading",
+				"content": "Vehicle Information"
+			},
+			{
+				"spans": [
+					{
+						"offset": 487,
+						"length": 183
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9787,
+							7.8453,
+							6.6157,
+							7.8453,
+							6.6157,
+							8.6949,
+							0.9787,
+							8.6949
+						]
+					}
+				],
+				"content": "Vehicle Owner's Name (if different from customer) NA Make and Model of the Vehicle 2011 Kia Sorento Vehicle Identification Number (VIN) 5XYKU4A12BG001739 License Plate Number FWK-2762"
+			},
+			{
+				"spans": [
+					{
+						"offset": 671,
+						"length": 18
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 1,
+						"polygon": [
+							0.9823,
+							8.9258,
+							2.9824,
+							8.9535,
+							2.9788,
+							9.2121,
+							0.9787,
+							9.1844
+						]
+					}
+				],
+				"content": "Witnesses (if any)"
+			},
+			{
+				"spans": [
+					{
+						"offset": 690,
+						"length": 82
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9134,
+							0.9182,
+							5.0052,
+							0.932,
+							5.0035,
+							1.421,
+							0.9117,
+							1.4071
+						]
+					}
+				],
+				"content": "Name of Witness William Shakespeare Contact Information of Witness +1 000 111 0000"
+			},
+			{
+				"spans": [
+					{
+						"offset": 773,
+						"length": 24
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9085,
+							1.8823,
+							3.3941,
+							1.8823,
+							3.3941,
+							2.1407,
+							0.9085,
+							2.1407
+						]
+					}
+				],
+				"role": "sectionHeading",
+				"content": "Police Report (if filed)"
+			},
+			{
+				"spans": [
+					{
+						"offset": 798,
+						"length": 126
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9014,
+							2.3412,
+							5.8595,
+							2.3228,
+							5.862,
+							2.985,
+							0.9039,
+							3.0034
+						]
+					}
+				],
+				"content": "Police Report Number NYPD 3256 Name of Reporting Officer Queen Elizabeth Police Department Contact Information +1 980 765 1234"
+			},
+			{
+				"spans": [
+					{
+						"offset": 925,
+						"length": 19
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9131,
+							3.2479,
+							3.2419,
+							3.2479,
+							3.2419,
+							3.5063,
+							0.9131,
+							3.5063
+						]
+					}
+				],
+				"content": "Damage and Injuries"
+			},
+			{
+				"spans": [
+					{
+						"offset": 945,
+						"length": 154
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9005,
+							3.6773,
+							7.3022,
+							3.6958,
+							7.3001,
+							4.429,
+							0.8984,
+							4.4105
+						]
+					}
+				],
+				"content": "Extent of Vehicle Damage Huge dent in driver side front to back. Driver Side window glass broken Injuries Sustained Customer Suffering from writer's block"
+			},
+			{
+				"spans": [
+					{
+						"offset": 1100,
+						"length": 19
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9085,
+							4.7935,
+							3.3757,
+							4.7935,
+							3.3757,
+							5.0011,
+							0.9085,
+							5.0011
+						]
+					}
+				],
+				"role": "sectionHeading",
+				"content": "Additional Comments"
+			},
+			{
+				"spans": [
+					{
+						"offset": 1120,
+						"length": 40
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							1.2064,
+							5.2687,
+							6.7264,
+							5.2364,
+							6.7282,
+							5.5501,
+							1.2082,
+							5.5824
+						]
+					}
+				],
+				"content": "Lost my poetry book which was in the car"
+			},
+			{
+				"spans": [
+					{
+						"offset": 1161,
+						"length": 51
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9085,
+							6.0391,
+							3.0805,
+							6.0437,
+							3.0793,
+							6.6283,
+							0.9072,
+							6.6237
+						]
+					}
+				],
+				"content": "Claim Filed by self? :selected: Yes :unselected: No"
+			},
+			{
+				"spans": [
+					{
+						"offset": 1213,
+						"length": 162
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9087,
+							7.3031,
+							6.9728,
+							7.3079,
+							6.9725,
+							7.7101,
+							0.9083,
+							7.7053
+						]
+					}
+				],
+				"content": ":selected: The above information is correct to the best of my knowledge, and I agree with the Terms and Conditions detailed in my policy document with TR Insured."
+			},
+			{
+				"spans": [
+					{
+						"offset": 1376,
+						"length": 9
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							0.9039,
+							8.5351,
+							1.6555,
+							8.5351,
+							1.6555,
+							8.7058,
+							0.9039,
+							8.7058
+						]
+					}
+				],
+				"content": "Signature"
+			},
+			{
+				"spans": [
+					{
+						"offset": 1386,
+						"length": 14
+					}
+				],
+				"boundingRegions": [
+					{
+						"pageNumber": 2,
+						"polygon": [
+							5.7544,
+							7.9399,
+							7.1756,
+							7.9584,
+							7.166,
+							8.6964,
+							5.7449,
+							8.6779
+						]
+					}
+				],
+				"content": "Date 5/31/2023"
+			}
+		],
+		"styles": [
+			{
+				"confidence": 1,
+				"spans": [
+					{
+						"offset": 91,
+						"length": 77
+					},
+					{
+						"offset": 198,
+						"length": 18
+					},
+					{
+						"offset": 320,
+						"length": 146
+					},
+					{
+						"offset": 706,
+						"length": 19
+					},
+					{
+						"offset": 945,
+						"length": 154
+					},
+					{
+						"offset": 1120,
+						"length": 40
+					},
+					{
+						"offset": 1391,
+						"length": 9
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.95,
+				"spans": [
+					{
+						"offset": 169,
+						"length": 28
+					},
+					{
+						"offset": 217,
+						"length": 27
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.4,
+				"spans": [
+					{
+						"offset": 266,
+						"length": 53
+					},
+					{
+						"offset": 587,
+						"length": 53
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.5,
+				"spans": [
+					{
+						"offset": 540,
+						"length": 46
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.3,
+				"spans": [
+					{
+						"offset": 641,
+						"length": 29
+					},
+					{
+						"offset": 798,
+						"length": 30
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.1,
+				"spans": [
+					{
+						"offset": 726,
+						"length": 46
+					},
+					{
+						"offset": 871,
+						"length": 53
+					}
+				],
+				"isHandwritten": true
+			},
+			{
+				"confidence": 0.7,
+				"spans": [
+					{
+						"offset": 829,
+						"length": 41
+					}
+				],
+				"isHandwritten": true
+			}
+		],
+		"contentFormat": "text"
+	}
+}

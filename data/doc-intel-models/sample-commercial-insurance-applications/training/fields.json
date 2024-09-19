@@ -1,0 +1,697 @@
+{
+	"$schema": "https://schema.cognitiveservices.azure.com/formrecognizer/2021-03-01/fields.json",
+	"fields": [
+		{
+			"fieldKey": "FormType",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicationDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "CarrierName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NAICCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "CompanyName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProgramCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PolicyNumber",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ContactName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ContactPhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ContactEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ContactCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ContactSubCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerId",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Underwriter",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "UnderwriterOffice",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionQuote",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionBound",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionChange",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionCancel",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionIssuePolicy",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StatusOfTransactionRenew",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TransactionDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TransactionTime",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TransactionTimeAM",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "TransactionTimePM",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "LOBTable",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW4",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW5",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW6",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW7",
+					"fieldType": "LOBTable_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "vertical"
+		},
+		{
+			"fieldKey": "PolicyProposedEffectiveDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PolicyProposedExpirationDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "BillingPlanDirect",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "BillingPlanAgency",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PaymentPlan",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PaymentMethod",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Audit",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Deposit",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "MinPremium",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "PolicyPremium",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "GLCode",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SIC",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NAICS",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SSN",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantBusinessPhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "Website",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsACorporation",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsIndividual",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsJointVenture",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsLLC",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsNotForProfit",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsPartnership",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsSCorp",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsTrust",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsTypeOther",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage2",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactType",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactName",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactPrimaryPhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactSecondaryPhone",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactPrimaryEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalContactSecondaryEmailAddress",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AdditionalDescriptionOfPrimaryOperations",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage3",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "IsAFormalSafetyProgramInOperation",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasSafetyManual",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasSafetyPosition",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasMonthlyMeetings",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasOSHA",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasOtherSafety",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "OtherSafetyProgramInOperation",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HasExposureToChemicals",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ExposureToChemicals",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "HadSafetyCodeViolations",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "SafetyCodeViolationHistory",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "SafetyCodeViolationHistory_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "SafetyCodeViolationHistory_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "vertical"
+		},
+		{
+			"fieldKey": "PriorCarrierInformationTable",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "PriorCarrierInformationTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "PriorCarrierInformationTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "PriorCarrierInformationTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW4",
+					"fieldType": "PriorCarrierInformationTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW5",
+					"fieldType": "PriorCarrierInformationTable_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "vertical"
+		},
+		{
+			"fieldKey": "AgencyCustomerIdPage4",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "LossHistory",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "LossHistoryTable",
+			"fieldFormat": "not-specified",
+			"fieldType": "object",
+			"fields": [
+				{
+					"fieldKey": "ROW1",
+					"fieldType": "LossHistoryTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW2",
+					"fieldType": "LossHistoryTable_object",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "ROW3",
+					"fieldType": "LossHistoryTable_object",
+					"fieldFormat": "not-specified"
+				}
+			],
+			"visualizationHint": "vertical"
+		},
+		{
+			"fieldKey": "CopyGivenToAgent",
+			"fieldType": "selectionMark",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ProducerSignature",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NameOfSigningProducer",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "StateProducerLicenseNumber",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantSignature",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "ApplicantSignatureDate",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		},
+		{
+			"fieldKey": "NationalProducerNumber",
+			"fieldType": "string",
+			"fieldFormat": "not-specified"
+		}
+	],
+	"definitions": {
+		"LOBTable_object": {
+			"fieldKey": "LOBTable_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "LOBIndicatorCol1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBNameCol1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBPremiumCol1",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBIndicatorCol2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBNameCol2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBPremiumCol2",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBIndicatorCol3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBNameCol3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LOBPremiumCol3",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		},
+		"SafetyCodeViolationHistory_object": {
+			"fieldKey": "SafetyCodeViolationHistory_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "OCCUR DATE",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "EXPLANATION",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "RESOLUTION",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "RESOLVE DATE",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		},
+		"PriorCarrierInformationTable_object": {
+			"fieldKey": "PriorCarrierInformationTable_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "YEAR",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "CATEGORY",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "GENERAL LIABILITY",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "AUTOMOBILE",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "PROPERTY",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "OTHER:",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		},
+		"LossHistoryTable_object": {
+			"fieldKey": "LossHistoryTable_object",
+			"fieldType": "object",
+			"fieldFormat": "not-specified",
+			"fields": [
+				{
+					"fieldKey": "DATE OF OCCURRENCE",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "LINE",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "TYPE / DESCRIPTION OF OCCURRENCE OR CLAIM",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "DATE OF CLAIM",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "AMOUNT PAID",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "AMOUNT RESERVED",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "SUBRO- GATION Y / N",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				},
+				{
+					"fieldKey": "CLAIM OPEN Y / N",
+					"fieldType": "string",
+					"fieldFormat": "not-specified"
+				}
+			]
+		}
+	}
+}

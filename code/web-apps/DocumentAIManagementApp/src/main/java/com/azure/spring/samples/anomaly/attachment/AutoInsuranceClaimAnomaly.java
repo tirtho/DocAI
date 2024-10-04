@@ -37,7 +37,7 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 													+ "Phone, "
 													+ "and Email "
 													+ "are required fields in the json document below. \r\n"
-													+ "Find which fields have no value. Answer in the format as "
+													+ "Find which of the above required fields have no value in the json document below. Answer in the format as "
 													+ "'All required fields are present' or 'Required field(s) <field names> are absent' "
 													+ "\n ";
 
@@ -54,16 +54,15 @@ public class AutoInsuranceClaimAnomaly implements AttachmentAnomaly {
 	public static String FIELDS_FOR_INCIDENT_TIME_LOCATION_MATCH_CHECK = INCIDENT_TIME_FIELD_NAME + ", " + INCIDENT_LOCATION_FIELD_NAME;
 			
 	public static String FIND_US_LOCATION_DATE_TIME_MATCH_PROMPT = 
-				"From the ADDRESS field find the timezone and from the TIME field find the timezone. \n"
-				+ "The timezone in USA is one of AST, EST, EDT, CST, CDT, MST, MDT, PST, PDT, AKST, AKDT, HST, HAST, HADT, SST, SDT, CHST. \n"
-				+ "If no time zone found, return NONE. \n"
+				"Find the 3 character timezone from \n"
 				+ "ADDRESS: %s\n"
+				+ "as addressTimezone.\n"
+				+ "Find the 3 character timezone from \n"
 				+ "TIME: %s\n"
-				+ "Answer in json format \n"
-				+ "{ 'addressTimezone': '<timezone of the ADDRESS>', 'incidentTimezone': '<timezone in TIME>', 'matching': true/false }"
-				+ "If the timezone for the ADDRESS and TIME fields are same, the 'matching' field in the json should be true, otherwise it should be false. \n"
-				+ "Return the json data only.";
-	
+				+ "as incidentTimezone.\n"
+				+ "If incidentTimezone and addressTimezone are same, then\r\n"
+				+ "isMatching = true otherwise it should be false.\n"
+				+ "Return incidentTimezone, addressTimezone and isMatching in json data only.";
 	private CosmosDBOperation cosmosDB;
     private AzureOpenAIOperation aoaiOps;
 	   

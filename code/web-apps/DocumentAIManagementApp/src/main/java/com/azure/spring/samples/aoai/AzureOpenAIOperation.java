@@ -120,7 +120,9 @@ public class AzureOpenAIOperation {
 		    logger.info("Index: %d, Chat Role: %s.%n", choice.getIndex(), message.getRole());
 		    logger.info("Message:");
 		    logger.info(message.getContent());
-		    completionBuffer.append("Model[").append(this.deployedModel).append("]: ").append(message.getContent());
+			String aCompletion = StringUtils.removeStart(message.getContent(), "```json");
+			aCompletion = StringUtils.removeEnd(aCompletion, "```");		    
+		    completionBuffer.append("Model[").append(this.deployedModel).append("]: ").append(aCompletion);
 		}
 		logger.info(completionBuffer.toString());
 		return completionBuffer.toString();

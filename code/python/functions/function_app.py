@@ -491,69 +491,6 @@ def getExtractsFromAOAIgpt4o(url, categories, fName):
     logging.info(f'{fName}formDocuments:{formDocuments}')
     return aoaiAPIVersion, modelId, isHandwritten, formDocuments
 
-def getExtractsFromAOAIgpt4v(url, categories, fName):
-    fName = f'{fName}f(getExtractsFromAOAIgpt4v)->'
-    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
-    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
-    aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
-    aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
-    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
-    decodedBytes = base64.b64decode(rawToken)
-    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
-    #extract insights on the image
-    gotPrompt = composeImageExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
-    logging.info(f'{fName}Got Prompt: {gotPrompt}')
-    headers = {
-                "Content-Type": "application/json",   
-                "api-key": aoaiMultiModalAPIKey 
-            }
-    response = runHttpRequest(endpoint=endpoint,
-                              headers=headers,
-                              requestType="POST",
-                              jsonRequestBody=gotPrompt,
-                              fName=fName
-                            )
-    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
-    jsonResponse = json.loads(response.content.decode('utf-8'))
-    logging.info(f'{fName} GPT4 Vision API response:{jsonResponse}')
-    summary = jsonResponse['choices'][0]['message']['content']
-
-    aoaiAPIVersion = aoaiVisionAPIVersion
-    modelId = aoaiVisionAPIEngine
-    isHandwritten = False
-    formDocuments = []
-    formFields = []
-    name = "Description"
-    value_type = "string"
-    # TODO: Compute confidence for what is returned by GPT4
-    #    "fieldConfidence":confidence,
-    aField = {
-        "fieldName":f'{name}',
-        "fieldValueType":f'{value_type}',
-        "fieldValue":f'{summary}'
-    }
-    formFields.append(aField)
-    createdDateTime = getCurrentUTCTimeString()
-    aField = {
-        "fieldName":"CreatedTime",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{createdDateTime}'
-    }
-    formFields.append(aField)
-    # TODO: compute confidence for doc
-    # "documentConfidence":confidence,
-    aDocument = {
-        "documentId":0,
-        "documentType":f'{aoaiVisionAPIEngine}',
-        "fields":formFields
-    }
-    formDocuments.append(aDocument)
-    logging.info(f'{fName}formDocuments:{formDocuments}')
-    return aoaiAPIVersion, modelId, isHandwritten, formDocuments
-
 def runHttpRequest(endpoint, headers, requestType, jsonRequestBody, fName):
     fName = f'{fName}f(runHttpRequest)->'
     if requestType != 'GET':
@@ -1036,6 +973,49 @@ def getAttachmentClassUsingFormRecognizerCustomModel(req: func.HttpRequest) -> f
     logging.info(f'{fName}Success: attachment {attachmentName} has the classes: {attachmentClasses}') 
     return func.HttpResponse(f'{attachmentClasses}', status_code=200)    
 
+# Use this to classify video files
+def getAttachmentClassFromAOAIVideo(fName, url):
+    fName = f"{fName}f(getAttachmentClassFromAOAIVideo)->"
+    category = f'video-{url.lower()[-3:]}'
+    logging.info(f'{fName}Category of the video file is {category}')  
+    return category
+
+# Use this to classify image files
+def getAttachmentClassFromAOAIgpt4o(fName, url):
+    fName = f"{fName}f(getAttachmentClassFromAOAIgpt4o)->"
+    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
+    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+    decodedBytes = base64.b64decode(rawToken)
+    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
+    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiOmniAPIEngine}/chat/completions?api-version={aoaiOmniAPIVersion}'
+    gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
+    logging.info(f'{fName}Got Prompt: {gotPrompt}')
+    headers = {
+                "Content-Type": "application/json",   
+                "api-key": aoaiMultiModalAPIKey 
+            }
+    response = runHttpRequest(endpoint=endpoint,
+                   headers=headers,
+                   requestType="POST",
+                   jsonRequestBody=gotPrompt,
+                   fName=fName
+                )
+    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
+    jsonResponse = json.loads(response.content.decode('utf-8'))
+    logging.info(f'{fName} GPT4o API response:{jsonResponse}')
+    categoryRaw = jsonResponse['choices'][0]['message']['content']
+    category = categoryRaw.lower()
+    if category == 'medical-rx-note' or category == 'medical-lab-report' or category == 'financial-report' or category == 'home' or category == 'automobile' or category == 'other':
+        category = f'image-{category}'
+    else:
+        category = 'image-other'
+    logging.info(f'{fName}Category from GPT4o API Completion message:{category}')
+    return category
+
 @app.route(route="getAttachmentClassUsingOpenAI", auth_level=func.AuthLevel.ANONYMOUS)
 def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
     fName = f"f(getAttachmentClassUsingOpenAI)->"
@@ -1043,7 +1023,7 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
                 {
                     "category": "unknown"
                 }
-              ]   
+              ]
     try:
         messageId, reqBody = getHttpRequestBody(request = req, functionName=fName)
         logging.info(f'{fName}Received MessageId:{messageId}')
@@ -1068,45 +1048,15 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(f'{categories}', status_code=200)    
         if messageType == 'email-attachment':
             try:
-                aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
-                aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
-                aoaiVisionAPIVersion = os.getenv('OPENAI_VISION_API_VERSION')
-                aoaiVisionAPIEngine = os.getenv('OPENAI_VISION_API_ENGINE')
-                rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
-                decodedBytes = base64.b64decode(rawToken)
-                blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-                logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-                endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiVisionAPIEngine}/chat/completions?api-version={aoaiVisionAPIVersion}'
-                #classifiedCategory
-                # Process video files. For video we can't do realtime AOAI calls to get 
-                # more data about the video. So, just adding the extension as part of category
                 if url.lower().endswith(('.mov', '.mp4')):
-                    category = f'video-{url.lower()[-3:]}'
-                    logging.info(f'{fName}Category of the video file is {category}')
-                # Else process image files
+                    #classifiedCategory
+                    # Process video files. For video we can't do realtime AOAI calls to get 
+                    # more data about the video. So, just adding the extension as part of category
+                    # Else process image files
+                    category = getAttachmentClassFromAOAIVideo(fName, url)
                 else:
-                    gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
-                    logging.info(f'{fName}Got Prompt: {gotPrompt}')
-                    headers = {
-                                "Content-Type": "application/json",   
-                                "api-key": aoaiMultiModalAPIKey 
-                            }
-                    response = runHttpRequest(endpoint=endpoint,
-                                   headers=headers,
-                                   requestType="POST",
-                                   jsonRequestBody=gotPrompt,
-                                   fName=fName
-                                )
-                    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
-                    jsonResponse = json.loads(response.content.decode('utf-8'))
-                    logging.info(f'{fName} GPT4 Vision API response:{jsonResponse}')
-                    categoryRaw = jsonResponse['choices'][0]['message']['content']
-                    category = categoryRaw.lower()
-                    if category == 'medical-rx-note' or category == 'medical-lab-report' or category == 'financial-report' or category == 'home' or category == 'automobile' or category == 'other':
-                        category = f'image-{category}'
-                    else:
-                        category = 'image-other'
-                    logging.info(f'{fName}Category from GPT4 Vision API Completion message:{category}')
+                    # classify images
+                    category = getAttachmentClassFromAOAIgpt4o(fName, url)
                 categories.clear()
                 aClassInfo = {"category":f"{category}"}
                 categories.append(aClassInfo)

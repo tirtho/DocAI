@@ -32,7 +32,7 @@ The end to end email (with attachments) ingestion, extraction, insights, fraud/a
 
 ## Deployment
 
-After you create and configure the prerequisite Azure services listed below, deploy the code for [Azure Logic App](code/logic-apps), [Azure Python Functions](code/python/functions), [Azure C# Functions](code/dotnet) and [Azure Spring Boot Web App](code/web-apps).
+After you create and configure the prerequisite Azure services listed below, deploy the code for [Azure Logic App](code/logic-apps), [Azure Python Functions](code/python/functions), [Azure C# Functions](code/csharp/functions) and [Azure Spring Boot Web App](code/web-apps).
 
 In your CosmosDB NoSQL API instance you need to create a database/container as DocAIDatabase/EmailExtracts.
 

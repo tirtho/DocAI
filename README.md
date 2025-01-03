@@ -4,10 +4,10 @@ Ingestion of documents coming from customers, internal functional representative
 
 ![The End to End Solution][End2EndSolution]
 ## Demos
-- ![Introduction][Introduction]
-- ![Architecture][Architecture]
-- ![Auto Insurance Claim][AutoInsuranceClaim]
-- ![Medical Records][MedicalDocuments]
+- [Introduction]
+- [Architecture]
+- [AutoInsuranceClaim]
+- [MedicalDocuments]
 
 ## Architecture
 

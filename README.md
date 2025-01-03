@@ -3,6 +3,11 @@
 Ingestion of documents coming from customers, internal functional representatives and other actors mostly over emails is an Enterprise challenge. The volume and diversity of this inflow of documents is staggerring. Upon ingestion, providing a framework for post processing, data validation, correction and quality improvement is the next hurdle. This also demands automation along with a triggered 'human in the loop' component, for faster yet safe post processing. You also need tools to detect anomalies or fraud in certain scenarios. This repository provides a Solution Accelerator using Azure AI Services including Open AI, Vision APIs, Document Intelligence, Logic App and a few services to address this challenge.
 
 ![The End to End Solution][End2EndSolution]
+## Demos
+- ![Introduction][Introduction]
+- ![Architecture][Architecture]
+- ![Auto Insurance Claim][AutoInsuranceClaim]
+- ![Medical Records][MedicalDocuments]
 
 ## Architecture
 
@@ -62,3 +67,7 @@ If you do not want to install the end to end solution but learn some of the tech
 [UI Screenshot III]: <https://github.com/tirtho/DocAI/blob/main/images/UIScreen-III.jpg>
 [End2EndSolution]: <https://github.com/tirtho/DocAI/blob/main/images/End2EndSolution.jpg>
 [DocAIArchitecture]: <https://github.com/tirtho/DocAI/blob/main/images/DocAIArchitecture.jpg>
+[Introduction]: <https://www.dropbox.com/scl/fi/jsloonxsbgtlm4qk1mmj5/1.-DocAIDemo-Intro.mp4?rlkey=ixj4aak12ie1q32n1ujfs5x1u&st=k4b80b3p&dl=0>
+[Architecture]: <https://www.dropbox.com/scl/fi/5d9n6r004c1ivg34igdpi/2.-DocAISolution-Architecture.mp4?rlkey=22stbu0h7z6mvgf5apwenpaph&st=fcru0j7u&dl=0>
+[AutoInsuranceClaim]: <https://www.dropbox.com/scl/fi/ofj3ep3k97udceyfhvq2v/3.-DocAIDemo-AutoInsuranceClaim.mp4?rlkey=7wsjdq179hyb83wcd3wpx2orc&st=ctpz73ax&dl=0>
+[MedicalDocuments]: <https://www.dropbox.com/scl/fi/88gazdj69wel4yisl8d6c/4.-DocAIDemo-LifeInsuranceQuote.mp4?rlkey=x0cg06kwmsybkfi8bpq7rsrug&st=l5qedwxo&dl=0>

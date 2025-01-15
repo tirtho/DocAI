@@ -30,7 +30,7 @@ def main():
                                                           cli_email_filepath
                                                       )  
   #print(f"----------Body: [{email_body}]------------")
-  aoai.setupOpenai(cli_endpoint, cli_version)
+  status, aoai_client = aoai.setupOpenai(cli_endpoint, cli_version)
 
   #  Provide Summary of Email Body
   print(f'---Email Subject: {email_subject}')
@@ -42,8 +42,11 @@ def main():
                             \nSummary:"
                 }
               ]      
-  tokens_used, finish_reason, email_summary = aoai.getChatCompletion(the_engine=cli_engine, 
-                                                                     the_messages=my_prompt)
+  tokens_used, finish_reason, email_summary = aoai.getChatCompletion(
+                                                      the_client=aoai_client,
+                                                      the_model=cli_engine, 
+                                                      the_messages=my_prompt
+                                                    )
   print(f"\tTokens: {tokens_used}")
   print(f"\tFinish Reason: {finish_reason}")
   print(f"\tSummary: {email_summary}")
@@ -59,7 +62,10 @@ def main():
                             \nIntended Action:"
                 }
               ]      
-  tokens_used, finish_reason, email_intent = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
+  tokens_used, finish_reason, email_intent = aoai.getChatCompletion(
+                                                    the_client = aoai_client,
+                                                    the_model = cli_engine, 
+                                                    the_messages = my_prompt)
   print(f"\tTokens: {tokens_used}")
   print(f"\tFinish Reason: {finish_reason}")
   print(f"\tIntent: {email_intent}")
@@ -86,7 +92,11 @@ def main():
                             \n\tIntent:"
                 }
               ]      
-  tokens_used, finish_reason, email_intent = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
+  tokens_used, finish_reason, email_intent = aoai.getChatCompletion(
+                                                    the_client = aoai_client,
+                                                    the_model = cli_engine, 
+                                                    the_messages=my_prompt
+                                                  )
   print(f"\tTokens: {tokens_used}")
   print(f"\tFinish Reason: {finish_reason}")
   print(f"\tIntent: {email_intent}")
@@ -115,7 +125,7 @@ def get_cli_args():
                             '-m', '--model', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            'tr-gpt4'
+                            os.environ['OPENAI_API_ENGINE']
                             )
   if cli_engine: print(f'OpenAI Deployed model: {cli_engine}')
   global cli_version
@@ -123,7 +133,7 @@ def get_cli_args():
                             '-v', '--version', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            '2023-07-01-preview'
+                            os.environ['OPENAI_API_VERSION']
                             )
   if cli_version: print(f'OpenAI API version: {cli_version}')
   global cli_email_summary_word_count

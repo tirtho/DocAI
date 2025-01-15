@@ -173,12 +173,17 @@ def getEmailClassesFromOpenAI(subject, body, fName):
               ]   
     try:
         cliEngine = os.getenv('OPENAI_API_ENGINE')
-        if aoai.setupOpenai(os.getenv('OPENAI_API_ENDPOINT'),os.getenv('OPENAI_API_VERSION')) > 0:
+        aoai_status, aoai_client = aoai.setupOpenai(
+                                            os.getenv('OPENAI_API_ENDPOINT'),
+                                            os.getenv('OPENAI_API_KEY'),
+                                            os.getenv('OPENAI_API_VERSION'))
+        if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful')
             gotPrompt = composePromptWithRAGData(body,fName)
             logging.info(f'{fName}Got Prompt: {gotPrompt}')
             tokens_used, finish_reason, classifiedCategories = aoai.getChatCompletion(
-                                                                the_engine=cliEngine, 
+                                                                the_client=aoai_client,
+                                                                the_model=cliEngine, 
                                                                 the_messages=gotPrompt)
             if classifiedCategories:
                 categories.clear()
@@ -322,31 +327,29 @@ def getDocumentExtractionModelFromClasses(categories, fName):
     
 def composeMultiModalPrompt(url, fName):
     fName = f'{fName}f(composeMultiModalPrompt)->'
-    theMultiModalPrompt = { 
-        "messages": [ 
-            { "role": "system", "content": "You are a helpful assistant." }, 
-            { "role": "user", "content": [  
-                { 
+    return [ 
+            { 
+                "role": "system", 
+                "content": "You are a helpful assistant." 
+            }, 
+            { 
+                "role": "user", 
+                "content": [  
+                    { 
                     "type": "text", 
                     "text": "Classify this picture in one word ONLY from one of the classes 'automobile', 'home', 'medical-rx-note', 'medical-lab-report', 'financial-report', 'other':" 
-                },
-                { 
+                    },
+                    { 
                     "type": "image_url",
-                    "image_url": {
-                        "url": url
+                    "image_url": {"url": url}
                     }
-                }
-            ] } 
-        ],
-        "temperature":0.0,
-        "max_tokens": 4096 
-    }
-    return theMultiModalPrompt  
+                ]
+            } 
+        ]
 
 def composeImageExtractionPrompt(url, categories, fName):
     fName = f'{fName}f(composeImageExtractionPrompt)->'
-    theImageExtractionPrompt = { 
-        "messages": [ 
+    return [ 
             { "role": "system", "content": "You are a helpful assistant." }, 
             { "role": "user", "content": [  
                 { 
@@ -355,21 +358,15 @@ def composeImageExtractionPrompt(url, categories, fName):
                 },
                 { 
                     "type": "image_url",
-                    "image_url": {
-                        "url": url
-                    }
+                    "image_url": {"url": url}
                 }
-            ] } 
-        ],
-        "temperature":0.0,
-        "max_tokens": 4096 
-    }
-    return theImageExtractionPrompt  
+              ]
+            } 
+        ]
 
-def hasHandwrittenTextPrompt(url, categories, fName):
+def hasHandwrittenTextPrompt(url, fName):
     fName = f'{fName}f(hasHandwrittenTextPrompt)->'
-    checkIfHandwritttenPrompt = { 
-        "messages": [ 
+    return [ 
             { "role": "system", "content": "You are a helpful assistant." }, 
             { "role": "user", "content": [  
                 { 
@@ -383,16 +380,11 @@ def hasHandwrittenTextPrompt(url, categories, fName):
                     }
                 }
             ] } 
-        ],
-        "temperature":0.0,
-        "max_tokens": 4096 
-    }
-    return checkIfHandwritttenPrompt 
+        ]
 
-def composeOmniExtractionPrompt(url, categories, fName):
+def composeOmniExtractionPrompt(url, fName):
     fName = f'{fName}f(composeOmniExtractionPrompt)->'
-    theOmniExtractionPrompt = { 
-        "messages": [ 
+    return [ 
             { "role": "system", "content": "You are a helpful assistant." }, 
             { "role": "user", "content": [  
                 { 
@@ -406,11 +398,7 @@ def composeOmniExtractionPrompt(url, categories, fName):
                     }
                 }
             ] } 
-        ],
-        "temperature":0.0,
-        "max_tokens": 4096 
-    }
-    return theOmniExtractionPrompt 
+        ]
     
 def getExtractsFromAOAIgpt4o(url, categories, fName):
     fName = f'{fName}f(getExtractsFromAOAIgpt4o)->'
@@ -418,45 +406,47 @@ def getExtractsFromAOAIgpt4o(url, categories, fName):
     aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
     aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
     aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
-    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
-    decodedBytes = base64.b64decode(rawToken)
-    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiOmniAPIEngine}/chat/completions?api-version={aoaiOmniAPIVersion}'
-    #extract insights on the image
-    gotPrompt = composeOmniExtractionPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
-    logging.info(f'{fName}Got Prompt: {gotPrompt}')
-    headers = {
-                "Content-Type": "application/json",   
-                "api-key": aoaiMultiModalAPIKey 
-            }
-    response = runHttpRequest(endpoint=endpoint,
-                              headers=headers,
-                              requestType="POST",
-                              jsonRequestBody=gotPrompt,
-                              fName=fName
-                            )
-    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
-    jsonResponse = json.loads(response.content.decode('utf-8'))
-    logging.info(f'{fName} GPT4 Omni API response:{jsonResponse}')
-    summary = jsonResponse['choices'][0]['message']['content']
-
-    gotPrompt = hasHandwrittenTextPrompt(f'{url}?{blobStoreSASToken}', categories, fName)
-    logging.info(f'{fName}Got Prompt: {gotPrompt}')
-    headers = {
-                "Content-Type": "application/json",   
-                "api-key": aoaiMultiModalAPIKey 
-            }
-    response = runHttpRequest(endpoint=endpoint,
-                              headers=headers,
-                              requestType="POST",
-                              jsonRequestBody=gotPrompt,
-                              fName=fName
-                            )
-    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
-    jsonResponse = json.loads(response.content.decode('utf-8'))
-    logging.info(f'{fName} GPT4 Omni API response:{jsonResponse}')
-    isHandwritten = jsonResponse['choices'][0]['message']['content']
+    try:
+        aoai_status, aoai_client = aoai.setupOpenai(
+                                            aoaiMultiModalAPIEndpoint,
+                                            aoaiMultiModalAPIKey,
+                                            aoaiOmniAPIVersion
+                                        )
+        if aoai_status == True:
+            logging.info(f'{fName}OpenAI connection setup successful')
+            rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+            decodedBytes = base64.b64decode(rawToken)
+            blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+            logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
+        
+            # Extract summary from image
+            gotPrompt = composeOmniExtractionPrompt(f'{url}?{blobStoreSASToken}', fName)
+            logging.info(f'{fName}Got Prompt for summary: {gotPrompt}')
+            
+            tokens_used, finish_reason, completion = aoai.getChatCompletion(
+                                                                the_client=aoai_client,
+                                                                the_model=aoaiOmniAPIEngine, 
+                                                                the_messages=gotPrompt)
+            logging.info(f'{fName} GPT4o API Completion succeeded:tokens used:{tokens_used}')
+            summary = completion
+            
+            # Detect handwritten text in image
+            gotPrompt = hasHandwrittenTextPrompt(f'{url}?{blobStoreSASToken}', fName)
+            logging.info(f'{fName}Got Prompt to detect handwritten text in image: {gotPrompt}')
+            tokens_used, finish_reason, completion = aoai.getChatCompletion(
+                                                                the_client=aoai_client,
+                                                                the_model=aoaiOmniAPIEngine, 
+                                                                the_messages=gotPrompt)
+            logging.info(f'{fName} GPT4o API Completion succeeded:tokens used:{tokens_used}')            
+            isHandwritten = completion
+        else:
+            errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
+            logging.error(errorMessage)
+            raise ValueError(errorMessage)
+    except Exception as e:
+        errorMessage = f'{fName}ERROR: OpenAI raised exception:{e}'
+        logging.error(errorMessage)
+        raise    
 
     aoaiAPIVersion = aoaiOmniAPIVersion
     modelId = aoaiOmniAPIEngine
@@ -987,28 +977,37 @@ def getAttachmentClassFromAOAIgpt4o(fName, url):
     aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
     aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
     aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
-    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
-    decodedBytes = base64.b64decode(rawToken)
-    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    endpoint = f'{aoaiMultiModalAPIEndpoint}openai/deployments/{aoaiOmniAPIEngine}/chat/completions?api-version={aoaiOmniAPIVersion}'
-    gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
-    logging.info(f'{fName}Got Prompt: {gotPrompt}')
-    headers = {
-                "Content-Type": "application/json",   
-                "api-key": aoaiMultiModalAPIKey 
-            }
-    response = runHttpRequest(endpoint=endpoint,
-                   headers=headers,
-                   requestType="POST",
-                   jsonRequestBody=gotPrompt,
-                   fName=fName
-                )
-    #response = requests.post(endpoint, headers=headers, data=json.dumps(gotPrompt))
-    jsonResponse = json.loads(response.content.decode('utf-8'))
-    logging.info(f'{fName} GPT4o API response:{jsonResponse}')
-    categoryRaw = jsonResponse['choices'][0]['message']['content']
-    category = categoryRaw.lower()
+
+    try:
+        aoai_status, aoai_client = aoai.setupOpenai(
+                                            aoaiMultiModalAPIEndpoint,
+                                            aoaiMultiModalAPIKey,
+                                            aoaiOmniAPIVersion
+                                        )
+        if aoai_status == True:
+            logging.info(f'{fName}OpenAI connection setup successful')
+            rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+            decodedBytes = base64.b64decode(rawToken)
+            blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+            logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
+                 
+            gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
+            logging.info(f'{fName}Got Prompt: {gotPrompt}')
+            
+            tokens_used, finish_reason, completion = aoai.getChatCompletion(
+                                                                the_client=aoai_client,
+                                                                the_model=aoaiOmniAPIEngine, 
+                                                                the_messages=gotPrompt)
+            logging.info(f'{fName} GPT4o API Completion succeeded:tokens used:{tokens_used}')
+        else:
+            errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
+            logging.error(errorMessage)
+            raise ValueError(errorMessage)
+    except Exception as e:
+        errorMessage = f'{fName}ERROR: OpenAI raised exception:{e}'
+        logging.error(errorMessage)
+        raise    
+    category = completion.lower()
     if category == 'medical-rx-note' or category == 'medical-lab-report' or category == 'financial-report' or category == 'home' or category == 'automobile' or category == 'other':
         category = f'image-{category}'
     else:

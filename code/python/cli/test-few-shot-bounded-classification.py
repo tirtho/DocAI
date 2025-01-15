@@ -15,7 +15,7 @@ HELP_TEXT = "  -h/--help for help\n\
 def main():
 
   get_cli_args()
-  aoai.setupOpenai(cli_endpoint, cli_version)
+  status, aoai_client = aoai.setupOpenai(cli_endpoint, cli_version)
   my_prompt = [
               {
                 "role": "user", 
@@ -30,7 +30,11 @@ def main():
                             \nCategory:"
                 }
               ]      
-  tokens_used, finish_reason, classified_category = aoai.getChatCompletion(the_engine=cli_engine, the_messages=my_prompt)
+  tokens_used, finish_reason, classified_category = aoai.getChatCompletion(
+                                                          the_client=aoai_client,
+                                                          the_model=cli_engine, 
+                                                          the_messages=my_prompt
+                                                        )
   print(f"Tokens: {tokens_used}")
   print(f"Finish Reason: {finish_reason}")
   print(f"Category: {classified_category}")
@@ -59,7 +63,7 @@ def get_cli_args():
                             '-m', '--model', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            'tr-gpt4'
+                            f"{os.environ['OPENAI_API_ENGINE']}"
                             )
   if cli_engine: print(f'OpenAI Deployed model: {cli_engine}')
   global cli_version
@@ -67,7 +71,7 @@ def get_cli_args():
                             '-v', '--version', 
                             COMMANDLINE_SHORT_OPTIONS, 
                             COMMANDLINE_LONG_OPTIONS,
-                            '2023-07-01-preview'
+                            f"{os.environ['OPENAI_API_VERSION']}"
                             )
   if cli_version: print(f'OpenAI API version: {cli_version}')
   global cli_message

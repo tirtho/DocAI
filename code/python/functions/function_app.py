@@ -10,12 +10,10 @@ import base64
 import azure.functions as func
 import requests
 import aoai
-import fr
-from azure.ai.formrecognizer import FieldValueType
+import docintel
 
 from azure.identity import DefaultAzureCredential
 from azure.core.credentials import AzureKeyCredential
-from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
@@ -209,47 +207,22 @@ def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
     logging.info(f'{fName}Calling Document Intelligence to get attachment categories')
     confidenceThreshold = float(os.getenv('DOCUMENT_CONFIDENCE_THRESHOLD'))
     logging.info(f'{fName}Confidence threashold DOCUMENT_CONFIDENCE_THRESHOLD = {confidenceThreshold}')
-    unknownCategories = [
-                {
-                    "category": "unknown"
-                }
-              ]
-    categories = [
-                {
-                    "category": "unknown"
-                }
-              ]
     try:
         formRecognizerEndpoint = os.getenv('FORM_RECOGNIZER_ENDPOINT')
         logging.info(f'{fName}Starting Form Recognizer connection with {formRecognizerEndpoint}')
-        formRecognizerCredential = fr.getFormRecognizerCredential()
-        formRecognizerClient = fr.getDocumentAnalysisClient(
+        formRecognizerApiKey = os.getenv('FORM_RECOGNIZER_API_KEY')
+        formRecognizerCredential = docintel.getDocumentIntelligenceCredential(formRecognizerApiKey)
+        formRecognizerClient = docintel.getDocumentIntelligenceClient(
                                         endpoint=formRecognizerEndpoint,
                                         credential=formRecognizerCredential
                                     )
         logging.info(f'{fName}Getting categories for attachment {attachmentUrl}')
-        result = fr.classifyDocumentFromUrl(
+        result = docintel.classifyOnlineDocument(
                         client=formRecognizerClient,
-                        classifier_id=classifierId,
+                        model=classifierId,
                         file_url=attachmentUrl
                     )
-        if result and result.documents:
-            categories.clear()
-            for doc in result.documents:
-                pagesClassifiedArray = [region.page_number for region in doc.bounding_regions]
-                pagesClassifiedJson = json.dumps(pagesClassifiedArray)
-                if doc.confidence < confidenceThreshold:
-                    # The doc class is unknown to Form Recognizer
-                    # Need to try AOAI and other ways to determine the class
-                    errorMessage = f'{fName}Confidence of {doc.confidence} is low in determining category of document.'
-                    logging.error(errorMessage)
-                    return unknownCategories
-                aClassInfo = {
-                        "category":doc.doc_type,
-                        "confidence":doc.confidence,
-                        "pages":pagesClassifiedJson
-                    }
-                categories.append(aClassInfo)
+        categories = docintel.getCategories(result, confidenceThreshold)
     except Exception as e:
         errorMessage = f'{fName}ERROR:Get classes for {attachmentUrl} raised exception: {e}'
         logging.error(errorMessage)
@@ -275,7 +248,6 @@ def containsCategory(categories, theCategory, fName):
     except Exception as e:
         logging.info(f'{fName}Finding matching category {theCategory} in categories {categories} raised exception:{e}')
     return False    
-        
 
 def getDocumentExtractionModelFromClasses(categories, fName):
     fName = f'{fName}f(getDocumentExtractionModelFromClasses)->'
@@ -683,16 +655,17 @@ def extractResultForUnknownModel(ur, fName):
 def extractResultForCustomModel(extractionModel, url, fName):
     fName = f'{fName}extractResultForCustomModel->'
     logging.info(f'{fName}Getting client to talk to Document Intelligence Service, for extraction model:{extractionModel}')
-    formRecognizerCredential = fr.getFormRecognizerCredential()
-    formRecognizerClient = fr.getDocumentAnalysisClient(
+    formRecognizerApiKey = os.getenv('FORM_RECOGNIZER_API_KEY')
+    formRecognizerCredential = docintel.getDocumentIntelligenceCredential(formRecognizerApiKey)
+    formRecognizerClient = docintel.getDocumentIntelligenceClient(
                             endpoint=os.getenv('FORM_RECOGNIZER_ENDPOINT'),
                             credential=formRecognizerCredential
                         )
     logging.info(f'{fName}Calling Document Intelligence Service model:{extractionModel} to extract {url}')
-    frAPIVersion, modelId, isHandwritten, result = fr.extractResultFromOnlineDocument(
-                                                        formRecognizerClient,
-                                                        extractionModel,
-                                                        url
+    frAPIVersion, modelId, isHandwritten, result = docintel.extractResultFromOnlineDocument(
+                                                        client=formRecognizerClient,
+                                                        model=extractionModel,
+                                                        url=url
                                                     )
     logging.info(f'{fName}Document Intelligence call returned \
         \nversion:{frAPIVersion}\
@@ -702,68 +675,25 @@ def extractResultForCustomModel(extractionModel, url, fName):
     
     formDocuments = []
     try:
+        SYMBOL_OF_TABLE_TYPE = "array"
+        SYMBOL_OF_OBJECT_TYPE = "object"
+        KEY_OF_VALUE_OBJECT = "valueObject"
+        KEY_OF_CELL_CONTENT = "content"     
+           
         for idx, aDocument in enumerate(result.documents):
             formFields = []
-            formTables = []
             for name, field in aDocument.fields.items():
-                field_value = field.value if field.value else field.content
-                # For tables
-                if field.value_type == FieldValueType.LIST:
-                    logging.debug(f'{fName}Found a table named:{name}')
-                    aTableContent = []
-                    logging.debug(f'{fName}field:{field}')
-                    for item in field.value:
-                        aRow = []
-                        for key, value in item.value.items():
-                            # TODO: find when documents available
-                            # the value type and confidence and replace below
-                            # statically added string and field.confidence
-                            aField = {
-                                "fieldName":f'{key}',
-                                "fieldValueType":f'{value.value_type}',
-                                "fieldConfidence":f'{field.confidence}',
-                                "fieldValue":f'{value.value}'
-                            }
-                            aRow.append(aField)
-                        aTableContent.append(aRow)
-                    aTable = {
-                        "tableName":f'{name}',
-                        "tableContent":aTableContent
-                    }
-                    formTables.append(aTable)                
-                elif field.value_type == FieldValueType.DICTIONARY:
-                    # logging.info(f'{fName}Table:{name}->field:{field}')
-                    # aTableContent = []
-                    # aRow = []
-                    # for rowKey, rowDocumentField in field.to_dict().items():
-                    #     for columnKey, columnDocumentField in rowDocumentField.to_dict().items():
-                    #         # TODO: find when documents available
-                    #         # the value type and confidence and replace below
-                    #         # statically added string and field.confidence
-                    #         aField = {
-                    #             "fieldName":f'{columnKey}',
-                    #             "fieldValueType":f'{columnDocumentField.value_type}',
-                    #             "fieldConfidence":f'{field.confidence}',
-                    #             "fieldValue":f'{columnDocumentField.value}'
-                    #         }
-                    #         # TODO: add the row name if present, in future
-                    #         aRow.append(aField)
-                    #     aTableContent.append(aRow)
-                    # aTable = {
-                    #     "tableName":f'{name}',
-                    #     "tableContent":aTableContent
-                    # }
-                    # formTables.append(aTable)                        
-                    # Skip dictionary type for now
-                    logging.info(f'{fName}Not supported yet value type {field.value_type} for field:{name}. Skipping.')
-                else:
-                    aField = {
-                        "fieldName":f'{name}',
-                        "fieldValueType":f'{field.value_type}',
-                        "fieldConfidence": field.confidence,
-                        "fieldValue": field_value
-                    }
-                    formFields.append(aField)
+                field_value = field.get("valueString") if field.get("valueString") else field.content
+                aField = {
+                    "fieldName":f'{name}',
+                    "fieldValueType":f'{field.type}',
+                    "fieldConfidence": field.confidence,
+                    "fieldValue": field_value
+                }
+                formFields.append(aField)
+            # TODO: Implement table reads
+            # Call the table extraction function
+            #formTables = extractTables(aDocument.tables)
             aDocument = {
                 "documentId":idx,
                 "documentType": aDocument.doc_type,

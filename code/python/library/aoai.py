@@ -1,17 +1,18 @@
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from openai import AzureOpenAI
 import os
+import requests
 
 # Returns a +ve number if successful
 # It sets openai with the endpoint, api key etc.
 # TODO: stop dumping exception into stdout
-def setupOpenai(aoai_endpoint, aoai_version):
+def setupOpenai(aoai_endpoint, aoai_api_key, aoai_version):
   try:
-    api_key = os.getenv("OPENAI_API_KEY")
-    if api_key and not api_key.isspace():
+    #--- api_key = os.getenv("OPENAI_API_KEY")
+    if aoai_api_key and not aoai_api_key.isspace():
       # the string is non-empty
       client = AzureOpenAI(
-                api_key=api_key,
+                api_key=aoai_api_key,
                 azure_endpoint=aoai_endpoint,
                 api_version=aoai_version
               )
@@ -51,7 +52,12 @@ def getChatCompletion(the_client, the_model, the_messages):
         presence_penalty=0,
         stop=None
     )
-    return completion.usage.total_tokens, completion.choices[0].finish_reason, completion.choices[0].message.content
+    return completion.usage.total_tokens, completion.choices[0].finish_reason, completion.choices[0].message.content  
+
+# Find cosine similarty between the vectors
+import numpy as np
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 # Return vectors for a given text using the ADA model
 def generate_embedding(the_client, the_model, the_text):

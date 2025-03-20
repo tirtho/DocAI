@@ -1,0 +1,70 @@
+
+// Used for Attachment Review (detecting anomalies, errors etc.) for the Forms only (when you hit the Review Button)
+// for those attachments that have been classified, based on the list of classes in the Web App settings
+OPENAI_API_ENDPOINT
+OPENAI_API_KEY
+OPENAI_API_ENGINE
+OPENAI_API_VERSION
+
+// Used for Attachment Reviews of images and videos using the multi-modal models
+// Assuming the endpoint is the same for all the modal models
+OPENAI_MULTI_MODAL_API_ENDPOINT
+OPENAI_MULTI_MODAL_API_KEY
+// This is the model used for images
+OPENAI_OMNI_API_ENGINE
+OPENAI_OMNI_API_VERSION
+// Used for the Video Model
+// This model is retired
+// TODO: Migrate this to Content Understanding
+OPENAI_VISION_API_ENGINE
+OPENAI_VISION_API_VERSION
+OPENAI_VISION_VIDEO_INDEX
+AI_VIDEO_API_VERSION
+
+// The Cosmos DB Store where all the extracted data are stored
+COSMOSDB_URI
+COSMOSDB_API_KEY
+COSMOSDB_DATABASE
+COSMOSDB_CONTAINER
+// Placeholder for future
+// Not used right now. You can set it to any value
+// Just add some value, like a whitespace
+COSMOSDB_CONTAINER_DEMOS
+
+// Bing Search Web API Endpoint
+BING_KEY
+// How many results from query should be returned
+BING_QUERY_COUNT
+
+// Used to get key phrases from Bing Search result text
+ALL_AI_SERVICES_API_KEY
+ALL_AI_SERVICES_ENDPOINT
+
+// This is the Computer Vision API endpoint used by the OPENAI_VISION_API_ENGINE model
+// in the OPENAI_MULTI_MODAL_API_ENDPOINT to index, extract frames.
+COGNITIVE_SERVICE_KEY
+COGNITIVE_SERVICE_ENDPOINT
+
+// To send links to the files for the AOAI Services
+BLOB_STORE_SAS_TOKEN
+
+// These are needed to authenticate users to the Doc AI Web App
+DOCAI_APP_TENANT_ID
+DOCAI_APP_CLIENT_ID
+DOCAI_APP_CLIENT_SECRET
+
+// Needed to authenticate the Doc AI App to the tenant
+// so that the app can send emails
+GRAPH_API_TENANT_ID
+GRAPH_API_CLIENT_ID
+GRAPH_API_CLIENT_SECRET
+
+
+DOCAI_EMAIL_SENDER_ADDRESS
+DOCAI_EMAIL_RECEIVER_ADDRESS
+// This prefix needs to be there to trigger Logic App
+DOCAI_EMAIL_SUBJECT_PREFIX
+// List of users authorized to access the Doc AI App
+// You can pass exact user email addresses or wildcard the domain
+// Example: b@x.com, *@y.com
+DOCAI_DEMO_USERS

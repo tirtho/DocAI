@@ -1,0 +1,133 @@
+{
+  "managedApiConnections": {
+    "office365": {
+      "api": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/providers/Microsoft.Web/locations/westus/managedApis/office365"
+      },
+      "connection": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/connections/office365"
+      },
+      "authentication": {
+        "type": "ManagedServiceIdentity"
+      },
+      "connectionRuntimeUrl": "https://692ceac0c47acdc7.16.common.logic-westus.azure-apihub.net/apim/office365/0fece34ff7d2499da4452a8791749ae7"
+    },
+    "azureblob": {
+      "api": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/providers/Microsoft.Web/locations/westus/managedApis/azureblob"
+      },
+      "connection": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/connections/azureblob"
+      },
+      "authentication": {
+        "type": "ManagedServiceIdentity"
+      },
+      "connectionRuntimeUrl": "https://692ceac0c47acdc7.16.common.logic-westus.azure-apihub.net/apim/azureblob/9743348511f14cf7a6463299e4c1ee72",
+      "connectionProperties": {
+        "authentication": {
+          "type": "ManagedServiceIdentity",
+          "audience": "https://storage.azure.com/"
+        }
+      }
+    }
+  },
+  "serviceProviderConnections": {},
+  "functionConnections": {
+    "azureFunctionOperation": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/CSFUNCPLACEHOLDER/functions/removeHTMLFromEmailBody"
+      },
+      "triggerUrl": "https://CSFUNCPLACEHOLDER.azurewebsites.net/api/removehtmlfromemailbody",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(removeHTMLFromEmailBody)"
+    },
+    "azureFunctionOperation-1": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/getAttachmentClassUsingFormRecognizerCustomModel"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/getattachmentclassusingformrecognizercustommodel",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(getAttachmentClassUsingFormRecognizerCustomModel)"
+    },
+    "azureFunctionOperation-2": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/getAttachmentClassUsingOpenAI"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/getattachmentclassusingopenai",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(getAttachmentClassUsingOpenAI)"
+    },
+    "azureFunctionOperation-3": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/getAttachmentClass"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/getattachmentclass",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(getAttachmentClass)"
+    },
+    "azureFunctionOperation-4": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/extractAttachmentData"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/extractattachmentdata",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(extractAttachmentData)"
+    },
+    "azureFunctionOperation-5": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/saveAttachmentProperties"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/saveattachmentproperties",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(saveAttachmentProperties)"
+    },
+    "azureFunctionOperation-6": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/getEmailClass"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/getemailclass",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(getEmailClass)"
+    },
+    "azureFunctionOperation-7": {
+      "function": {
+        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/saveEmailProperties"
+      },
+      "triggerUrl": "https://PYTHONFUNCPLACEHOLDER.azurewebsites.net/api/saveemailproperties",
+      "authentication": {
+        "type": "QueryString",
+        "name": "Code",
+        "value": "@appsetting('APP_KIND')"
+      },
+      "displayName": "f(saveEmailProperties)"
+    }
+  }
+}

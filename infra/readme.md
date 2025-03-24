@@ -1,5 +1,7 @@
 # Deployment Instructions
 
+> **Note:** Ensure you are running PowerShell 7+ for the following commands.
+
 1. Log in to Azure:
     ```powershell
     az login --tenant M365x91016947.onmicrosoft.com

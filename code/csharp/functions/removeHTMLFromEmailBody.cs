@@ -16,7 +16,7 @@ namespace docai
         }
  
         [Function("removeHTMLFromEmailBody")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
         {
             _logger.LogInformation("removeHTMLFromEmailBody: C# function triggered");
             // Parse query parameter

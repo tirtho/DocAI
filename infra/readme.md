@@ -35,3 +35,5 @@
 5. Create Models in DocIntel
 
 6. Reestablish LogicApp Connections
+
+7. Setup Web Application App Registration

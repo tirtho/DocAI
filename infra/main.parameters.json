@@ -3,16 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "webAppClientId": {
-            "value": ""
+            "value": "ffffffff-ffff-ffff-ffff-ffffffffffff"
         },
-        "webAppClientSecret": {
-            "value": ""
+        "webAppClientSecret": {            
+            "value": "ffffffffffffffffffffffffffffffffffffffff"
         },
         "graphAPIClientID": {
-            "value": ""
+            "value": "ffffffff-ffff-ffff-ffff-ffffffffffff"
         },
         "graphAPIClientSecret": {
-            "value": ""
+            "value": "ffffffffffffffffffffffffffffffffffffffff"
+        },
+        "tenantDomainName": {
+            "value": "tenant.onmicrosoft.com"
         }
     }
 }

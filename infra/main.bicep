@@ -28,6 +28,7 @@ param azureOpenAIVsionName string = 'docai-aoai-vision-${resourceToken}'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod-${resourceToken}'
 param webAppName string = 'web-app-${resourceToken}'
 param appRegistrationTenantID string = tenant().tenantId
+param tenantDomainName string = ''
 
 // Java Web App Registration
 // Update in main.parameters.json
@@ -221,9 +222,9 @@ module webApp './helpers/webApp.bicep' = {
       { name: 'DOCAI_APP_CLIENT_ID', value: webAppClientId } 
       { name: 'DOCAI_APP_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-APP-CLIENT-SECRET)' } 
       { name: 'DOCAI_APP_TENANT_ID', value: appRegistrationTenantID } 
-      { name: 'DOCAI_DEMO_USERS', value: 'tibarar@microsoft.com,admin@MngEnvMCAP772904.onmicrosoft.com,admin@M365x91016947.onmicrosoft.com,*@microsoft.com' }
-      { name: 'DOCAI_EMAIL_RECEIVER_ADDRESS', value: 'docai@M365x91016947.onmicrosoft.com' } 
-      { name: 'DOCAI_EMAIL_SENDER_ADDRESS', value: 'fsi-demo@M365x91016947.onmicrosoft.com' } 
+      { name: 'DOCAI_DEMO_USERS', value: '*@${tenantDomainName}' } // Comma separated list
+      { name: 'DOCAI_EMAIL_RECEIVER_ADDRESS', value: 'docai@${tenantDomainName}' } 
+      { name: 'DOCAI_EMAIL_SENDER_ADDRESS', value: 'fsi-demo@${tenantDomainName}' } 
       { name: 'DOCAI_EMAIL_SUBJECT_PREFIX', value: 'docai' }
       { name: 'GRAPH_API_CLIENT_ID', value: graphAPIClientID } 
       { name: 'GRAPH_API_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=GRAPH-API-CLIENT-SECRET)' } 

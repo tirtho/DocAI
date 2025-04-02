@@ -8,9 +8,11 @@
 > - Ensure you have the necessary permissions to create resources in the specified Azure subscription and resource group.
 
 1. Log in to Azure:
+    > Replace `<your-tenant-id>` with the ID or domain name of your Azure Active Directory tenant.
     ```powershell
-    az login --tenant M365x91016947.onmicrosoft.com
+    az login --tenant <your-tenant-id>
     ```
+        
 
 2. Set up resource group and location:
     ```powershell

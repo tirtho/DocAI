@@ -1,0 +1,47 @@
+{
+  "description": "Analyze video content and extract key information such as objects, transcripts, and sentiment.",
+  "name": "docai-video-shot",
+  "version": "1.0.0",
+  "scenario": "videoShot",
+  "fieldSchema": {
+    "fields": {
+      "imageOf": {
+        "description": "What is the primary object in this image?",
+        "type": "string",
+        "method": "classify",
+        "enum": [ "Automobile", "Home", "Other" ],
+        "enumDescriptions": {
+            "Automobile": "Image of an automobile",
+            "Home": "Image of a home",
+            "None": "Image of anything other than a home or automobile"
+        }
+    },
+      "description": {
+        "type": "string",
+        "method": "generate",
+        "description": "Describe the content in the keyframe images. Do NOT include any information from the transcript. Just describe the content in the image."
+      },
+      "transcript": {
+        "description": "Extract the transcript from the video",
+        "type": "string",
+        "method": "generate"
+      },
+      "isTranscriptMatchingVideoContent": {
+        "description": "Compare the transcript with the description from the keyframe images. Is the transcript true?",
+        "type": "string",
+        "method": "classify",
+        "enum": [ "Yes", "No" ],
+        "enumDescriptions": {
+            "Yes": "The transcript matches the description from the keyframe images.",
+            "No": "The transcript does not match the description from the keyframe images."
+        }
+      },
+      "sentiment": {
+        "description": "Overall sentiment of the video",
+        "type": "string",
+        "method": "classify",
+        "enum": [ "Positive", "Neutral", "Negative" ]
+      }
+    }
+  }
+}

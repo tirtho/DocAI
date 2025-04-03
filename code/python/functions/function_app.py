@@ -1,6 +1,5 @@
 import logging
 import uuid
-import shortuuid
 import json
 import os
 import datetime
@@ -8,9 +7,9 @@ import ast
 import base64
 
 import azure.functions as func
-import requests
 import aoai
 import docintel
+import acu
 
 from azure.identity import DefaultAzureCredential
 from azure.core.credentials import AzureKeyCredential
@@ -170,13 +169,13 @@ def getEmailClassesFromOpenAI(subject, body, fName):
                 }
               ]   
     try:
-        cliEngine = os.getenv('OPENAI_API_ENGINE')
+        cliEngine = os.getenv('DOCAI_EMAIL_CLASSIFIER_ENGINE')
         aoai_status, aoai_client = aoai.setupOpenai(
-                                            os.getenv('OPENAI_API_ENDPOINT'),
-                                            os.getenv('OPENAI_API_KEY'),
-                                            os.getenv('OPENAI_API_VERSION'))
+                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_ENDPOINT'),
+                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_KEY'),
+                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_VERSION'))
         if aoai_status == True:
-            logging.info(f'{fName}OpenAI connection setup successful')
+            logging.info(f'{fName}OpenAI connection setup successful for email classifier')
             gotPrompt = composePromptWithRAGData(body,fName)
             logging.info(f'{fName}Got Prompt: {gotPrompt}')
             tokens_used, finish_reason, classifiedCategories = aoai.getChatCompletion(
@@ -196,7 +195,7 @@ def getEmailClassesFromOpenAI(subject, body, fName):
             logging.error(errorMessage)
             raise ValueError(errorMessage)
     except Exception as e:
-        errorMessage = f'{fName}ERROR: OpenAI raised exception:{e}'
+        errorMessage = f'{fName}ERROR: OpenAI for email classification raised exception:{e}'
         logging.error(errorMessage)
         raise
     logging.info(f'{fName}Categories:{categories}')
@@ -205,12 +204,12 @@ def getEmailClassesFromOpenAI(subject, body, fName):
 def getAttachmentClassesFromFormRecognizer(attachmentUrl, classifierId, fName):
     fName = f'{fName}getAttachmentClassesFromFormRecognizer->'
     logging.info(f'{fName}Calling Document Intelligence to get attachment categories')
-    confidenceThreshold = float(os.getenv('DOCUMENT_CONFIDENCE_THRESHOLD'))
-    logging.info(f'{fName}Confidence threashold DOCUMENT_CONFIDENCE_THRESHOLD = {confidenceThreshold}')
+    confidenceThreshold = float(os.getenv('DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD'))
+    logging.info(f'{fName}Confidence threashold DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD = {confidenceThreshold}')
     try:
-        formRecognizerEndpoint = os.getenv('FORM_RECOGNIZER_ENDPOINT')
-        logging.info(f'{fName}Starting Form Recognizer connection with {formRecognizerEndpoint}')
-        formRecognizerApiKey = os.getenv('FORM_RECOGNIZER_API_KEY')
+        formRecognizerEndpoint = os.getenv('DOCAI_DOCINTEL_API_ENDPOINT')
+        logging.info(f'{fName}Starting Azure Document Intelligence Service connection with {formRecognizerEndpoint}')
+        formRecognizerApiKey = os.getenv('DOCAI_DOCINTEL_API_KEY')
         formRecognizerCredential = docintel.getDocumentIntelligenceCredential(formRecognizerApiKey)
         formRecognizerClient = docintel.getDocumentIntelligenceClient(
                                         endpoint=formRecognizerEndpoint,
@@ -272,9 +271,9 @@ def getDocumentExtractionModelFromClasses(categories, fName):
         except:
             #skip, as there is no confidence found
             continue
-    modelClassMapFromEnvironment = f'{os.getenv("DOCUMENT_EXTRACTION_MODEL_CLASS_MAP")}'
+    modelClassMapFromEnvironment = f'{os.getenv("DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP")}'
     modelClassMap = ast.literal_eval(modelClassMapFromEnvironment)
-    logging.info(f'{fName}Model Map from Environment variable DOCUMENT_EXTRACTION_MODEL_CLASS_MAP is {modelClassMap}')
+    logging.info(f'{fName}Model Map from Environment variable DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP is {modelClassMap}')
     formRecognizerExtractionModel = None    
     for aModelClass in modelClassMap:
         logging.info(f'{fName}Model Map Class:{aModelClass}')
@@ -372,12 +371,12 @@ def composeOmniExtractionPrompt(url, fName):
             ] } 
         ]
     
-def getExtractsFromAOAIgpt4o(url, categories, fName):
-    fName = f'{fName}f(getExtractsFromAOAIgpt4o)->'
-    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
-    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
-    aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
-    aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
+def getExtractsFromImage(url, categories, fName):
+    fName = f'{fName}f(getExtractsFromImage)->'
+    aoaiMultiModalAPIKey = os.getenv('DOCAI_IMAGE_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_IMAGE_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('DOCAI_IMAGE_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('DOCAI_IMAGE_API_ENGINE')
     try:
         aoai_status, aoai_client = aoai.setupOpenai(
                                             aoaiMultiModalAPIEndpoint,
@@ -386,7 +385,7 @@ def getExtractsFromAOAIgpt4o(url, categories, fName):
                                         )
         if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful')
-            rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+            rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
             decodedBytes = base64.b64decode(rawToken)
             blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
             logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
@@ -451,159 +450,65 @@ def getExtractsFromAOAIgpt4o(url, categories, fName):
     }
     formDocuments.append(aDocument)
     logging.info(f'{fName}formDocuments:{formDocuments}')
-    return aoaiAPIVersion, modelId, isHandwritten, formDocuments
+    return aoaiAPIVersion, modelId, isHandwritten, formDocuments  
 
-def runHttpRequest(endpoint, headers, requestType, jsonRequestBody, fName):
-    fName = f'{fName}f(runHttpRequest)->'
-    if requestType != 'GET':
-        if jsonRequestBody:
-            requestBody = json.dumps(jsonRequestBody)
-            logging.info(f'{fName}Http Request Body:{requestBody}')
-    logging.info(f'{fName}Http Request Headers:{headers}')
-    logging.info(f'{fName}Http RequestType:{requestType}; URL:{endpoint}')
-    if requestType == 'GET':
-        return requests.get(url=endpoint, headers=headers)
-    elif requestType == 'PUT':
-        return requests.put(url=endpoint, headers=headers, data=requestBody)  
-    elif requestType == 'POST':
-        return requests.post(url=endpoint, headers=headers, data=requestBody)
-    else:
-        logging.info(f'{fName} Http method {requestType} not implemented yet')
-        return None
-    
-def createVideoIndex(index, fName):
-    fName = f'{fName}f(createVideoIndex)->'
-    AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION = os.getenv('AI_VIDEO_API_VERSION')
-    cognitiveServiceEndpoint = os.getenv('COGNITIVE_SERVICE_ENDPOINT')
-    cognitiveServiceAPIKey = os.getenv('COGNITIVE_SERVICE_KEY')
-    endpoint = f'{cognitiveServiceEndpoint}computervision/retrieval/indexes/{index}?api-version={AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION}'
-    indexSchema = {
-                    'metadataSchema': {
-                        'fields': [
-                            {
-                                'name': 'cameraId',
-                                'searchable': False,
-                                'filterable': True,
-                                'type': 'string'
-                            },
-                            {
-                                'name': 'timestamp',
-                                'searchable': False,
-                                'filterable': True,
-                                'type': 'datetime'
-                            }
-                        ]
-                    },
-                    'features': [
-                        {
-                        'name': 'vision',
-                        'domain': 'surveillance'
-                        },
-                        {
-                        'name': 'speech'
-                        }
-                    ]
-                }
-    logging.info(f'{fName}Calling Video Retrieval Create Index API')
-    headers = {
-                "Content-Type": "application/json",
-                "Ocp-Apim-Subscription-Key": cognitiveServiceAPIKey 
-            }
-    return runHttpRequest(
-                        endpoint=endpoint, 
-                        headers=headers, 
-                        requestType="PUT",
-                        jsonRequestBody=indexSchema, 
-                        fName=fName
-                )
-# You add the video to the index and start the ingestion process
+# You call Content Understanding Service to analyze the video
 # Unlike image files, you do not get much extracted in this call
 # Once extraction is complete (takes many minutes, depending on size of view)
 # you get the extraction as part of the "Review Summary" from 
 # the web UI 
-def getExtractsFromAOAIVideo(url, fName):
-    fName = f'{fName}f(getExtractsFromAOAIVideo)->'
-    AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION = os.getenv('AI_VIDEO_API_VERSION')
-    rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+def getExtractsFromVideo(url, fName):
+    fName = f'{fName}f(getExtractsFromVideo)->'
+    cuAPIVersion = os.getenv('DOCAI_CU_API_VERSION')
+    rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
     decodedBytes = base64.b64decode(rawToken)
     blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
     logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    cognitiveServiceEndpoint = os.getenv('COGNITIVE_SERVICE_ENDPOINT')
-    cognitiveServiceAPIKey = os.getenv('COGNITIVE_SERVICE_KEY')
-    docaiVideoIndex = f'{shortuuid.uuid()}'
-    videoDocumentId = docaiVideoIndex
-    # First create the index and then call the create ingestion api
-    response = createVideoIndex(docaiVideoIndex, fName)
+    videoFileUrl = f'{url}?{blobStoreSASToken}'
+    cuEndpoint = os.getenv('DOCAI_CU_API_ENDPOINT')
+    cuAPIKey = os.getenv('DOCAI_CU_API_KEY')
+    cuDocAIVideoAnalyzerId = os.getenv('DOCAI_CU_VIDEO_ANALYZER_ID')
     createdDateTime = getCurrentUTCTimeString()
-    if response.status_code != 201:
-        ingestionStatus = f'Failed: Azure AI Vision API CreateIndex call returned error:{response.status_code}, reason:{response.reason}'
-    else:
-        # We are going to use the same guid for both the index and the doc id
-        videoDocumentId = docaiVideoIndex
-        # We are setting the ingestionName same as the documentId
-        # It does not have to be so, but just for convenience.
-        endpoint = f'{cognitiveServiceEndpoint}computervision/retrieval/indexes/{docaiVideoIndex}/ingestions/{videoDocumentId}?api-version={AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION}'
-        videoFileUrl = f'{url}?{blobStoreSASToken}'
-        headers = {
-                    "Content-Type": "application/json",
-                    "Ocp-Apim-Subscription-Key": cognitiveServiceAPIKey 
-                }
-        videoIngestion = {
-                            'videos': [
-                                {
-                                    'mode': 'add',
-                                    'documentId': videoDocumentId,
-                                    'documentUrl': videoFileUrl,
-                                    'metadata': {
-                                        'cameraId': 'camera1',
-                                        'timestamp': createdDateTime
-                                    }
-                                }
-                            ],
-                            'moderation': False,
-                            'includeSpeechTranscript': True
-                        }
-        #ingestionData = json.dumps(videoIngestion)
-        #logging.info(f'{fName}Calling CreateIngestion with ingestionData:{ingestionData}')
-        response = runHttpRequest(endpoint=endpoint, 
-                                headers=headers,
-                                requestType="PUT",
-                                jsonRequestBody=videoIngestion,
-                                fName=fName
-                                )
-        #response = requests.put(url=endpoint, headers=headers, data=ingestionData)  
-        rReason = response.reason
-        responseStatus = response.status_code
-        logging.info(f'{fName} Azure AI Vision API CreateIngestion call status: {responseStatus}, response:{response}')
-        
-        if responseStatus == 202:
-            try:
-                jsonResponse = json.loads(response.content.decode('utf-8'))
-                ingestionStatus = jsonResponse['state']
-                createdDateTime = jsonResponse['createdDateTime']
-            except Exception as e:
-                errorMessage = f'Parsing AI Vision API response raised exception:{e}'
-                logging.info(f'{fName}errorMessage')
-                ingestionStatus = f'Failed: {errorMessage}'
-        else:
-            ingestionStatus = f'Failed: Azure AI Vision API CreateIngestion call returned error:{responseStatus}, reason:{rReason}'
 
-    modelId = 'video-retrieval'
+    responseStatus, cuAnalysisStatus, cuReturnedOperationId, cuRequestId = acu.extractVideo(
+                     cuEndpoint, 
+                     cuAPIKey,
+                     cuAPIVersion,
+                     cuDocAIVideoAnalyzerId, 
+                     videoFileUrl,
+                     fName
+                    )
+    
+    modelId = f'video-{cuDocAIVideoAnalyzerId}'
     isHandwritten = False
     formDocuments = []
     formFields = []
     aField = {
-        "fieldName":"VideoDocumentId",
+        "fieldName":"AnalyzerId",
         "fieldValueType":"string",
         "fieldConfidence":0.99,
-        "fieldValue":f'{videoDocumentId}'
+        "fieldValue":f'{cuDocAIVideoAnalyzerId}'
+    }
+    formFields.append(aField)
+    aField = {
+        "fieldName":"OperationId",
+        "fieldValueType":"string",
+        "fieldConfidence":0.99,
+        "fieldValue":f'{cuReturnedOperationId}'
     }
     formFields.append(aField)
     aField = {
         "fieldName":"IngestionStatus",
         "fieldValueType":"string",
         "fieldConfidence":0.99,
-        "fieldValue":f'{ingestionStatus}'
+        "fieldValue":f'{cuAnalysisStatus}'
+    }
+    formFields.append(aField)
+    aField = {
+        "fieldName":"ContentUnderstandingApiVersion",
+        "fieldValueType":"string",
+        "fieldConfidence":0.99,
+        "fieldValue":f'{cuAPIVersion}'
     }
     formFields.append(aField)
     aField = {
@@ -622,17 +527,17 @@ def getExtractsFromAOAIVideo(url, fName):
     }
     formDocuments.append(aDocument)
     logging.info(f'{fName}formDocuments:{formDocuments}')
-    return AZURE_AI_VISION_VIDEO_RETRIEVAL_API_VERSION, modelId, isHandwritten, formDocuments
+    return cuAPIVersion, modelId, isHandwritten, formDocuments
     
 def getExtractsFromModel(url, documentCategories, fName):
     fName = f'{fName}f(getExtractsFromModel)->'
     try:
-        # If video call GPT-4v
+        # If video call Content Understanding
         if containsCategory(documentCategories, "video-", fName):
-            return getExtractsFromAOAIVideo(url, fName)
+            return getExtractsFromVideo(url, fName)
         # If it is an image then call the GPT-4o 
         elif containsCategory(documentCategories, "image-", fName):
-            return getExtractsFromAOAIgpt4o(url, documentCategories, fName)
+            return getExtractsFromImage(url, documentCategories, fName)
         else:
             # Check if this class of the document maps to a custom Form Recognizer model or not
             theModelType, extractionModel = getDocumentExtractionModelFromClasses(documentCategories, fName)
@@ -655,10 +560,10 @@ def extractResultForUnknownModel(ur, fName):
 def extractResultForCustomModel(extractionModel, url, fName):
     fName = f'{fName}extractResultForCustomModel->'
     logging.info(f'{fName}Getting client to talk to Document Intelligence Service, for extraction model:{extractionModel}')
-    formRecognizerApiKey = os.getenv('FORM_RECOGNIZER_API_KEY')
+    formRecognizerApiKey = os.getenv('DOCAI_DOCINTEL_API_KEY')
     formRecognizerCredential = docintel.getDocumentIntelligenceCredential(formRecognizerApiKey)
     formRecognizerClient = docintel.getDocumentIntelligenceClient(
-                            endpoint=os.getenv('FORM_RECOGNIZER_ENDPOINT'),
+                            endpoint=os.getenv('DOCAI_DOCINTEL_API_ENDPOINT'),
                             credential=formRecognizerCredential
                         )
     logging.info(f'{fName}Calling Document Intelligence Service model:{extractionModel} to extract {url}')
@@ -873,7 +778,7 @@ def getAttachmentClassUsingFormRecognizerCustomModel(req: func.HttpRequest) -> f
         url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
         if messageType == 'email-attachment':
             try:
-                formRecognizerClassifierModelId = os.getenv('DOCUMENT_CLASSIFIER_ID')
+                formRecognizerClassifierModelId = os.getenv('DOCAI_DOCINTEL_CLASSIFIER_ID')
                 attachmentClasses = getAttachmentClassesFromFormRecognizer(
                                         url, 
                                         formRecognizerClassifierModelId,
@@ -894,19 +799,19 @@ def getAttachmentClassUsingFormRecognizerCustomModel(req: func.HttpRequest) -> f
     return func.HttpResponse(f'{attachmentClasses}', status_code=200)    
 
 # Use this to classify video files
-def getAttachmentClassFromAOAIVideo(fName, url):
-    fName = f"{fName}f(getAttachmentClassFromAOAIVideo)->"
+def getAttachmentClassFromVideo(fName, url):
+    fName = f"{fName}f(getAttachmentClassFromVideo)->"
     category = f'video-{url.lower()[-3:]}'
     logging.info(f'{fName}Category of the video file is {category}')  
     return category
 
 # Use this to classify image files
-def getAttachmentClassFromAOAIgpt4o(fName, url):
-    fName = f"{fName}f(getAttachmentClassFromAOAIgpt4o)->"
-    aoaiMultiModalAPIKey = os.getenv('OPENAI_MULTI_MODAL_API_KEY')
-    aoaiMultiModalAPIEndpoint = os.getenv('OPENAI_MULTI_MODAL_API_ENDPOINT')
-    aoaiOmniAPIVersion = os.getenv('OPENAI_OMNI_API_VERSION')
-    aoaiOmniAPIEngine = os.getenv('OPENAI_OMNI_API_ENGINE')
+def getAttachmentClassFromImage(fName, url):
+    fName = f"{fName}f(getAttachmentClassFromImage)->"
+    aoaiMultiModalAPIKey = os.getenv('DOCAI_IMAGE_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_IMAGE_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('DOCAI_IMAGE_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('DOCAI_IMAGE_API_ENGINE')
 
     try:
         aoai_status, aoai_client = aoai.setupOpenai(
@@ -916,7 +821,7 @@ def getAttachmentClassFromAOAIgpt4o(fName, url):
                                         )
         if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful')
-            rawToken = str(os.getenv('BLOB_STORE_SAS_TOKEN'))
+            rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
             decodedBytes = base64.b64decode(rawToken)
             blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
             logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
@@ -979,13 +884,14 @@ def getAttachmentClassUsingOpenAI(req: func.HttpRequest) -> func.HttpResponse:
             try:
                 if url.lower().endswith(('.mov', '.mp4')):
                     #classifiedCategory
-                    # Process video files. For video we can't do realtime AOAI calls to get 
-                    # more data about the video. So, just adding the extension as part of category
+                    # Process video files. For video we can't do realtime Content Understanding
+                    # calls to get more data about the video. So, just adding the extension 
+                    # as part of category
                     # Else process image files
-                    category = getAttachmentClassFromAOAIVideo(fName, url)
+                    category = getAttachmentClassFromVideo(fName, url)
                 else:
                     # classify images
-                    category = getAttachmentClassFromAOAIgpt4o(fName, url)
+                    category = getAttachmentClassFromImage(fName, url)
                 categories.clear()
                 aClassInfo = {"category":f"{category}"}
                 categories.append(aClassInfo)
@@ -1080,7 +986,7 @@ def saveAttachmentProperties(req: func.HttpRequest,
     if containsCategory(attachmentClasses, "image-", fName):
         theModelType = "gpt4-o"
     elif containsCategory(attachmentClasses, "video-", fName):
-        theModelType = "gpt4-vision-enhanced"
+        theModelType = "content-understanding"
     else:
         try:
             theModelType = getDocumentExtractionModelFromClasses(attachmentClasses, fName)

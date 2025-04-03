@@ -1,0 +1,573 @@
+{
+	"value": [
+		{
+			"analyzerId": "prebuilt-read",
+			"description": "Extract content elements such as words, barcodes, and formulas from documents.",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": false,
+				"enableBarcode": false,
+				"enableFormula": false
+			},
+			"warnings": [],
+			"status": "undefined",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "prebuilt-layout",
+			"description": "Extract various content and layout elements such as words, paragraphs, and tables from documents.",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false
+			},
+			"warnings": [],
+			"status": "undefined",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "ContentUnderstandingAnalyzer",
+			"description": "",
+			"tags": {
+				"projectId": "19666a17-64d6-4435-a466-860fd8dc6c67",
+				"templateId": "document-2024-12-01"
+			},
+			"createdAt": "2024-11-22T20:48:33Z",
+			"lastModifiedAt": "2024-11-22T20:48:39Z",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false
+			},
+			"fieldSchema": {
+				"fields": {
+					"Date": {
+						"type": "date",
+						"method": "extract",
+						"description": "Date of the document"
+					},
+					"Time": {
+						"type": "time",
+						"method": "extract",
+						"description": "Time of the document"
+					},
+					"GeneralAppearance": {
+						"type": "string",
+						"method": "extract",
+						"description": "General Appearance of the pet - healthy or not"
+					},
+					"BCS": {
+						"type": "string",
+						"method": "extract",
+						"description": "BCS value"
+					},
+					"Dehydrated": {
+						"type": "string",
+						"method": "extract",
+						"description": "Checkbox indicate dehydrated or not"
+					},
+					"Respiratory": {
+						"type": "string",
+						"method": "extract",
+						"description": "Auscults normal or abnormal with any comments"
+					},
+					"NeuroMusculoskeletal": {
+						"type": "string",
+						"method": "extract",
+						"description": "Normal or abnormal with comments"
+					},
+					"Skin": {
+						"type": "string",
+						"method": "extract",
+						"description": "Normal or abnormal with comments"
+					},
+					"NotesFromVet": {
+						"type": "string",
+						"method": "extract",
+						"description": "Vets handwritten notes and comments"
+					},
+					"Address": {
+						"type": "string",
+						"method": "extract",
+						"description": "Address of the office"
+					},
+					"OfficePhone": {
+						"type": "string",
+						"method": "extract",
+						"description": "Phone number of the office"
+					},
+					"OfficeFax": {
+						"type": "string",
+						"method": "extract",
+						"description": "Fax number of the office"
+					},
+					"Breed": {
+						"type": "string",
+						"method": "extract",
+						"description": "Breed of the pet"
+					},
+					"Color": {
+						"type": "string",
+						"method": "extract",
+						"description": "Color of the pet"
+					},
+					"Sex": {
+						"type": "string",
+						"method": "extract",
+						"description": "Sex of the pet"
+					},
+					"Weight": {
+						"type": "string",
+						"method": "extract",
+						"description": "Weight of the pet"
+					},
+					"Birthday": {
+						"type": "string",
+						"method": "extract",
+						"description": "Birthday of the pet"
+					},
+					"Age": {
+						"type": "string",
+						"method": "extract",
+						"description": "Age of the pet"
+					},
+					"NameOfVetOfficeInInvoice": {
+						"type": "string",
+						"method": "extract",
+						"description": "Name of the vet's office in the invoice"
+					},
+					"TotalCharges": {
+						"type": "number",
+						"method": "extract",
+						"description": "Total charges in the invoice for this visit"
+					}
+				}
+			},
+			"trainingData": {
+				"containerUrl": "https://demo8ai8ml8blob.blob.core.windows.net/ocr",
+				"kind": "blob",
+				"prefix": "labelingProjects/19666a17-64d6-4435-a466-860fd8dc6c67/train"
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "auto-labeling-model-1733069288991-232",
+			"createdAt": "2024-12-01T16:08:11Z",
+			"lastModifiedAt": "2024-12-01T16:08:23Z",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false
+			},
+			"fieldSchema": {
+				"fields": {
+					"Date": {
+						"type": "date",
+						"method": "extract",
+						"description": "Date of the document"
+					},
+					"Time": {
+						"type": "time",
+						"method": "extract",
+						"description": "Time of the document"
+					},
+					"GeneralAppearance": {
+						"type": "string",
+						"method": "extract",
+						"description": "General Appearance of the pet - healthy or not"
+					},
+					"BCS": {
+						"type": "string",
+						"method": "extract",
+						"description": "BCS value"
+					},
+					"Dehydrated": {
+						"type": "string",
+						"method": "extract",
+						"description": "Checkbox indicate dehydrated or not"
+					},
+					"Respiratory": {
+						"type": "string",
+						"method": "extract",
+						"description": "Auscults normal or abnormal with any comments"
+					},
+					"NeuroMusculoskeletal": {
+						"type": "string",
+						"method": "extract",
+						"description": "Normal or abnormal with comments"
+					},
+					"Skin": {
+						"type": "string",
+						"method": "extract",
+						"description": "Normal or abnormal with comments"
+					},
+					"NotesFromVet": {
+						"type": "string",
+						"method": "extract",
+						"description": "Vets handwritten notes and comments"
+					},
+					"Address": {
+						"type": "string",
+						"method": "extract",
+						"description": "Address of the office"
+					},
+					"OfficePhone": {
+						"type": "string",
+						"method": "extract",
+						"description": "Phone number of the office"
+					},
+					"OfficeFax": {
+						"type": "string",
+						"method": "extract",
+						"description": "Fax number of the office"
+					},
+					"Breed": {
+						"type": "string",
+						"method": "extract",
+						"description": "Breed of the pet"
+					},
+					"Color": {
+						"type": "string",
+						"method": "extract",
+						"description": "Color of the pet"
+					},
+					"Sex": {
+						"type": "string",
+						"method": "extract",
+						"description": "Sex of the pet"
+					},
+					"Weight": {
+						"type": "string",
+						"method": "extract",
+						"description": "Weight of the pet"
+					},
+					"Birthday": {
+						"type": "string",
+						"method": "extract",
+						"description": "Birthday of the pet"
+					},
+					"Age": {
+						"type": "string",
+						"method": "extract",
+						"description": "Age of the pet"
+					},
+					"NameOfVetOfficeInInvoice": {
+						"type": "string",
+						"method": "extract",
+						"description": "Name of the vet's office in the invoice"
+					},
+					"TotalChargesForThisVisit": {
+						"type": "number",
+						"method": "extract",
+						"description": "Total charges in the invoice for this visit"
+					}
+				}
+			},
+			"trainingData": {
+				"containerUrl": "https://demo8ai8ml8blob.blob.core.windows.net/ocr",
+				"kind": "blob",
+				"prefix": "labelingProjects/19666a17-64d6-4435-a466-860fd8dc6c67/train"
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "auto-labeling-model-1736452071906-550",
+			"createdAt": "2025-01-09T19:47:53Z",
+			"lastModifiedAt": "2025-01-09T19:47:53Z",
+			"config": {
+				"locales": [],
+				"returnDetails": true,
+				"enableFace": false
+			},
+			"fieldSchema": {
+				"fields": {
+					"imageOf": {
+						"type": "string",
+						"method": "classify",
+						"description": "What is the primary object in this image?",
+						"enum": [
+							"Automobile",
+							"Home",
+							"None"
+						],
+						"enumDescriptions": {
+							"Automobile": "Image of an automobile",
+							"Home": "Image of a home",
+							"None": "Image of anything other than a home or automobile"
+						}
+					},
+					"description": {
+						"type": "string",
+						"method": "generate",
+						"description": "Describe the content in the video"
+					},
+					"transcript": {
+						"type": "string",
+						"method": "generate",
+						"description": "Extract the transcript from the video"
+					}
+				}
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "videoShot"
+		},
+		{
+			"analyzerId": "auto-labeling-model-1739904042291-698",
+			"createdAt": "2025-02-18T18:40:47Z",
+			"lastModifiedAt": "2025-02-18T18:40:57Z",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false,
+				"disableContentFiltering": false
+			},
+			"fieldSchema": {
+				"name": "",
+				"description": "1. Define your schema by specifying the fields you want to extract from the input files. Choose clear and simple `field names`. Use `field descriptions` to provide explanations, exceptions, rules of thumb, and other details to clarify the desired behavior.\n\n2. For each field, indicate the `value type` of the desired output. Besides basic types like strings, dates, and numbers, you can define more complex structures such as `tables` (repeated items with subfields) and `fixed tables` (groups of fields with common subfields).",
+				"fields": {
+					"introduction": {
+						"type": "string",
+						"method": "extract",
+						"description": "Extract the introduction text under the Title 'Introduction'"
+					},
+					"financials": {
+						"type": "array",
+						"method": "generate",
+						"description": "Extract in a table format, the Line of Business, Region, Net Written Premiums, Net Income, Combined Ratio from the financial results table",
+						"items": {
+							"type": "object",
+							"method": "extract",
+							"properties": {
+								"lob": {
+									"type": "string",
+									"method": "extract",
+									"description": "Line of Business"
+								},
+								"region": {
+									"type": "string",
+									"method": "extract",
+									"description": "Region"
+								},
+								"premiums": {
+									"type": "number",
+									"method": "extract",
+									"description": "Net Written Premiums"
+								},
+								"income": {
+									"type": "number",
+									"method": "extract",
+									"description": "Net Income"
+								},
+								"combined_ratio": {
+									"type": "number",
+									"method": "extract",
+									"description": "Combined Ratio"
+								}
+							}
+						}
+					},
+					"summary": {
+						"type": "string",
+						"method": "extract",
+						"description": "Extract the text content under the Title 'Summary'"
+					}
+				}
+			},
+			"trainingData": {
+				"containerUrl": "https://stdemoaoaihu312932537668.blob.core.windows.net/033d3970-744f-47a5-a86c-62bccc552f0f-cu",
+				"kind": "blob",
+				"prefix": "labelingProjects/033d3970-744f-47a5-a86c-62bccc552f0f/train"
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "auto-labeling-model-1740066028250-384",
+			"createdAt": "2025-02-20T15:40:30Z",
+			"lastModifiedAt": "2025-02-20T15:40:31Z",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false,
+				"disableContentFiltering": false
+			},
+			"fieldSchema": {
+				"name": "",
+				"description": "1. Define your schema by specifying the fields you want to extract from the input files. Choose clear and simple `field names`. Use `field descriptions` to provide explanations, exceptions, rules of thumb, and other details to clarify the desired behavior.\n\n2. For each field, indicate the `value type` of the desired output. Besides basic types like strings, dates, and numbers, you can define more complex structures such as `tables` (repeated items with subfields) and `fixed tables` (groups of fields with common subfields).",
+				"fields": {
+					"CertificateHolder": {
+						"type": "string",
+						"method": "extract",
+						"description": "Extract the certificate holder name and address details"
+					},
+					"LiquorLiabilityAggregate": {
+						"type": "number",
+						"method": "extract",
+						"description": "Extract the liquor liability for aggregate dollar value"
+					}
+				}
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "cu-annual-financial-report-v1",
+			"description": "",
+			"tags": {
+				"projectId": "033d3970-744f-47a5-a86c-62bccc552f0f",
+				"templateId": "document-2024-12-01"
+			},
+			"createdAt": "2025-02-18T18:53:20Z",
+			"lastModifiedAt": "2025-02-18T18:53:27Z",
+			"config": {
+				"returnDetails": true,
+				"enableOcr": true,
+				"enableLayout": true,
+				"enableBarcode": false,
+				"enableFormula": false,
+				"disableContentFiltering": false
+			},
+			"fieldSchema": {
+				"name": "",
+				"description": "1. Define your schema by specifying the fields you want to extract from the input files. Choose clear and simple `field names`. Use `field descriptions` to provide explanations, exceptions, rules of thumb, and other details to clarify the desired behavior.\n\n2. For each field, indicate the `value type` of the desired output. Besides basic types like strings, dates, and numbers, you can define more complex structures such as `tables` (repeated items with subfields) and `fixed tables` (groups of fields with common subfields).",
+				"fields": {
+					"introduction": {
+						"type": "string",
+						"method": "extract",
+						"description": "Extract the introduction text under the Title 'Introduction'"
+					},
+					"financials": {
+						"type": "array",
+						"method": "generate",
+						"description": "Extract in a table format, the Line of Business, Region, Net Written Premiums, Net Income, Combined Ratio from the financial results table",
+						"items": {
+							"type": "object",
+							"method": "extract",
+							"properties": {
+								"lob": {
+									"type": "string",
+									"method": "extract",
+									"description": "Line of Business"
+								},
+								"region": {
+									"type": "string",
+									"method": "extract",
+									"description": "Region"
+								},
+								"premiums": {
+									"type": "number",
+									"method": "extract",
+									"description": "Net Written Premiums"
+								},
+								"income": {
+									"type": "number",
+									"method": "extract",
+									"description": "Net Income"
+								},
+								"combined_ratio": {
+									"type": "number",
+									"method": "extract",
+									"description": "Combined Ratio"
+								}
+							}
+						}
+					},
+					"summary": {
+						"type": "string",
+						"method": "extract",
+						"description": "Extract the text content under the Title 'Summary'"
+					}
+				}
+			},
+			"trainingData": {
+				"containerUrl": "https://stdemoaoaihu312932537668.blob.core.windows.net/033d3970-744f-47a5-a86c-62bccc552f0f-cu",
+				"kind": "blob",
+				"prefix": "labelingProjects/033d3970-744f-47a5-a86c-62bccc552f0f/train"
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "document"
+		},
+		{
+			"analyzerId": "myVideo-CUAnalyzer",
+			"description": "",
+			"tags": {
+				"projectId": "fcc921cf-d35c-403d-b22f-e00160000116",
+				"templateId": "videoShot-2024-12-01"
+			},
+			"createdAt": "2024-12-01T16:06:10Z",
+			"lastModifiedAt": "2024-12-01T16:06:10Z",
+			"config": {
+				"locales": [],
+				"returnDetails": true,
+				"enableFace": false
+			},
+			"fieldSchema": {
+				"fields": {
+					"imageOf": {
+						"type": "string",
+						"method": "classify",
+						"description": "What is the primary object in this image?",
+						"enum": [
+							"Automobile",
+							"Home",
+							"None"
+						],
+						"enumDescriptions": {
+							"Automobile": "Image of an automobile",
+							"Home": "Image of a home",
+							"None": "Image of anything other than a home or automobile"
+						}
+					},
+					"licensePlate": {
+						"type": "string",
+						"method": "generate",
+						"description": "automobile license plate number"
+					},
+					"makeOfAutomobile": {
+						"type": "string",
+						"method": "generate",
+						"description": "Manufacturer of the automobile, if in the image"
+					},
+					"modelOfAutomobile": {
+						"type": "string",
+						"method": "generate",
+						"description": "Model of the automobile, if in the image"
+					},
+					"transcript": {
+						"type": "string",
+						"method": "generate",
+						"description": "Audio transcript"
+					},
+					"isTranscriptMatchingVideo": {
+						"type": "string",
+						"method": "generate",
+						"description": "Does the transcript match the video content? Answer in one word (yes or no)"
+					}
+				}
+			},
+			"warnings": [],
+			"status": "ready",
+			"scenario": "videoShot"
+		}
+	],
+	"nextLink": ""
+}

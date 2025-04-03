@@ -1,6 +1,5 @@
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from openai import AzureOpenAI
-import os
 import requests
 
 # Returns a +ve number if successful
@@ -8,7 +7,6 @@ import requests
 # TODO: stop dumping exception into stdout
 def setupOpenai(aoai_endpoint, aoai_api_key, aoai_version):
   try:
-    #--- api_key = os.getenv("OPENAI_API_KEY")
     if aoai_api_key and not aoai_api_key.isspace():
       # the string is non-empty
       client = AzureOpenAI(

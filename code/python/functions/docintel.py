@@ -1,4 +1,3 @@
-import os
 import logging
 from azure.identity import DefaultAzureCredential
 from azure.core.credentials import AzureKeyCredential

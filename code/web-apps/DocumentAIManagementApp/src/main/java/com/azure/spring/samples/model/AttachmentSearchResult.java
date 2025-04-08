@@ -10,6 +10,8 @@ public class AttachmentSearchResult extends BaseSearchResult {
 	private String frAPIVersion;
 	private String modelType;
 	private String modelId;
+	private String operationId;
+	private String operationStatus;
 	private Boolean isHandwritten;
 	
 	private List<ExtractData> extracts;
@@ -50,6 +52,22 @@ public class AttachmentSearchResult extends BaseSearchResult {
 	public void setModelId(String modelId) {
 		this.modelId = modelId;
 	}
+	
+	public String getOperationId() {
+		return operationId;
+	}
+
+	public void setOperationId(String operationId) {
+		this.operationId = operationId;
+	}
+
+	public String getOperationStatus() {
+		return operationStatus;
+	}
+
+	public void setOperationStatus(String operationStatus) {
+		this.operationStatus = operationStatus;
+	}
 
 	public Boolean getIsHandwritten() {
 		return isHandwritten;
@@ -79,8 +97,8 @@ public class AttachmentSearchResult extends BaseSearchResult {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ Objects.hash(attachmentName, extracts, frAPIVersion, isHandwritten, modelId, modelType, sender);
+		result = prime * result + Objects.hash(attachmentName, extracts, frAPIVersion, isHandwritten, modelId,
+				modelType, operationId, operationStatus, sender);
 		return result;
 	}
 
@@ -96,14 +114,17 @@ public class AttachmentSearchResult extends BaseSearchResult {
 		return Objects.equals(attachmentName, other.attachmentName) && Objects.equals(extracts, other.extracts)
 				&& Objects.equals(frAPIVersion, other.frAPIVersion)
 				&& Objects.equals(isHandwritten, other.isHandwritten) && Objects.equals(modelId, other.modelId)
-				&& Objects.equals(modelType, other.modelType) && Objects.equals(sender, other.sender);
+				&& Objects.equals(modelType, other.modelType) && Objects.equals(operationId, other.operationId)
+				&& Objects.equals(operationStatus, other.operationStatus) && Objects.equals(sender, other.sender);
 	}
 
 	@Override
 	public String toString() {
 		return "AttachmentSearchResult [sender=" + sender + ", attachmentName=" + attachmentName + ", frAPIVersion="
-				+ frAPIVersion + ", modelType=" + modelType + ", modelId=" + modelId + ", isHandwritten="
-				+ isHandwritten + ", extracts=" + extracts + ", toString()=" + super.toString() + "]";
+				+ frAPIVersion + ", modelType=" + modelType + ", modelId=" + modelId + ", operationId=" + operationId
+				+ ", operationStatus=" + operationStatus + ", isHandwritten=" + isHandwritten + ", extracts=" + extracts
+				+ "]";
 	}
 
+	
 }

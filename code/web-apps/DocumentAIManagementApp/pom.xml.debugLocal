@@ -119,7 +119,7 @@
 		<dependency>
 		    <groupId>com.azure</groupId>
 		    <artifactId>azure-ai-openai</artifactId>
-		    <version>1.0.0-beta.6</version>
+		    <version>1.0.0-beta.13</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
@@ -370,6 +370,22 @@
 						<property>
 							<name>DOCAI_DEMO_USERS</name>
 							<value>${env.DOCAI_DEMO_USERS}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_ENDPOINT</name>
+							<value>${env.DOCAI_CU_API_ENDPOINT}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_KEY</name>
+							<value>${env.DOCAI_CU_API_KEY}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_VERSION</name>
+							<value>${env.DOCAI_CU_API_VERSION}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_VIDEO_ANALYZER_ID</name>
+							<value>${env.DOCAI_CU_VIDEO_ANALYZER_ID}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

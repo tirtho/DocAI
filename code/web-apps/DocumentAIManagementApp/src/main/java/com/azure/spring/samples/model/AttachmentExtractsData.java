@@ -12,6 +12,9 @@ public class AttachmentExtractsData extends BaseData {
 	private String frAPIVersion;
 	private String modelId;
 	private Boolean isHandwritten;
+	private String operationId;
+	private String operationStatus;
+	
 	
 	private List<ExtractData> extracts;
 
@@ -59,12 +62,36 @@ public class AttachmentExtractsData extends BaseData {
 	public void setExtracts(List<ExtractData> extracts) {
 		this.extracts = extracts;
 	}
+	
+	public String getOperationId() {
+		return operationId;
+	}
+
+	public void setOperationId(String operationId) {
+		this.operationId = operationId;
+	}
+
+	public String getOperationStatus() {
+		return operationStatus;
+	}
+
+	public void setOperationStatus(String operationStatus) {
+		this.operationStatus = operationStatus;
+	}
+	
+	@Override
+	public String toString() {
+		return "AttachmentExtractsData [attachmentName=" + attachmentName + ", frAPIVersion=" + frAPIVersion
+				+ ", modelId=" + modelId + ", isHandwritten=" + isHandwritten + ", operationId=" + operationId
+				+ ", operationStatus=" + operationStatus + ", extracts=" + extracts + "]";
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(attachmentName, extracts, frAPIVersion, isHandwritten, modelId);
+		result = prime * result + Objects.hash(attachmentName, extracts, frAPIVersion, isHandwritten, modelId,
+				operationId, operationStatus);
 		return result;
 	}
 
@@ -79,14 +106,9 @@ public class AttachmentExtractsData extends BaseData {
 		AttachmentExtractsData other = (AttachmentExtractsData) obj;
 		return Objects.equals(attachmentName, other.attachmentName) && Objects.equals(extracts, other.extracts)
 				&& Objects.equals(frAPIVersion, other.frAPIVersion)
-				&& Objects.equals(isHandwritten, other.isHandwritten) && Objects.equals(modelId, other.modelId);
-	}
-
-	@Override
-	public String toString() {
-		return "AttachmentData [attachmentName=" + attachmentName + ", frAPIVersion=" + frAPIVersion + ", modelId="
-				+ modelId + ", isHandwritten=" + isHandwritten + ", extracts=" + extracts + ", toString()="
-				+ super.toString() + "]";
+				&& Objects.equals(isHandwritten, other.isHandwritten) && Objects.equals(modelId, other.modelId)
+				&& Objects.equals(operationId, other.operationId)
+				&& Objects.equals(operationStatus, other.operationStatus);
 	}
 
 	public String getFieldValue(String valueOfFieldName) {

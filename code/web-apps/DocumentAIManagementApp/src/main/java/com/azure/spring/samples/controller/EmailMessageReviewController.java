@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.adls.AzureADLSOperation;
-import com.azure.spring.samples.ai.AzureAIOperation;
+import com.azure.spring.samples.ai.AzureCUOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
 import com.azure.spring.samples.anomaly.attachment.AutoInsuranceClaimAnomaly;
@@ -91,6 +91,16 @@ public class EmailMessageReviewController {
     @Value("${azure.aoai.vision.version}")
     private String aoaiVideoVersion;
     
+    // Content Understanding Service
+    @Value("${azure.cu.api.endpoint}")
+    private String cuApiEndpoint;
+    @Value("${azure.cu.api.key}")
+    private String cuApiKey;
+    @Value("${azure.cu.api.version}")
+    private String cuApiVersion;
+    @Value("${azure.cu.video.analyzer.id}")
+    private String cuVideoAnalyzerId;
+
     // All common Azure Cognitive Services access
     @Value("${azure.cognitive.service.endpoint}")
     private String aiEndpoint;
@@ -185,8 +195,6 @@ public class EmailMessageReviewController {
         									aoaiKey, 
         									aoaiModel, 
         									aoaiVersion, 
-        									null, 
-        									null, 
         									AOAIConnectionType.SDK
         								);
         AttachmentAnomaly anomaly;
@@ -196,21 +204,34 @@ public class EmailMessageReviewController {
         	anomaly = new CommercialInsuranceApplicationAnomaly(cosmosDB, aoaiOps);
         } else if (StringUtils.compareIgnoreCase("auto-insurance-claim", attachmentCategory) == 0) {
         	anomaly = new  AutoInsuranceClaimAnomaly(cosmosDB, aoaiOps);
+        } else if (StringUtils.startsWithIgnoreCase (attachmentCategory, "video-") == true) {
+        	// Video
+            AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
+					aoaiMultiModalEndpoint, 
+					aoaiMultiModalKey,
+					aoaiOmniModel,
+					aoaiOmniVersion,
+					AOAIConnectionType.SDK // used for video
+				);
+			// CU is not used for Review right now, but might in future
+			AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
+			anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
         } else {
         	// For the files with unknown classification, need to run the content
-        	// by GPT4 regular if content is text, else by GPT-4o API if image and GTP-4 Vision if video
+        	// by GPT4 regular if content is text, else by GPT-4o API if image
+        	
             AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
             											aoaiMultiModalEndpoint, 
             											aoaiMultiModalKey,
             											aoaiOmniModel,
             											aoaiOmniVersion,
-            											aoaiVideoModel, 
-            											aoaiVideoVersion, 
             											AOAIConnectionType.HTTP
             										);
-            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, aiOps, Transform.b64Decode(blobStoreSASToken));
-        }
+            // CU is not used for Review right now, but might in future
+        	AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
+        }        
+        
         @SuppressWarnings("unchecked")
 		List<String> reviewSummary = (List<String>) anomaly.getAttachmentAnomaly(id, attachmentCategory);
 
@@ -257,22 +278,20 @@ public class EmailMessageReviewController {
         // For the files with unknown classification, need to run the content
     	// by GPT4 regular if content is text, else by Vision API if image/video
         if (attachmentCategory.startsWith("video-")) {
-            AzureOpenAIOperation aoaiVisionOps = new AzureOpenAIOperation (
-														aoaiMultiModalEndpoint, 
-														aoaiMultiModalKey,
-														null,
-														null,
-														aoaiVideoModel, 
-														aoaiVideoVersion, 
-														AOAIConnectionType.HTTP
-													);
-            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
-            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiVisionOps, aiOps, Transform.b64Decode(blobStoreSASToken));
-        	// Check status, if 'Running', try to read status again
-        	// If still in 'Running' State then just return
-        	// If it is now 'Completed', then 
-        	// make the call to GPT-4 to get 'Description' 
-        	// update CosmosDB and return the extracts
+            AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
+					aoaiMultiModalEndpoint, 
+					aoaiMultiModalKey,
+					aoaiOmniModel,
+					aoaiOmniVersion,
+					AOAIConnectionType.HTTP
+				);
+
+        	AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
+            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
+        	// Call Content Understanding to get the extracts for the video 
+            // that was already sent for analysis from Azure Functions in the App
+            // and a valid OperationId returned by Content Understanding was persisted in Cosmos DB 
+        	// Update CosmosDB and return the extracts
             ReturnEntity<Object, Object> returnedEntities = daa.updateVideoExtractionData(id);
             logger.info("Refresh Attachment Extracts operation returned status: %s", returnedEntities.getStatus());
             extracts = (List<ExtractData>) returnedEntities.getEntity();
@@ -309,10 +328,10 @@ public class EmailMessageReviewController {
     				azureCosmosDatabaseName,
     				azureCosmosContainerName
     			);
-            AzureAIOperation aiOps = new AzureAIOperation(aiEndpoint, aiKey, aiVideoIndexName, aiVideoAPIVersion);
+            AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);
             String decodedSASToken = Transform.b64Decode(blobStoreSASToken);
             AzureADLSOperation adlsOps = new AzureADLSOperation(decodedSASToken);
-        	ReturnEntity<Integer, String> res = CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, aiOps, adlsOps, id);
+        	ReturnEntity<Integer, String> res = CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, cuOps, adlsOps, id);
             if (res.getStatus() == HttpStatus.NO_CONTENT.value()) {
             	return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
             } else {
@@ -415,7 +434,9 @@ public class EmailMessageReviewController {
   	    	    		if (iterateAED.hasNext()) {
   	    	    			AttachmentExtractsData aed = iterateAED.next();
   	    	    			logger.info("AttachmentExtractsData Info for attachment:{} found as:{}", 
-  	    	    					aed.getAttachmentName(), aed.toString());  	    	    			
+  	    	    					aed.getAttachmentName(), aed.toString());  
+  	    	    			asr.setOperationId(aed.getOperationId());
+  	    	    			asr.setOperationStatus(aed.getOperationStatus());
   	    	    			asr.setIsHandwritten(aed.getIsHandwritten());
   	    	    			asr.setModelId(aed.getModelId());
   	    	    			asr.setFrAPIVersion(aed.getFrAPIVersion());

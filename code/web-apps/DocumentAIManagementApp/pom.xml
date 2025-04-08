@@ -148,11 +148,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<!-- Comment out the configuration below, when NOT debugging with Eclipse or any IDE -->
+				<!--
 			    <configuration>
 			      <jvmArguments>
 			        -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9090
 			      </jvmArguments>
 			    </configuration>
+			    -->
 			</plugin>
 			<!-- This plugin below is to deploy in Azure Spring Apps -->
 			<!--
@@ -370,6 +372,22 @@
 						<property>
 							<name>DOCAI_DEMO_USERS</name>
 							<value>${env.DOCAI_DEMO_USERS}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_ENDPOINT</name>
+							<value>${env.DOCAI_CU_API_ENDPOINT}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_KEY</name>
+							<value>${env.DOCAI_CU_API_KEY}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_API_VERSION</name>
+							<value>${env.DOCAI_CU_API_VERSION}</value>
+						</property>
+						<property>
+							<name>DOCAI_CU_VIDEO_ANALYZER_ID</name>
+							<value>${env.DOCAI_CU_VIDEO_ANALYZER_ID}</value>
 						</property>
 						<property>
 							<name>JAVA_OPTS</name>

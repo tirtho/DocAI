@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
 import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.spring.samples.adls.AzureADLSOperation;
-import com.azure.spring.samples.ai.AzureAIOperation;
+import com.azure.spring.samples.ai.AzureCUOperation;
 import com.azure.spring.samples.model.AttachmentData;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 import com.azure.spring.samples.model.EmailData;
@@ -94,7 +94,7 @@ public class CosmosDBCommonQueries {
   		return null;
 	}
 	
-	public static ReturnEntity<Integer, String> deleteMessageWithDependecies(CosmosDBOperation cosmosDB, AzureAIOperation aiOps, AzureADLSOperation adlsOps, String id) {
+	public static ReturnEntity<Integer, String> deleteMessageWithDependecies(CosmosDBOperation cosmosDB, AzureCUOperation cuOps, AzureADLSOperation adlsOps, String id) {
 		String er = String.format("Failed: Delete Message[%s]. ", id);
 		StringBuffer erb = new StringBuffer();
 		erb.append(er);
@@ -118,11 +118,11 @@ public class CosmosDBCommonQueries {
 							if (category.startsWith("video-")) {
 								// Need to also delete the video ingestion index
 								AttachmentExtractsData aed = aedReturnEntity.getEntity();
-								String videoIndex = aed.getFieldValue("VideoDocumentId");
-								if (videoIndex != null) {
-									status = aiOps.deleteVideoIndex(videoIndex);
+								String operationId = aed.getOperationId();
+								if (operationId != null) {
+									status = cuOps.deleteOperation(operationId);
 									if (status != HttpStatus.SC_NO_CONTENT) {
-										er = String.format("Delete Video Index[%s] failed", videoIndex);
+										er = String.format("Delete Video Analysis Result operation (id=[%s]) failed", operationId);
 										erb.append(er);
 										logger.info("{}", er);
 										deletedStatus = status;

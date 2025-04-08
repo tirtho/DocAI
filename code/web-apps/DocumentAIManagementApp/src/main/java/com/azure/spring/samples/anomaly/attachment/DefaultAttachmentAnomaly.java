@@ -1,11 +1,7 @@
 package com.azure.spring.samples.anomaly.attachment;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
-import com.azure.spring.samples.ai.AzureAIOperation;
+import com.azure.spring.samples.ai.AzureCUOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
@@ -23,6 +19,7 @@ import com.azure.spring.samples.model.ExtractData;
 import com.azure.spring.samples.utils.Category;
 import com.azure.spring.samples.utils.FileType;
 import com.azure.spring.samples.utils.ReturnEntity;
+import com.azure.spring.samples.utils.Transform;
 
 public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
@@ -49,27 +46,10 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 					+ "	   \"temperature\": 0.0,\r\n"
 					+ "    \"max_tokens\": 4096 \r\n"
 					+ "}   \r\n";
-
-//    private static String MEDICAL_REVIEW_USER_PROMPT = 
-//    		"List the data from the document as key / value pair in a JSON format. \r\n"
-//    		+ "If the value does not match the key, return the nearest matched value for that key. \r\n"
-//    		+ "The response should be in this JSON format: \r\n"
-//    		+ "{ "
-//    		+ "	[ "
-//    		+ "		{ "
-//    		+ " 		<key>: <value>,"
-//    		+ " 		\"doesMatch\": [yes/no],"
-//    		+ " 		\"nextNearestValue\": <next closest value that maches the key>"
-//    		+ "		}, "
-//    		+ "		..."
-//    		+ " ]"
-//    		+ "}";
         
     private static String MEDICAL_REVIEW_USER_PROMPT = 
     		"List the data from the document as key/value pair in a JSON format.";
-    
-    private static String FINANCIAL_REPORT_REVIEW_USER_PROMPT;
-    
+       
 	private static String CAR_HOME_IMAGE_REVIEW_PROMPT = 
 			"Identify image is a CAR, HOME or OTHER. Detect any damage to the car or home, else say NONE. "
 			+ "Also return any text detected in the image. Return JSON data ONLY in the format:"
@@ -80,96 +60,15 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			+ " 'anyText': <return any text detected in the image>"
 			+ "}";
 	
-	private static String FIND_VIDEO_ENHANCEMENTS_REVIEW_PROMPT = 
-			"{\r\n"
-			+ "    \"enhancements\": {\r\n"
-			+ "        \"video\": {\r\n"
-			+ "          \"enabled\": true\r\n"
-			+ "        }\r\n"
-			+ "    },\r\n"
-			+ "    \"dataSources\": [\r\n"
-			+ "    {\r\n"
-			+ "        \"type\": \"AzureComputerVisionVideoIndex\",\r\n"
-			+ "        \"parameters\": {\r\n"
-			+ "            \"computerVisionBaseUrl\": \"%scomputervision\",\r\n"
-			+ "            \"computerVisionApiKey\": \"%s\",\r\n"
-			+ "            \"indexName\": \"%s\",\r\n"
-			+ "            \"videoUrls\": [\"%s\"]\r\n"
-			+ "        }\r\n"
-			+ "    }],\r\n"
-			+ "    \"messages\": [ \r\n"
-			+ "        { \"role\": \"system\", \"content\": [{\"You are a car insurance and accident expert.\"}] }, \r\n"
-			+ "        { \"role\": \"user\", \r\n"
-			+ "        \"content\": [  \r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"acv_document_id\", \r\n"
-			+ "                \"acv_document_id\": \"%s\" \r\n"
-			+ "            }, \r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"text\", \r\n"
-			+ "                \"text\": \"Return the following information from the video image frames.\r\n"
-			+ "                            detectAnomaly = \r\n"
-			+ "                            {"
-			+ "                               'imageOf': 'CAR or HOME or OTHER',\r\n"
-			+ "                               'make': <Maker of CAR or HOME or OTHER>,\r\n"
-			+ "                               'model': <Model of CAR or HOME or OTHER>,\r\n"
-			+ "                               'licensePlate': <car front license plate number in the image or NONE>,\r\n"
-			+ "                               'transcript': <Provide the transcript.>,\r\n"
-			+ "                               'transcriptMatchesVisualContent': <FALSE if transcript match the visual content of the frames provided. Else TRUE>\r\n"
-			+ "                            }\" \r\n"
-			+ "            } \r\n"
-			+ "        ]}\r\n"
-			+ "    ], \r\n"
-			+ "	   \"stream\": false,\r\n"
-			+ "	   \"temperature\": 0.0,\r\n"
-			+ "    \"max_tokens\": 4096 \r\n"
-			+ "}   \r\n";
-
-	private static String FIND_VIDEO_ENHANCEMENTS_DESCRIPTION_PROMPT = 
-			"{\r\n"
-			+ "    \"enhancements\": {\r\n"
-			+ "        \"video\": {\r\n"
-			+ "          \"enabled\": true\r\n"
-			+ "        }\r\n"
-			+ "    },\r\n"
-			+ "    \"dataSources\": [\r\n"
-			+ "    {\r\n"
-			+ "        \"type\": \"AzureComputerVisionVideoIndex\",\r\n"
-			+ "        \"parameters\": {\r\n"
-			+ "            \"computerVisionBaseUrl\": \"%scomputervision\",\r\n"
-			+ "            \"computerVisionApiKey\": \"%s\",\r\n"
-			+ "            \"indexName\": \"%s\",\r\n"
-			+ "            \"videoUrls\": [\"%s\"]\r\n"
-			+ "        }\r\n"
-			+ "    }],\r\n"
-			+ "    \"messages\": [ \r\n"
-			+ "        { \"role\": \"system\", \"content\": \"You are a car insurance and accident expert.\" }, \r\n"
-			+ "        { \"role\": \"user\", \r\n"
-			+ "        \"content\": [  \r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"acv_document_id\", \r\n"
-			+ "                \"acv_document_id\": \"%s\" \r\n"
-			+ "            }, \r\n"
-			+ "            { \r\n"
-			+ "                \"type\": \"text\", \r\n"
-			+ "                \"text\": \"Extract and render information in the format: \r\n"
-			+ "\\n"
-			+ "                            Description: Describe the video. \r\n"
-			+ "\\n"
-			+ "                            Transcript: Provide the transcript. \r\n"
-			+ "\\n"
-			+ "                            Question: Does the transcript match the visual content of the frames provided? <Answer>\" \r\n"
-			+ "            } \r\n"
-			+ "        ]}\r\n"
-			+ "    ], \r\n"
-			+ "	   \"stream\": false,\r\n"
-			+ "	   \"temperature\": 0.0,\r\n"
-			+ "    \"max_tokens\": 4096 \r\n"
-			+ "}   \r\n";
+	private static String FIND_VIDEO_REVIEW_PROMPT = 
+			"From the EXTRACTED_DATA field find if there is any anomaly \n"
+			+ "EXTRACTED_DATA: %s\n"
+			+ "Answer in json format { 'anyAomaly': 'yes/no', 'anomalyDetails': <describe the detected anomaly in less than 100 words> } \n"
+			+ "Return the json data only.";
 	
     private CosmosDBOperation cosmosDB;
     private AzureOpenAIOperation aoaiOps;
-    private AzureAIOperation aiOps;
+    private AzureCUOperation cuOps;
     private String blobStoreSASToken;
 	
     /**
@@ -182,13 +81,13 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
     public DefaultAttachmentAnomaly(
     				CosmosDBOperation cosmosDB,
     				AzureOpenAIOperation aoaiOps,
-    				AzureAIOperation aiOps,
+    				AzureCUOperation cuOps,
     				String blobStoreSASToken
     			) {
 		super();
 		this.cosmosDB = cosmosDB;
 		this.aoaiOps = aoaiOps;
-		this.aiOps = aiOps;
+		this.cuOps = cuOps;
 		this.blobStoreSASToken = blobStoreSASToken;
 	}
 
@@ -249,28 +148,9 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	  	} else if (ft.isAudio()) {
 	  		// TODO: pass prompt for audio
 	  	} else if (ft.isVideo()) {
-	  		// Check the video ingestion status from 
-	  		// the form extract data.
-	  		// If state is 'failed', return 'ingestion failed'
-	  		// If state is 'running', make the GET ingestion status call
-	  		// and update document extract item in cosmosdb
-	  		// If state is 'completed', make the GPT4 VISION with video enhancement call
-	  		List<ExtractData> extracts = aed.getExtracts();
-	  		StringBuffer messageBuffer = new StringBuffer("Video Review: ");
-  			Map<String, ?> ingestionStatusField = null;
-  			Map<String, ?> videoDocumentIdField = null;
-	  		for (ExtractData extract : extracts) {
-	  			for (Map<String,?> field : extract.getFields()) {
-	  				if (StringUtils.compare("VideoDocumentId", (String) field.get("fieldName")) == 0) {
-	  					videoDocumentIdField = field;
-	  				} else if (StringUtils.compare("IngestionStatus", (String) field.get("fieldName")) == 0) {
-	  					ingestionStatusField = field;
-	  				}
-	  			}
-	  			String review = processVideoReview(fileUrl, aed, extract, videoDocumentIdField, ingestionStatusField);
-	  			messageBuffer.append(review);
-	  		}
-	  		reviewMessage = messageBuffer.toString();
+	  		// Just passing the extracted json to LLM for completion
+	  		// No need to send the video file
+	  		reviewMessage = processVideoReview(aed);
 	  	} else if (ft.isText()) {
 	  		// TODO: pass prompt for text
 	  	} else if (ft.isDocument()) {
@@ -292,37 +172,26 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	 */
 	@SuppressWarnings("unchecked")
 	private String processVideoReview(
-					String fileUrl,
-					AttachmentExtractsData aed, 
-					ExtractData extract, 
-					Map<String, ?> videoDocumentIdField,
-					Map<String, ?> ingestionStatusField
-				) {
+					AttachmentExtractsData aed
+					) {
 		
-		String videoDocumentId = (String) videoDocumentIdField.get("fieldValue");
-		String ingestionState = (String) ingestionStatusField.get("fieldValue");
-		if (videoDocumentId != null && ingestionState != null) {
-			// If status was already 'Completed' in cosmosdb 
+		if (aed.getOperationId() != null && aed.getOperationStatus() != null) {
+			// If status was already 'Succeeded' in cosmosdb 
 			// Then call GPT-4 and get review
-			if (StringUtils.compare(ingestionState.toLowerCase(), "completed") == 0) {
-				// Call the GPT4 VISION with enhancement for video for review
-		  		String prompt = String.format(FIND_VIDEO_ENHANCEMENTS_REVIEW_PROMPT, 
-		  										aiOps.getAiEndpoint(), 
-		  										aiOps.getAiKey(), 
-		  										videoDocumentId, 
-		  										fileUrl,
-		  										videoDocumentId
-		  									);
-				String message = aoaiOps.getAOAIVideoCompletion(prompt);
+			if (StringUtils.compare(aed.getOperationStatus().toLowerCase(), "succeeded") == 0) {
+				// Call GPT4 for review
+				String extractedVideoDataInJson = Transform.attachmentExtractsDataToJson(aed);
+		  		String prompt = String.format(FIND_VIDEO_REVIEW_PROMPT, extractedVideoDataInJson);
+				String message = aoaiOps.getAOAIChatCompletion(prompt);
 				logger.info(message);
 				return message;
-			} else if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0) {
-				String message = String.format("Document[%s] ingestion not complete yet;", videoDocumentId);
+			} else if (StringUtils.compare(aed.getOperationStatus().toLowerCase(), "running") == 0) {
+				String message = String.format("OperationId[%s] ingestion not complete yet;", aed.getOperationId());
 				logger.info(message);
 				return message;
 			} else {
 				// Status is neither Running nor Completed, nor was it completed via above code
-				String message = String.format("Document[%s]: Video ingestion and getting description did not succeed. Need human review", videoDocumentId);
+				String message = String.format("OperationId[%s]: Video ingestion and getting extacts did not succeed. Need human review", aed.getOperationId());
 				logger.info(message);
 				return message;
 			}
@@ -330,102 +199,51 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 			return "Video extract not found";
 		}
 	}
-	
+		
 	@SuppressWarnings("unchecked")
 	public <U, V> ReturnEntity<U, V> updateVideoExtractionData(String attachmentId) {
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
-	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; //StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
-  		List<ExtractData> extracts = aed.getExtracts();
-  		List<ExtractData> updatedExtracts = null;
-		Map<String, ?> ingestionStatusField = null;
-		Map<String, ?> videoDocumentIdField = null;
-  		for (ExtractData extract : extracts) {
-  			for (Map<String,?> field : extract.getFields()) {
-  				if (StringUtils.compare("VideoDocumentId", (String) field.get("fieldName")) == 0) {
-  					videoDocumentIdField = field;
-  				} else if (StringUtils.compare("IngestionStatus", (String) field.get("fieldName")) == 0) {
-  					ingestionStatusField = field;
-  				}
-  			}
-  			ReturnEntity<String, ExtractData> ed = processVideoExtraction(fileUrl, aed, extract, videoDocumentIdField, ingestionStatusField);
-  			if(ed.getStatus().startsWith("Error:")) {
-  				return (ReturnEntity<U, V>) new ReturnEntity<String, List<ExtractData>>(ed.getStatus(), extracts);
-  			}
-  			if (updatedExtracts == null) {
-  				updatedExtracts = new ArrayList<>();
-  			}
-  			updatedExtracts.add(ed.getEntity());
-  		}  	
-		return (ReturnEntity<U, V>) new ReturnEntity<String, List<ExtractData>>("Success: Video Extraction Data Update", updatedExtracts);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <U, V> ReturnEntity<U, V> processVideoExtraction(
-			String fileUrl,
-			AttachmentExtractsData aed, 
-			ExtractData extract, 
-			Map<String, ?> videoDocumentIdField,
-			Map<String, ?> ingestionStatusField
-		) {
-		
+	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; 
+	  	//StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
+  		String operationId = aed.getOperationId();
+  		String ingestionState = aed.getOperationStatus();
 		String message = null;
-		String videoDocumentId = (String) videoDocumentIdField.get("fieldValue");
-		String ingestionState = (String) ingestionStatusField.get("fieldValue");
-		if (videoDocumentId != null && ingestionState != null) {
-			// Time to make another getIngestionState() call to update status
-			// Get Description also again or for the first time
-			String state = aiOps.getVideoIngestionState(videoDocumentId);
-			if (StringUtils.compare(state.toLowerCase(), "completed") == 0) {
-				// Use GPT4 Vision to get a Description of the video
-				String prompt = String.format(FIND_VIDEO_ENHANCEMENTS_DESCRIPTION_PROMPT, aiOps.getAiEndpoint(),
-						aiOps.getAiKey(), videoDocumentId, fileUrl, videoDocumentId);
-				// Call GPT4 Vision to get description of the video
-				String description = aoaiOps.getAOAIVideoCompletion(prompt);
-				
-				// Now update the status and description fields in cosmosdb
-				List<Map<String, ?>> updatedFields = new ArrayList<>();
-				Map descriptionField = new HashMap<>();
-				descriptionField.put("fieldName", "Description");
-				descriptionField.put("fieldValueType", "string");
-				// Open AI does not support logprobs for Vision APIs yet
-				// Hence the confidence score is commented out and not computed
-				//descriptionField.put("fieldConfidence", 0.99);
-				descriptionField.put("fieldValue", description);
-				updatedFields.add((HashMap<String, ?>) descriptionField);
-
-				Map statusField = new HashMap<>();
-				statusField.put("fieldName", "IngestionStatus");
-				statusField.put("fieldValueType", "string");
-				statusField.put("fieldConfidence", 0.99);
-				statusField.put("fieldValue", "Completed");
-				updatedFields.add((HashMap<String, ?>) statusField);
-
-				ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-				String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-				Map lastUpdatedTimeField = new HashMap<>();
-				lastUpdatedTimeField.put("fieldName", "LastUpdatedTime");
-				lastUpdatedTimeField.put("fieldValueType", "string");
-				lastUpdatedTimeField.put("fieldConfidence", 0.99);
-				lastUpdatedTimeField.put("fieldValue", formattedTime);
-				updatedFields.add((HashMap<String, ?>) lastUpdatedTimeField);
-
-				extract.upsertFields(updatedFields);
-				// Update the 'IngestionStatus' and 'Description' fields for this attachment in
-				// cosmosdb
-				CosmosDBCommonQueries.upsertAttachmentExtractedData(aed, cosmosDB);
-
-				message = String.format("Success: Document[%s] status and description fields updated;",
-						videoDocumentId);
-				logger.info(message);
-			} else {
-				message = String.format("Success: Document[%s] ingestion not complete yet;", videoDocumentId);
-				logger.info(message);
-			}
-		} else {
-			message = "Error: Video extract not found";
-		}
 		
-		return (ReturnEntity<U, V>) new ReturnEntity<String, ExtractData>(message, extract);
+  		List<ExtractData> extracts = aed.getExtracts();
+  		if (extracts == null) 
+  			extracts = new ArrayList<>();
+  		if (extracts.isEmpty())
+  			extracts.add(new ExtractData());
 
+		for (ExtractData extract : extracts) {
+  			if (operationId != null && ingestionState != null) {
+  				if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0) {
+  					// Use Content Understanding to extract information about video
+  					ReturnEntity<String, ?> extractedEntity = cuOps.getVideoExtractionResult(fileUrl, operationId);
+  					List<Map<String, ?>> updatedFields = (List<Map<String, ?>>) extractedEntity.getEntity();
+  					String extractionStatus = extractedEntity.getStatus();
+  					aed.setOperationStatus(extractionStatus);
+  					
+  					if (updatedFields != null) {
+  	  					extract.upsertFields(updatedFields);
+  	  					// Update the fields for this attachment in cosmosdb
+  	  					CosmosDBCommonQueries.upsertAttachmentExtractedData(aed, cosmosDB);
+  	  					message = String.format("Success: OperationId[%s] fields updated;", operationId);
+  	  					logger.info(message);
+  					} else {
+  	  					message = String.format("Warning: OperationId[%s] CU call got fields returned/parsed as null. Cosmos DB not updated;", operationId);
+  	  					logger.info(message);
+  					}
+  				} else {
+  					message = String.format("Success: OperationId[%s] ingestion not complete yet;", operationId);
+  					logger.info(message);
+  				}
+  			} else {
+  				message = "Error: Video extract not found";
+  				logger.info(message);
+  				return (ReturnEntity<U, V>) new ReturnEntity<String, List<ExtractData>>(message, extracts);  				
+  			}
+		}
+		return (ReturnEntity<U, V>) new ReturnEntity<String, List<ExtractData>>(message, extracts);
 	}
 }

@@ -47,8 +47,6 @@ public class AzureOpenAIOperation {
     private String key;
     private String deployedModel;
     private String modelVersion;
-    private String deployedVideoModel;
-    private String videoModelVersion;
     private AOAIConnectionType type;
 
     /**
@@ -67,16 +65,12 @@ public class AzureOpenAIOperation {
 			String key,
 			String deployedModel,
 			String modelVersion,
-			String deployedVideoModel,
-			String videoModelVersion,
 			AOAIConnectionType connectionType) {
 		super();
 		this.endpoint = endpoint;
 		this.key = key;
 		this.deployedModel = deployedModel;
 		this.modelVersion = modelVersion;
-		this.deployedVideoModel = deployedVideoModel;
-		this.videoModelVersion = videoModelVersion;
 		this.type = connectionType;
 		
 		if (type.equals(AOAIConnectionType.SDK)) {
@@ -170,60 +164,6 @@ public class AzureOpenAIOperation {
 			logger.info(promptFailedMessage);
 			return promptFailedMessage;
 		}
-	}
-	
-	/**
-	 * This makes a call to the Vision API with enhancements. 
-	 * And this is using direct http connection
-	 * @param prompt
-	 * @return
-	 */
-	public String getAOAIVisionCompletion(String prompt, boolean withExtensions) {
-		try {
-			String extensionUri = "";
-			if (withExtensions) {
-				extensionUri = "extensions/";
-			}
-			String baseUrl = String.format(
-											"%sopenai/deployments/%s/%schat/completions?api-version=%s", 
-											this.endpoint, 
-											this.deployedVideoModel,
-											extensionUri,
-											this.videoModelVersion
-										  );
-			HttpClient httpClient = HttpClientBuilder.create().build();
-			HttpPost aoaiVisionPost = new HttpPost(baseUrl);
-			aoaiVisionPost.setHeader("Content-Type", "application/json");
-			aoaiVisionPost.setHeader("api-key", this.key);
-			logger.info("Prompt sent to GPT-4 Turbo Vision API: {}", prompt);
-			StringEntity entity = new StringEntity(prompt);
-			aoaiVisionPost.setEntity(entity);
-			
-			String promptCompletion;
-			// Send the request and get the response
-			HttpResponse response = httpClient.execute(aoaiVisionPost);
-			
-			StatusLine statusOfTheCall = response.getStatusLine();
-			int statusCode = statusOfTheCall.getStatusCode();
-			if ( statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED) {
-				promptCompletion = String.format("Vision API call failed with error code: %s and reason: %s", statusCode, statusOfTheCall.getReasonPhrase());
-				logger.info(promptCompletion);
-			} else {
-				promptCompletion = getCompletionFromHttpResponse(response);
-				logger.info("Vision API returned: {}", promptCompletion);
-			}
-			
-			return promptCompletion;			
-		}
-		catch (Exception e) {
-			String promptFailedMessage = String.format("Connecting to AOAI Vision API over HTTP raised exception: %s", e);
-			logger.info(promptFailedMessage);
-			return promptFailedMessage;
-		}
-	}
-	
-	public String getAOAIVideoCompletion(String prompt) {
-		return getAOAIVisionCompletion(prompt, true);
 	}
 	
 	private String getCompletionFromHttpResponse(HttpResponse response) {

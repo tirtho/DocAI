@@ -450,7 +450,7 @@ def getExtractsFromImage(url, categories, fName):
     }
     formDocuments.append(aDocument)
     logging.info(f'{fName}formDocuments:{formDocuments}')
-    return aoaiAPIVersion, modelId, isHandwritten, formDocuments  
+    return aoaiAPIVersion, modelId, isHandwritten, 0, "Succeeded", formDocuments  
 
 # You call Content Understanding Service to analyze the video
 # Unlike image files, you do not get much extracted in this call
@@ -479,45 +479,18 @@ def getExtractsFromVideo(url, fName):
                      fName
                     )
     
-    modelId = f'video-{cuDocAIVideoAnalyzerId}'
+    modelId = f'{cuDocAIVideoAnalyzerId}'
     isHandwritten = False
     formDocuments = []
     formFields = []
-    aField = {
-        "fieldName":"AnalyzerId",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{cuDocAIVideoAnalyzerId}'
-    }
-    formFields.append(aField)
-    aField = {
-        "fieldName":"OperationId",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{cuReturnedOperationId}'
-    }
-    formFields.append(aField)
-    aField = {
-        "fieldName":"IngestionStatus",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{cuAnalysisStatus}'
-    }
-    formFields.append(aField)
-    aField = {
-        "fieldName":"ContentUnderstandingApiVersion",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{cuAPIVersion}'
-    }
-    formFields.append(aField)
-    aField = {
-        "fieldName":"CreatedTime",
-        "fieldValueType":"string",
-        "fieldConfidence":0.99,
-        "fieldValue":f'{createdDateTime}'
-    }
-    formFields.append(aField)
+    #aField = {
+    #    "fieldName":"AnalyzerId",
+    #    "fieldValueType":"string",
+    #    "fieldConfidence":0.99,
+    #    "fieldValue":f'{cuDocAIVideoAnalyzerId}'
+    #}
+    #formFields.append(aField)
+
     # TODO: Implement document confidence computation
     #    "documentConfidence":0.99,
     aDocument = {
@@ -527,7 +500,7 @@ def getExtractsFromVideo(url, fName):
     }
     formDocuments.append(aDocument)
     logging.info(f'{fName}formDocuments:{formDocuments}')
-    return cuAPIVersion, modelId, isHandwritten, formDocuments
+    return cuAPIVersion, modelId, isHandwritten, cuReturnedOperationId, cuAnalysisStatus, formDocuments
     
 def getExtractsFromModel(url, documentCategories, fName):
     fName = f'{fName}f(getExtractsFromModel)->'
@@ -554,8 +527,8 @@ def getExtractsFromModel(url, documentCategories, fName):
     
 def extractResultForUnknownModel(ur, fName):
     fName = f'{fName}extractResultForUnknownModel->'
-    # frAPIVersion, modelId, isHandwritten, frExtracts
-    return "Unknown-v0", "NotYeyImplemented", True, None
+    # frAPIVersion, modelId, isHandwritten, operationId, operationStatus, frExtracts
+    return "Unknown-v0", "NotYeyImplemented", True, 0, "Succeeded", None
 
 def extractResultForCustomModel(extractionModel, url, fName):
     fName = f'{fName}extractResultForCustomModel->'
@@ -572,6 +545,7 @@ def extractResultForCustomModel(extractionModel, url, fName):
                                                         model=extractionModel,
                                                         url=url
                                                     )
+    
     logging.info(f'{fName}Document Intelligence call returned \
         \nversion:{frAPIVersion}\
         \nmodelId:{modelId}\
@@ -610,7 +584,7 @@ def extractResultForCustomModel(extractionModel, url, fName):
         logging.info(f'{fName}formDocuments:{formDocuments}')
     except Exception as e:
         logging.warning(f'{fName}Reading form fields raised exception:{e}')
-    return frAPIVersion, modelId, isHandwritten, formDocuments
+    return frAPIVersion, modelId, isHandwritten, 0, "Succeeded", formDocuments
         
 def getJsonResponse(doc, fName):
     fName = f'{fName}f(getJsonResponse)->'
@@ -1045,7 +1019,7 @@ def extractAttachmentData(req: func.HttpRequest,
                 attachmentClasses = getItemFromRequestBody(reqBody, 'categories', fName)
                 messageUri = getItemFromRequestBody(reqBody, 'uri', fName)
                 url = messageUri + sender + "/" + receivedTimeFolder + "/attachments/" + attachmentName
-                frAPIVersion, modelId, isHandwritten, frExtracts = getExtractsFromModel(url, attachmentClasses, fName)
+                frAPIVersion, modelId, isHandwritten, operationId, ingestionStatus, frExtracts = getExtractsFromModel(url, attachmentClasses, fName)
         else:
             errorMessage = f'{fName}ERROR: incorrect messageType {messageType}'
             logging.error(errorMessage)
@@ -1065,6 +1039,8 @@ def extractAttachmentData(req: func.HttpRequest,
         "frAPIVersion": frAPIVersion,
         "modelId": modelId,
         "isHandwritten": isHandwritten,
+        "operationId": operationId,
+        "operationStatus": ingestionStatus,
         "extracts": frExtracts
     }
     # Create Json Response or return http 400 if failed

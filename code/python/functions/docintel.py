@@ -39,7 +39,7 @@ def extractResultFromLocalDocument(client, model, filepath):
                             features=[DocumentAnalysisFeature.STYLE_FONT, 
                                       DocumentAnalysisFeature.OCR_HIGH_RESOLUTION]
                  )
-    result: AnaylzeResult = poller.result()
+    result: AnalyzeResult = poller.result()
     return getExtract(result)
 
 # Extract from Online File (e.g. from Blob Store)

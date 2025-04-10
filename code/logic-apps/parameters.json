@@ -1,6 +1,6 @@
 {
   "SUBJECT_PREFIX_LOGIC_APP_TRIGGER": {
     "type": "String",
-    "value": "docai-dev"
+    "value": "docai"
   }
 }

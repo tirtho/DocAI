@@ -5,6 +5,7 @@ import os
 import datetime
 import ast
 import base64
+import re
 
 import azure.functions as func
 import aoai
@@ -637,6 +638,21 @@ def determineAttachmentCategories(reqBody, fName):
         logging.info(f'{fName}Could not find a category from GPT4. Got exception:{e}')
     return f'{categories}'
 
+# Strips off html tags
+# TODO: in future check for any security vulnerabilities etc
+def getCleanedString(emailBody, fName):
+    fName = f'{fName}f(getCleanedEmailBody)->'
+    logging.info(f'{fName}Cleaning email body')
+    try:
+        # Use regex to remove HTML tags
+        noHTMLTagsString = re.sub(r'<.*?>', '', emailBody)
+        logging.info(f'{fName}Stripped off any html tags: {noHTMLTagsString}')
+    except Exception as e:
+        errorMessage = f'{fName}ERROR: Stripping off html tags raised exception:{e}'
+        logging.error(errorMessage)
+        raise
+    return noHTMLTagsString
+
 @app.route(route="getEmailClass", auth_level=func.AuthLevel.ANONYMOUS)
 def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
     fName = f"f(getEmailClass)->"
@@ -648,8 +664,9 @@ def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f'{httpRequestErrorMessage}', status_code=400)
     try:
         messageType = getItemFromRequestBody(reqBody, 'messageType', fName)
-        emailPlainBody = getItemFromRequestBody(reqBody, 'body', fName)
+        emailBody = getItemFromRequestBody(reqBody, 'body', fName)
         emailSubject = getItemFromRequestBody(reqBody, 'subject', fName)
+        emailPlainBody = getCleanedString(emailBody, fName)
         if messageType == 'email-body':
             emailCategories = getEmailClassesFromOpenAI(emailSubject, emailPlainBody, fName)
         else:

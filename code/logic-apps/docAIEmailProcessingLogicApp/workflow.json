@@ -2,68 +2,6 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "f(removeHTMLFromEmailBody)": {
-                "type": "Function",
-                "inputs": {
-                    "method": "POST",
-                    "body": "@triggerBody()?['body']",
-                    "function": {
-                        "connectionName": "azureFunctionOperation-removeHTMLFromEmailBody"
-                    }
-                },
-                "runAfter": {}
-            },
-            "f(getEmailClass)": {
-                "type": "Function",
-                "inputs": {
-                    "method": "POST",
-                    "body": {
-                        "body": "@body('f(removeHTMLFromEmailBody)')",
-                        "messageType": "email-body",
-                        "subject": "@triggerBody()?['subject']"
-                    },
-                    "queries": {
-                        "messageId": "@{triggerBody()?['id']}"
-                    },
-                    "function": {
-                        "connectionName": "azureFunctionOperation-getEmailClass"
-                    }
-                },
-                "runAfter": {
-                    "f(removeHTMLFromEmailBody)": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "f(saveEmailProperties)": {
-                "type": "Function",
-                "inputs": {
-                    "method": "POST",
-                    "body": {
-                        "bodyPreview": "@triggerBody()?['bodyPreview']",
-                        "categories": "@body('f(getEmailClass)')",
-                        "hasAttachment": "@triggerBody()?['hasAttachments']",
-                        "isHTML": "@triggerBody()?['isHtml']",
-                        "messageType": "email-body",
-                        "receivedTime": "@triggerBody()?['receivedDateTime']",
-                        "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
-                        "sender": "@triggerBody()?['from']",
-                        "subject": "@triggerBody()?['subject']",
-                        "uri": "https://docaixdevxadls.blob.core.windows.net/docai/logic-app-extracted-emails/"
-                    },
-                    "queries": {
-                        "messageId": "@{triggerBody()?['id']}"
-                    },
-                    "function": {
-                        "connectionName": "azureFunctionOperation-saveEmailProperties"
-                    }
-                },
-                "runAfter": {
-                    "f(getEmailClass)": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
             "Condition-HasAttachment(s)": {
                 "type": "If",
                 "expression": {
@@ -86,57 +24,34 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "office365-docai-dev"
+                                            "referenceName": "office365-1"
                                         }
                                     },
                                     "method": "get",
                                     "path": "/codeless/v1.0/me/messages/@{encodeURIComponent(triggerBody()?['id'])}/attachments/@{encodeURIComponent(item()?['id'])}"
                                 }
                             },
-                            "f(getAttachmentClassUsingFormRecognizerCustomModel)": {
+                            "f(extractAttachmentData)": {
                                 "type": "Function",
                                 "inputs": {
                                     "method": "POST",
                                     "body": {
-                                        "attachmentName": "@item()?['name']",
-                                        "messageType": "email-attachment",
+                                        "attachmentName": "@body('GetAttachment')?['name']",
+                                        "categories": "@body('f(getAttachmentClass)')",
+                                        "messageType": "email-attachment-extracts",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
                                         "sender": "@triggerBody()?['from']",
-                                        "uri": "https://docaixdevxadls.blob.core.windows.net/docai/logic-app-extracted-emails/"
+                                        "uri": "@{appsetting('DOCAI_BLOB_STORE_ENDPOINT')}/docai/logic-app-extracted-emails/"
                                     },
                                     "queries": {
                                         "messageId": "@{triggerBody()?['id']}"
                                     },
                                     "function": {
-                                        "connectionName": "azureFunctionOperation-getAttachmentClassUsingFormRecognizerCustomModel"
+                                        "connectionName": "azureFunctionOperation-4"
                                     }
                                 },
                                 "runAfter": {
-                                    "saveAttachmentInBlobStore": [
-                                        "SUCCEEDED"
-                                    ]
-                                }
-                            },
-                            "f(getAttachmentClassUsingOpenAI)": {
-                                "type": "Function",
-                                "inputs": {
-                                    "method": "POST",
-                                    "body": {
-                                        "attachmentName": "@item()?['name']",
-                                        "messageType": "email-attachment",
-                                        "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
-                                        "sender": "@triggerBody()?['from']",
-                                        "uri": "https://docaixdevxadls.blob.core.windows.net/docai/logic-app-extracted-emails/"
-                                    },
-                                    "queries": {
-                                        "messageId": "@{triggerBody()?['id']}"
-                                    },
-                                    "function": {
-                                        "connectionName": "azureFunctionOperation-getAttachmentClassUsingOpenAI"
-                                    }
-                                },
-                                "runAfter": {
-                                    "saveAttachmentInBlobStore": [
+                                    "f(getAttachmentClass)": [
                                         "SUCCEEDED"
                                     ]
                                 }
@@ -146,15 +61,15 @@
                                 "inputs": {
                                     "method": "POST",
                                     "body": {
-                                        "messageType": "email-attachment",
                                         "formRecognizerCategories": "@body('f(getAttachmentClassUsingFormRecognizerCustomModel)')",
+                                        "messageType": "email-attachment",
                                         "openAICategories": "@body('f(getAttachmentClassUsingOpenAI)')"
                                     },
                                     "queries": {
                                         "messageId": "@{triggerBody()?['id']}"
                                     },
                                     "function": {
-                                        "connectionName": "azureFunctionOperation-getAttachmentClass"
+                                        "connectionName": "azureFunctionOperation-5"
                                     }
                                 },
                                 "runAfter": {
@@ -172,27 +87,50 @@
                                     ]
                                 }
                             },
-                            "f(extractAttachmentData)": {
+                            "f(getAttachmentClassUsingFormRecognizerCustomModel)": {
                                 "type": "Function",
                                 "inputs": {
                                     "method": "POST",
                                     "body": {
-                                        "attachmentName": "@body('Get_Attachment_(V2)')?['name']",
-                                        "categories": "@body('f(getAttachmentClass)')",
-                                        "messageType": "email-attachment-extracts",
+                                        "attachmentName": "@item()?['name']",
+                                        "messageType": "email-attachment",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
                                         "sender": "@triggerBody()?['from']",
-                                        "uri": "https://docaixdevxadls.blob.core.windows.net/docai/logic-app-extracted-emails/"
+                                        "uri": "@{appsetting('DOCAI_BLOB_STORE_ENDPOINT')}/docai/logic-app-extracted-emails/"
                                     },
                                     "queries": {
                                         "messageId": "@{triggerBody()?['id']}"
                                     },
                                     "function": {
-                                        "connectionName": "azureFunctionOperation-extractAttachmentData"
+                                        "connectionName": "azureFunctionOperation-7"
                                     }
                                 },
                                 "runAfter": {
-                                    "f(getAttachmentClass)": [
+                                    "saveAttachmentInBlobStore": [
+                                        "SUCCEEDED"
+                                    ]
+                                }
+                            },
+                            "f(getAttachmentClassUsingOpenAI)": {
+                                "type": "Function",
+                                "inputs": {
+                                    "method": "POST",
+                                    "body": {
+                                        "attachmentName": "@item()?['name']",
+                                        "messageType": "email-attachment",
+                                        "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                                        "sender": "@triggerBody()?['from']",
+                                        "uri": "@{appsetting('DOCAI_BLOB_STORE_ENDPOINT')}/docai/logic-app-extracted-emails/"
+                                    },
+                                    "queries": {
+                                        "messageId": "@{triggerBody()?['id']}"
+                                    },
+                                    "function": {
+                                        "connectionName": "azureFunctionOperation-6"
+                                    }
+                                },
+                                "runAfter": {
+                                    "saveAttachmentInBlobStore": [
                                         "SUCCEEDED"
                                     ]
                                 }
@@ -208,13 +146,13 @@
                                         "receivedTime": "@triggerBody()?['receivedDateTime']",
                                         "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
                                         "sender": "@triggerBody()?['from']",
-                                        "uri": "https://docaixdevxadls.blob.core.windows.net/docai/logic-app-extracted-emails/"
+                                        "uri": "@{appsetting('DOCAI_BLOB_STORE_ENDPOINT')}/docai/logic-app-extracted-emails/"
                                     },
                                     "queries": {
                                         "messageId": "@{triggerBody()?['id']}"
                                     },
                                     "function": {
-                                        "connectionName": "azureFunctionOperation-saveAttachmentProperties"
+                                        "connectionName": "azureFunctionOperation-3"
                                     }
                                 },
                                 "runAfter": {
@@ -228,7 +166,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "azureblob-1"
+                                            "referenceName": "azureblob"
                                         }
                                     },
                                     "method": "post",
@@ -236,7 +174,7 @@
                                     "headers": {
                                         "ReadFileMetadataFromServer": true
                                     },
-                                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('docaixdevxadls'))}/files",
+                                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('docai8adls8prod'))}/files",
                                     "queries": {
                                         "folderPath": "/docai/logic-app-extracted-emails/@{triggerBody()?['from']}/@{formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')}/attachments/",
                                         "name": "@item()?['name']",
@@ -262,6 +200,53 @@
                 },
                 "runAfter": {}
             },
+            "f(getEmailClass)": {
+                "type": "Function",
+                "inputs": {
+                    "method": "POST",
+                    "body": {
+                        "body": "@triggerBody()?['body']",
+                        "messageType": "email-body",
+                        "subject": "@triggerBody()?['subject']"
+                    },
+                    "queries": {
+                        "messageId": "@{triggerBody()?['id']}"
+                    },
+                    "function": {
+                        "connectionName": "azureFunctionOperation-1"
+                    }
+                },
+                "runAfter": {}
+            },
+            "f(saveEmailProperties)": {
+                "type": "Function",
+                "inputs": {
+                    "method": "POST",
+                    "body": {
+                        "bodyPreview": "@triggerBody()?['bodyPreview']",
+                        "categories": "@body('f(getEmailClass)')",
+                        "hasAttachment": "@triggerBody()?['hasAttachments']",
+                        "isHTML": "@triggerBody()?['isHtml']",
+                        "messageType": "email-body",
+                        "receivedTime": "@triggerBody()?['receivedDateTime']",
+                        "receivedTimeFolder": "@formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')",
+                        "sender": "@triggerBody()?['from']",
+                        "subject": "@triggerBody()?['subject']",
+                        "uri": "@{appsetting('DOCAI_BLOB_STORE_ENDPOINT')}/docai/logic-app-extracted-emails/"
+                    },
+                    "queries": {
+                        "messageId": "@{triggerBody()?['id']}"
+                    },
+                    "function": {
+                        "connectionName": "azureFunctionOperation-2"
+                    }
+                },
+                "runAfter": {
+                    "f(getEmailClass)": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
             "saveEmailBodyInBlobStore": {
                 "type": "ApiConnection",
                 "inputs": {
@@ -271,22 +256,18 @@
                         }
                     },
                     "method": "post",
-                    "body": "@body('f(removeHTMLFromEmailBody)')",
+                    "body": "@triggerBody()?['body']",
                     "headers": {
                         "ReadFileMetadataFromServer": true
                     },
-                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('docaixdevxadls'))}/files",
+                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('docai8adls8prod'))}/files",
                     "queries": {
                         "folderPath": "/docai/logic-app-extracted-emails/@{triggerBody()?['from']}/@{formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')}/",
                         "name": "EmailBody.msg",
                         "queryParametersSingleEncoded": true
                     }
                 },
-                "runAfter": {
-                    "f(removeHTMLFromEmailBody)": [
-                        "SUCCEEDED"
-                    ]
-                },
+                "runAfter": {},
                 "runtimeConfiguration": {
                     "contentTransfer": {
                         "transferMode": "Chunked"
@@ -302,7 +283,7 @@
                 "inputs": {
                     "host": {
                         "connection": {
-                            "referenceName": "office365-docai"
+                            "referenceName": "office365"
                         }
                     },
                     "fetch": {

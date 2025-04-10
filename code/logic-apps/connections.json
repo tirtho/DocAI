@@ -1,156 +1,133 @@
 {
-  "managedApiConnections": {
-    "office365-docai": {
-      "api": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/providers/Microsoft.Web/locations/canadaeast/managedApis/office365"
-      },
-      "connection": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/connections/office365"
-      },
-      "connectionRuntimeUrl": "https://a6f419afd065f585.04.common.logic-canadaeast.azure-apihub.net/apim/office365/47d372f02fe840e9a05ec6d4febf7616/",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('office365-connectionKey')"
-      }
-    },
-    "azureblob-1": {
-      "api": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/providers/Microsoft.Web/locations/canadaeast/managedApis/azureblob"
-      },
-      "connection": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/connections/azureblob-1"
-      },
-      "connectionRuntimeUrl": "https://a6f419afd065f585.04.common.logic-canadaeast.azure-apihub.net/apim/azureblob/33e4f3f7d50c481ca1bf4f7676f23b39/",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('azureblob-1-connectionKey')"
-      },
-      "connectionProperties": {
-        "authentication": {
-          "type": "ManagedServiceIdentity",
-          "audience": "https://storage.azure.com/"
-        }
-      }
-    },
-    "azureblob": {
-      "api": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/providers/Microsoft.Web/locations/canadaeast/managedApis/azureblob"
-      },
-      "connection": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/connections/azureblob"
-      },
-      "connectionRuntimeUrl": "https://a6f419afd065f585.04.common.logic-canadaeast.azure-apihub.net/apim/azureblob/b3f5cbd78fff496785b0825aacbe01ff/",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('azureblob-connectionKey')"
-      },
-      "connectionProperties": {
-        "authentication": {
-          "type": "ManagedServiceIdentity",
-          "audience": "https://storage.azure.com/"
-        }
-      }
-    }
-  },
   "functionConnections": {
-    "azureFunctionOperation-removeHTMLFromEmailBody": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-csharp-func/functions/removeHTMLFromEmailBody"
+      "azureFunctionOperation-1": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_11_functionAppKey')"
+          },
+          "displayName": "f(getEmailClass)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getEmailClass"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getemailclass"
       },
-      "triggerUrl": "https://docai-dev-csharp-func.azurewebsites.net/api/removehtmlfromemailbody",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-removeHTMLFromEmailBody_functionAppKey')"
+      "azureFunctionOperation-2": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_12_functionAppKey')"
+          },
+          "displayName": "f(saveEmailProperties)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/saveEmailProperties"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveemailproperties"
       },
-      "displayName": "f(removeHTMLFromEmailBody)"
-    },
-    "azureFunctionOperation-getEmailClass": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/getEmailClass"
+      "azureFunctionOperation-3": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_13_functionAppKey')"
+          },
+          "displayName": "f(saveAttachmentProperties)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/saveAttachmentProperties"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveattachmentproperties"
       },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/getemailclass",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-getEmailClass_functionAppKey')"
+      "azureFunctionOperation-4": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_14_functionAppKey')"
+          },
+          "displayName": "f(extractAttachmentData)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/extractAttachmentData"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/extractattachmentdata"
       },
-      "displayName": "f(getEmailClass)"
-    },
-    "azureFunctionOperation-saveEmailProperties": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/saveEmailProperties"
+      "azureFunctionOperation-5": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_15_functionAppKey')"
+          },
+          "displayName": "f(getAttachmentClass)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClass"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclass"
       },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/saveemailproperties",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-saveEmailProperties_functionAppKey')"
+      "azureFunctionOperation-6": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_16_functionAppKey')"
+          },
+          "displayName": "f(getAttachmentClassUsingOpenAI)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClassUsingOpenAI"
+          },
+          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingopenai"
       },
-      "displayName": "f(saveEmailProperties)"
-    },
-    "azureFunctionOperation-getAttachmentClassUsingFormRecognizerCustomModel": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/getAttachmentClassUsingFormRecognizerCustomModel"
+      "azureFunctionOperation-7": {
+          "authentication": {
+              "name": "Code",
+              "type": "QueryString",
+              "value": "@appsetting('azureFunctionOperation_17_functionAppKey')"
+          },
+          "displayName": "f(getAttachmentClassUsingFormRecognizerCustomModel)",
+          "function": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClassUsingFormRecognizerCustomModel"
+          },
+          "triggerUrl": "h@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingformrecognizercustommodel"
+      }
+  },
+  "managedApiConnections": {
+      "azureblob": {
+          "api": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/azureblob"
+          },
+          "authentication": {
+              "type": "ManagedServiceIdentity"
+          },
+          "connection": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/azureblob"
+          },
+          "connectionProperties": {
+              "authentication": {
+                  "audience": "https://storage.azure.com/",
+                  "type": "ManagedServiceIdentity"
+              }
+          },
+          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/azureblob/e0fd5d09efde4d43a277c0c0f0c288a5"
       },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/getattachmentclassusingformrecognizercustommodel",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-getAttachmentClassUsingFormRecognizerCustomModel_functionAppKey')"
+      "office365": {
+          "api": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
+          },
+          "authentication": {
+              "type": "ManagedServiceIdentity"
+          },
+          "connection": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/office365"
+          },
+          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/office365/367862b6ac1547f1ad324bb9d0bbfac8"
       },
-      "displayName": "f(getAttachmentClassUsingFormRecognizerCustomModel)"
-    },
-    "azureFunctionOperation-getAttachmentClassUsingOpenAI": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/getAttachmentClassUsingOpenAI"
-      },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/getattachmentclassusingopenai",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-getAttachmentClassUsingOpenAI_functionAppKey')"
-      },
-      "displayName": "f(getAttachmentClassUsingOpenAI)"
-    },
-    "azureFunctionOperation-getAttachmentClass": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/getAttachmentClass"
-      },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/getattachmentclass",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-getAttachmentClass_functionAppKey')"
-      },
-      "displayName": "f(getAttachmentClass)"
-    },
-    "azureFunctionOperation-extractAttachmentData": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/extractAttachmentData"
-      },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/extractattachmentdata",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-extractAttachmentData_functionAppKey')"
-      },
-      "displayName": "f(extractAttachmentData)"
-    },
-    "azureFunctionOperation-saveAttachmentProperties": {
-      "function": {
-        "id": "/subscriptions/6cbec813-41ab-4929-bc3f-dc836dcb6919/resourceGroups/docai-dev/providers/Microsoft.Web/sites/docai-dev-python-func/functions/saveAttachmentProperties"
-      },
-      "triggerUrl": "https://docai-dev-python-func.azurewebsites.net/api/saveattachmentproperties",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('azureFunctionOperation-saveAttachmentProperties_functionAppKey')"
-      },
-      "displayName": "f(saveAttachmentProperties)"
-    }
-  }
+      "office365-1": {
+          "api": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
+          },
+          "authentication": {
+              "type": "ManagedServiceIdentity"
+          },
+          "connection": {
+              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/office365-1"
+          },
+          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/office365/8beb0391b03848ac91408dbe27cdf13d"
+      }
+  },
+  "serviceProviderConnections": {}
 }

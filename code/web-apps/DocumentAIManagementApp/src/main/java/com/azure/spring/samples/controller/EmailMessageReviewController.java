@@ -26,14 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.adls.AzureADLSOperation;
 import com.azure.spring.samples.ai.AzureCUOperation;
+import com.azure.spring.samples.ai.AzureOpenAIOperation;
+import com.azure.spring.samples.ai.AzureOpenAIOperation.AOAIConnectionType;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
 import com.azure.spring.samples.anomaly.EmailAnomaly;
 import com.azure.spring.samples.anomaly.attachment.AutoInsuranceClaimAnomaly;
 import com.azure.spring.samples.anomaly.attachment.CommercialInsuranceApplicationAnomaly;
 import com.azure.spring.samples.anomaly.attachment.DefaultAttachmentAnomaly;
 import com.azure.spring.samples.anomaly.attachment.WorkersCompensationApplicationAnomaly;
-import com.azure.spring.samples.aoai.AzureOpenAIOperation;
-import com.azure.spring.samples.aoai.AzureOpenAIOperation.AOAIConnectionType;
 import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentData;
@@ -46,7 +46,6 @@ import com.azure.spring.samples.model.LoggedInUserProfile;
 import com.azure.spring.samples.model.SearchItem;
 import com.azure.spring.samples.utils.Category;
 import com.azure.spring.samples.utils.ReturnEntity;
-import com.azure.spring.samples.utils.Transform;
 
 @RestController
 public class EmailMessageReviewController {
@@ -54,8 +53,8 @@ public class EmailMessageReviewController {
     private static Logger logger = LoggerFactory.getLogger(EmailMessageReviewController.class);
 
     // Azure Blob Store access
-    @Value("${azure.blob.store.sas.token}")
-    private String blobStoreSASToken;
+    //@Value("${azure.blob.store.sas.token}")
+    //private String blobStoreSASToken;
     
     // Azure CosmosDB access
     @Value("${azure.cosmos.uri}")
@@ -68,28 +67,14 @@ public class EmailMessageReviewController {
     private String azureCosmosContainerName;
     
     // Azure Open AI access
-    @Value("${azure.aoai.endpoint}")
+    @Value("${azure.aoai.api.endpoint}")
     private String aoaiEndpoint;
-    @Value("${azure.aoai.key}")
+    @Value("${azure.aoai.api.key}")
     private String aoaiKey;
-    @Value("${azure.aoai.engine}")
-    private String aoaiModel;
-    @Value("${azure.aoai.version}")
+    @Value("${azure.aoai.api.default.engine}")
+    private String aoaiDefaultModel;
+    @Value("${azure.aoai.api.version}")
     private String aoaiVersion;
-
-    // GPT4 VISION API access
-    @Value("${azure.aoai.multi-modal.endpoint}")
-    private String aoaiMultiModalEndpoint;
-    @Value("${azure.aoai.multi-modal.key}")
-    private String aoaiMultiModalKey;
-    @Value("${azure.aoai.omni.engine}")
-    private String aoaiOmniModel;
-    @Value("${azure.aoai.omni.version}")
-    private String aoaiOmniVersion;
-    @Value("${azure.aoai.vision.engine}")
-    private String aoaiVideoModel;
-    @Value("${azure.aoai.vision.version}")
-    private String aoaiVideoVersion;
     
     // Content Understanding Service
     @Value("${azure.cu.api.endpoint}")
@@ -101,16 +86,6 @@ public class EmailMessageReviewController {
     @Value("${azure.cu.video.analyzer.id}")
     private String cuVideoAnalyzerId;
 
-    // All common Azure Cognitive Services access
-    @Value("${azure.cognitive.service.endpoint}")
-    private String aiEndpoint;
-    @Value("${azure.cognitive.service.key}")
-    private String aiKey;
-    @Value("${azure.aoai.vision.video.index}")
-    private String aiVideoIndexName;
-    @Value("${azure.ai.video.api.version}")
-    private String aiVideoAPIVersion;
-    
     // Demo users who are allowed to use this App
     @Value("${docai.approved.demo.users}")
     private String demoUsers;
@@ -193,7 +168,7 @@ public class EmailMessageReviewController {
         AzureOpenAIOperation aoaiOps = new AzureOpenAIOperation(
         									aoaiEndpoint, 
         									aoaiKey, 
-        									aoaiModel, 
+        									aoaiDefaultModel, 
         									aoaiVersion, 
         									AOAIConnectionType.SDK
         								);
@@ -207,29 +182,31 @@ public class EmailMessageReviewController {
         } else if (StringUtils.startsWithIgnoreCase (attachmentCategory, "video-") == true) {
         	// Video
             AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
-					aoaiMultiModalEndpoint, 
-					aoaiMultiModalKey,
-					aoaiOmniModel,
-					aoaiOmniVersion,
-					AOAIConnectionType.SDK // used for video
+														aoaiEndpoint, 
+														aoaiKey, 
+														aoaiDefaultModel, 
+														aoaiVersion, 
+														AOAIConnectionType.SDK // used for video
 				);
 			// CU is not used for Review right now, but might in future
 			AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
-			anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
+			anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps);
+			// anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
         } else {
         	// For the files with unknown classification, need to run the content
         	// by GPT4 regular if content is text, else by GPT-4o API if image
         	
             AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
-            											aoaiMultiModalEndpoint, 
-            											aoaiMultiModalKey,
-            											aoaiOmniModel,
-            											aoaiOmniVersion,
+														aoaiEndpoint, 
+														aoaiKey, 
+														aoaiDefaultModel, 
+														aoaiVersion, 
             											AOAIConnectionType.HTTP
             										);
             // CU is not used for Review right now, but might in future
         	AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
-        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
+        	anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps);
+        	// anomaly = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
         }        
         
         @SuppressWarnings("unchecked")
@@ -279,15 +256,16 @@ public class EmailMessageReviewController {
     	// by GPT4 regular if content is text, else by Vision API if image/video
         if (attachmentCategory.startsWith("video-")) {
             AzureOpenAIOperation aoaiMultiModalOps = new AzureOpenAIOperation (
-					aoaiMultiModalEndpoint, 
-					aoaiMultiModalKey,
-					aoaiOmniModel,
-					aoaiOmniVersion,
+					aoaiEndpoint, 
+					aoaiKey, 
+					aoaiDefaultModel, 
+					aoaiVersion, 
 					AOAIConnectionType.HTTP
 				);
 
         	AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);            
-            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
+            DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps);
+            // DefaultAttachmentAnomaly daa = new DefaultAttachmentAnomaly(cosmosDB, aoaiMultiModalOps, cuOps, Transform.b64Decode(blobStoreSASToken));
         	// Call Content Understanding to get the extracts for the video 
             // that was already sent for analysis from Azure Functions in the App
             // and a valid OperationId returned by Content Understanding was persisted in Cosmos DB 
@@ -329,8 +307,11 @@ public class EmailMessageReviewController {
     				azureCosmosContainerName
     			);
             AzureCUOperation cuOps = new AzureCUOperation(cuApiEndpoint, cuApiKey, cuVideoAnalyzerId, cuApiVersion);
-            String decodedSASToken = Transform.b64Decode(blobStoreSASToken);
-            AzureADLSOperation adlsOps = new AzureADLSOperation(decodedSASToken);
+            // If you have managed ID from web app to blob store
+            // then you do not need to add the SAS token to access / delete the blob
+            // String decodedSASToken = Transform.b64Decode(blobStoreSASToken);
+            // AzureADLSOperation adlsOps = new AzureADLSOperation(decodedSASToken);
+            AzureADLSOperation adlsOps = new AzureADLSOperation(null);
         	ReturnEntity<Integer, String> res = CosmosDBCommonQueries.deleteMessageWithDependecies(cosmosDB, cuOps, adlsOps, id);
             if (res.getStatus() == HttpStatus.NO_CONTENT.value()) {
             	return new ResponseEntity<>("Entity deleted", HttpStatus.OK);

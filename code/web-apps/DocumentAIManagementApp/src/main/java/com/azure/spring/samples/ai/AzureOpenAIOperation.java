@@ -1,8 +1,10 @@
-package com.azure.spring.samples.aoai;
+package com.azure.spring.samples.ai;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -25,8 +27,12 @@ import com.azure.ai.openai.models.ChatRequestMessage;
 import com.azure.ai.openai.models.ChatRequestSystemMessage;
 import com.azure.ai.openai.models.ChatRequestUserMessage;
 import com.azure.ai.openai.models.ChatResponseMessage;
+import com.azure.core.credential.AccessToken;
 import com.azure.core.credential.AzureKeyCredential;
-import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
+import com.azure.core.credential.TokenCredential;
+import com.azure.core.credential.TokenRequestContext;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.json.JsonSerializable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -68,11 +74,11 @@ public class AzureOpenAIOperation {
 			AOAIConnectionType connectionType) {
 		super();
 		this.endpoint = endpoint;
-		this.key = key;
 		this.deployedModel = deployedModel;
 		this.modelVersion = modelVersion;
 		this.type = connectionType;
-		
+		this.key = key;
+
 		if (type.equals(AOAIConnectionType.SDK)) {
 			OpenAIServiceVersion usingAPIVersion = AOAI_DEFAULT_VERSION;
 			String transformedVersion = StringUtils.replace(modelVersion, "-", "_");
@@ -84,14 +90,44 @@ public class AzureOpenAIOperation {
 					break;
 				}
 			}
-			aoaiClient = new OpenAIClientBuilder()
-							    .credential(new AzureKeyCredential(key))
-							    .endpoint(endpoint)
-								.serviceVersion(usingAPIVersion)
-							    .buildClient();
+			if (StringUtils.isBlank(key)) {
+				// No secret from environment variables
+				// Try Managed Identity
+		        TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+				aoaiClient = new OpenAIClientBuilder()
+					    .credential(credential)
+					    .endpoint(endpoint)
+						.serviceVersion(usingAPIVersion)
+					    .buildClient();
+			} else {
+				aoaiClient = new OpenAIClientBuilder()
+					    .credential(new AzureKeyCredential(key))
+					    .endpoint(endpoint)
+						.serviceVersion(usingAPIVersion)
+					    .buildClient();
+			}
 			this.modelVersion = usingAPIVersion.toString();
 		} else {
 			this.modelVersion = modelVersion;
+			// No secret from environment variables
+			// Try Managed Identity
+			if (StringUtils.isBlank(key)) {
+		        String scope = "https://cognitiveservices.azure.com/.default";
+		        TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+		        try {
+		            // Get the access token
+		            AccessToken accessToken = credential.getToken(
+										            		new TokenRequestContext()
+										            		.addScopes(scope)
+										            	)
+										            	.block();
+		            // Extract the token string
+		            this.key = accessToken.getToken();
+		            OffsetDateTime expiry = accessToken.getExpiresAt();
+		        } catch (Exception e) {
+		            logger.info("Exception raised trying to get toekn using MI for endpoint {} :: {}", endpoint, e );
+		        }
+			}
 		}
 	}
 
@@ -104,6 +140,9 @@ public class AzureOpenAIOperation {
 		ChatCompletionsOptions cco = new ChatCompletionsOptions(chatMessages);
 		cco.setTemperature(0.0);
 		cco.setFrequencyPenalty(0.0);
+		
+		
+		
 		ChatCompletions chatCompletions = aoaiClient.getChatCompletions (this.deployedModel,cco);
 
 		logger.info("Model ID=%s is created at %s.%n", chatCompletions.getId(), chatCompletions.getCreatedAt());
@@ -138,7 +177,8 @@ public class AzureOpenAIOperation {
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost aoaiOmniPost = new HttpPost(baseUrl);
 			aoaiOmniPost.setHeader("Content-Type", "application/json");
-			aoaiOmniPost.setHeader("api-key", this.key);
+			// defunct header aoaiOmniPost.setHeader("api-key", this.key);
+			aoaiOmniPost.setHeader("Authorization", "Bearer " + this.key);
 			logger.info("Prompt sent to GPT-4 Omni API: {}", prompt);
 			StringEntity entity = new StringEntity(prompt);
 			aoaiOmniPost.setEntity(entity);

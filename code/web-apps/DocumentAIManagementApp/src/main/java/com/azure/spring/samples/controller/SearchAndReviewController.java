@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.azure.ai.textanalytics.TextAnalyticsClientBuilder;
+import com.azure.core.credential.AccessToken;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.credential.TokenCredential;
+import com.azure.core.credential.TokenRequestContext;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.spring.samples.DocumentAIManagementAppAuthorization;
 import com.azure.spring.samples.model.BingWebPages;
 import com.azure.spring.samples.model.LoggedInUserProfile;
@@ -44,14 +48,15 @@ public class SearchAndReviewController {
 
     private static Logger logger = LoggerFactory.getLogger(SearchAndReviewController.class);
    
-    @Value("${azure.bing.key}")
+    @Value("${azure.bing.api.key}")
     private String azureBingKey;
-    @Value("${azure.all.ai.service.key}")
-    private String azureBingCognitiveServiceKey;
-    @Value("${azure.all.ai.service.endpoint}")
-    private String azureBingCognitiveServiceEndpoint;
     @Value("${azure.bing.query.count}")
     private Integer azureBingQueryCount;
+
+    @Value("${azure.bing.ai.api.key}")
+    private String azureBingCognitiveServiceKey;
+    @Value("${azure.bing.ai.api.endpoint}")
+    private String azureBingCognitiveServiceEndpoint;
     
     // Demo users who are allowed to use this App
     @Value("${docai.approved.demo.users}")
@@ -139,8 +144,17 @@ public class SearchAndReviewController {
 
         // Open the connection.
         HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
-        connection.setRequestProperty("Ocp-Apim-Subscription-Key", azureBingKey);
-
+        
+		if (StringUtils.isBlank(azureBingKey)) {
+			logger.info("Bing Search API Key is blank, so attempting to get token using Managed Identity");
+			String token = getToken(azureBingKey);
+	        //connection.setRequestProperty("Authorization", "Bearer " + token);
+	        connection.setRequestProperty("Ocp-Apim-Subscription-Key", token);
+		} else {
+			logger.info("Bing Search API key is NOT blank, so using it to access Bing Search Service");
+	        connection.setRequestProperty("Ocp-Apim-Subscription-Key", azureBingKey);
+		}
+        
         // Receive the JSON response body.
         InputStream stream = connection.getInputStream();
         String response = new Scanner(stream).useDelimiter("\\A").next();
@@ -161,14 +175,50 @@ public class SearchAndReviewController {
     }
     
     public List<String> getKeyPhrases(String textDocument) {
-    	AzureKeyCredential cred = new AzureKeyCredential(azureBingCognitiveServiceKey);
-    	TextAnalyticsClient textAnalyticsClient = new TextAnalyticsClientBuilder()
-    		    .credential(cred)
-    		    .endpoint(azureBingCognitiveServiceEndpoint)
-    		    .buildClient();
+    	
+    	
+    	TextAnalyticsClientBuilder tacb = new TextAnalyticsClientBuilder();
+		if (StringUtils.isBlank(azureBingCognitiveServiceKey)) {
+			// Go for Managed Identity
+			TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+			tacb.credential(credential);
+		} else {
+			// Go for API Key
+	    	AzureKeyCredential credential = new AzureKeyCredential(azureBingCognitiveServiceKey);
+			tacb.credential(credential);
+		}
+    	TextAnalyticsClient textAnalyticsClient = tacb
+    												.endpoint(azureBingCognitiveServiceEndpoint)
+    												.buildClient();
     	List<String> keyPhrases = new ArrayList<>();
     	textAnalyticsClient.extractKeyPhrases(textDocument).forEach(keyPhrase -> keyPhrases.add(keyPhrase));
     	return keyPhrases;
     }
-        
+    
+    public String getToken(String key) {
+		// No secret from environment variables
+		// Try Managed Identity
+		if (StringUtils.isBlank(key)) {
+	        String scope1 = "https://cognitiveservices.azure.com/.default";
+	        String scope2 = "https://search.azure.com/.default";
+	        TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+	        try {
+	            // Get the access token
+	            AccessToken accessToken = credential.getToken(
+									            		new TokenRequestContext()
+									            		.addScopes(scope1)
+									            		.addScopes(scope2)
+									            	)
+									            	.block();
+	            logger.info("Received token using Managed Identity to connect to Bing Search");
+	            // Extract the token string
+	            return accessToken.getToken();
+	            // OffsetDateTime expiry = accessToken.getExpiresAt();
+	        } catch (Exception e) {
+	            logger.info("Exception raised trying to get token using MI for Bing Search :: {}", e );
+	        }
+		}
+        logger.info("Bin Search API key is not blank, so returning the API key");
+		return key;
+    }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
-import com.azure.spring.samples.aoai.AzureOpenAIOperation;
+import com.azure.spring.samples.ai.AzureOpenAIOperation;
 import com.azure.spring.samples.model.AttachmentExtractsData;
 import com.azure.spring.samples.model.ExtractData;
 import com.google.gson.Gson;

@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
 import com.azure.spring.samples.ai.AzureCUOperation;
+import com.azure.spring.samples.ai.AzureOpenAIOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
-import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentExtractsData;
@@ -69,7 +69,6 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
     private CosmosDBOperation cosmosDB;
     private AzureOpenAIOperation aoaiOps;
     private AzureCUOperation cuOps;
-    private String blobStoreSASToken;
 	
     /**
      * 
@@ -81,14 +80,12 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
     public DefaultAttachmentAnomaly(
     				CosmosDBOperation cosmosDB,
     				AzureOpenAIOperation aoaiOps,
-    				AzureCUOperation cuOps,
-    				String blobStoreSASToken
+    				AzureCUOperation cuOps
     			) {
 		super();
 		this.cosmosDB = cosmosDB;
 		this.aoaiOps = aoaiOps;
 		this.cuOps = cuOps;
-		this.blobStoreSASToken = blobStoreSASToken;
 	}
 
     /**
@@ -110,7 +107,11 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 		String reviewMessage = null;
 
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
-	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; //StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
+	  	String fileUrl = aed.getUrl(); 
+	  	// If GPT-4o supports MI for accessing blob store 
+	  	// we do not need the blob store SAS token
+	  	// StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
+	  	
 	  	String filename = aed.getAttachmentName();
 		// TODO: Check if text or image or video by the content of the file and not just by the file extension
 		// Get url of image/video file
@@ -203,7 +204,10 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 	@SuppressWarnings("unchecked")
 	public <U, V> ReturnEntity<U, V> updateVideoExtractionData(String attachmentId) {
 	  	AttachmentExtractsData aed = CosmosDBCommonQueries.getAttachmentExtractsDataByAttachmentId (attachmentId, cosmosDB);
-	  	String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; 
+	  	// Content Understanding API does not need to access the actual file
+	  	// to get the result of extraction. You just need to pass the operationId
+	  	// So, no need anymore for the file url with the SAS token
+	  	// String fileUrl = aed.getUrl() + "?" + blobStoreSASToken; 
 	  	//StringUtils.replace(String.format("%s%s", aed.getUrl(), blobStoreSASToken), "%%", "%");
   		String operationId = aed.getOperationId();
   		String ingestionState = aed.getOperationStatus();
@@ -217,9 +221,13 @@ public class DefaultAttachmentAnomaly implements AttachmentAnomaly {
 
 		for (ExtractData extract : extracts) {
   			if (operationId != null && ingestionState != null) {
-  				if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0) {
+  				// If it was running during last call 
+  				// Or you may have deleted it in cosmos Db and now want to get it
+  				// again from CU before it is deleted from CU.
+  				if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0 || 
+  						StringUtils.compare(ingestionState.toLowerCase(), "succeeded") == 0) {
   					// Use Content Understanding to extract information about video
-  					ReturnEntity<String, ?> extractedEntity = cuOps.getVideoExtractionResult(fileUrl, operationId);
+  					ReturnEntity<String, ?> extractedEntity = cuOps.getVideoExtractionResult(operationId);
   					List<Map<String, ?>> updatedFields = (List<Map<String, ?>>) extractedEntity.getEntity();
   					String extractionStatus = extractedEntity.getStatus();
   					aed.setOperationStatus(extractionStatus);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.azure.spring.samples</groupId>
@@ -9,12 +10,12 @@
 
 	<name>DocumentAIManagementApp</name>
 	<description>A Simple Spring Boot application using AngularJS and
-        Azure Cosmos DB Spring boot starter</description>
+		Azure Cosmos DB Spring boot starter</description>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,22 +34,17 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-			    <groupId>com.azure</groupId>
-			    <artifactId>azure-ai-textanalytics</artifactId>
-			    <version>5.4.2</version>
-			    <exclusions>
-			    	<exclusion>
-			    		<groupId>com.azure</groupId>
+				<groupId>com.azure</groupId>
+				<artifactId>azure-ai-textanalytics</artifactId>
+				<version>5.4.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.azure</groupId>
 						<artifactId>azure-core</artifactId>
-			       	</exclusion>
-			    </exclusions>
+					</exclusion>
+				</exclusions>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-		    	<groupId>com.azure</groupId>
-    			<artifactId>azure-core</artifactId>
-    			<version>1.45.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -70,11 +66,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	    <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-mail</artifactId>
-	    </dependency>
-  		<!-- https://mvnrepository.com/artifact/com.microsoft.graph/microsoft-graph -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/com.microsoft.graph/microsoft-graph -->
 		<dependency>
 			<groupId>com.microsoft.graph</groupId>
 			<artifactId>microsoft-graph</artifactId>
@@ -86,51 +83,80 @@
 			<version>12.25.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-identity</artifactId>
-		    <!--version>1.7.2<version -->
+			<groupId>com.azure</groupId>
+			<artifactId>azure-storage-file-datalake</artifactId>
+			<version>12.18.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-storage-file-datalake</artifactId>
-		    <version>12.18.1</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-cosmos</artifactId>
-		    <version>4.53.1</version>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-cosmos</artifactId>
+			<version>4.53.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.projectreactor/reactor-core -->
 		<dependency>
-		    <groupId>io.projectreactor</groupId>
-		    <artifactId>reactor-core</artifactId>
-		    <version>3.6.1</version>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.google.code.gson</groupId>
-		    <artifactId>gson</artifactId>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 			<!--version>2.8.5</version> -->
 		</dependency>
+		<!-- Azure Identity -->
 		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-ai-textanalytics</artifactId>
-		    <version>5.4.2</version>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-identity</artifactId>
+			<version>1.15.4</version>
+		</dependency>
+
+		<!-- Azure Core -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-core</artifactId>
+			<version>1.55.3</version>
+		</dependency>
+
+		<!-- Azure AI OpenAI with azure-json excluded -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-ai-openai</artifactId>
+			<version>1.0.0-beta.16</version>
+			<exclusions>
+				<!-- Exclude the azure-json version that comes with azure-core 1.55.3
+					 So that azure-ai-openai can use azure-json version 1.1.0 that it depends upon and us implicitly 
+					 packaged with azure-ai-openai
+				-->
+				<exclusion>
+					<groupId>com.azure</groupId>
+					<artifactId>azure-json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Include the version of azure-json that azure-core will need 
+			 So that it does not muddy up the exclusion inside azure-ai-openai
+		-->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-json</artifactId>
+			<version>1.5.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-ai-openai</artifactId>
-		    <version>1.0.0-beta.13</version>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-ai-textanalytics</artifactId>
+			<version>5.4.2</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
-		    <version>3.14.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.14.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+		<!--
+		https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-collections4</artifactId>
-		    <version>4.4</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -203,7 +229,7 @@
 			<!-- Run "mvn package spring-boot:run" to test app    -->
 			<!-- running locally in windows/linux. Then run below -->
 			<!-- mvn install "-DRESOURCEGROUP_NAME=xxxx"       -->
-			<!-- "-DWEBAPP_NAME=yyyy" "-DREGION=zzzz" azure-webapp:deploy --> 
+			<!-- "-DWEBAPP_NAME=yyyy" "-DREGION=zzzz" azure-webapp:deploy -->
 			<!--************************************************* -->
 			<plugin>
 				<groupId>com.microsoft.azure</groupId>
@@ -237,102 +263,79 @@
 						 push these to the environment variables in the app 
 					-->
 					<appSettings>
+						<!-- Cosmos DB environment variables -->
 						<property>
-							<name>OPENAI_API_ENDPOINT</name>
-							<value>${env.OPENAI_API_ENDPOINT}</value>
+							<name>DOCAI_COSMOSDB_URI</name>
+							<value>${env.DOCAI_COSMOSDB_URI}</value>
 						</property>
 						<property>
-							<name>OPENAI_API_KEY</name>
-							<value>${env.OPENAI_API_KEY}</value>
+							<name>DOCAI_COSMOSDB_API_KEY</name>
+							<value>${env.DOCAI_COSMOSDB_API_KEY}</value>
 						</property>
 						<property>
-							<name>OPENAI_API_ENGINE</name>
-							<value>${env.OPENAI_API_ENGINE}</value>
+							<name>DOCAI_COSMOSDB_DATABASE</name>
+							<value>${env.DOCAI_COSMOSDB_DATABASE}</value>
 						</property>
 						<property>
-							<name>OPENAI_API_VERSION</name>
-							<value>${env.OPENAI_API_VERSION}</value>
+							<name>DOCAI_COSMOSDB_CONTAINER</name>
+							<value>${env.DOCAI_COSMOSDB_CONTAINER}</value>
 						</property>
 						<property>
-							<name>OPENAI_MULTI_MODAL_API_ENDPOINT</name>
-							<value>${env.OPENAI_MULTI_MODAL_API_ENDPOINT}</value>
+							<name>DOCAI_COSMOSDB_CONTAINER_DEMOS</name>
+							<value>${env.DOCAI_COSMOSDB_CONTAINER_DEMOS}</value>
+						</property>
+						<!-- End -->
+
+						<!-- Bing environment variables -->
+						<property>
+							<name>DOCAI_BING_API_KEY</name>
+							<value>${env.DOCAI_BING_API_KEY}</value>
 						</property>
 						<property>
-							<name>OPENAI_MULTI_MODAL_API_KEY</name>
-							<value>${env.OPENAI_MULTI_MODAL_API_KEY}</value>
+							<name>DOCAI_BING_QUERY_COUNT</name>
+							<value>${env.DOCAI_BING_QUERY_COUNT}</value>
 						</property>
 						<property>
-							<name>OPENAI_OMNI_API_ENGINE</name>
-							<value>${env.OPENAI_OMNI_API_ENGINE}</value>
+							<name>DOCAI_BING_AI_API_KEY</name>
+							<value>${env.DOCAI_BING_AI_API_KEY}</value>
 						</property>
 						<property>
-							<name>OPENAI_OMNI_API_VERSION</name>
-							<value>${env.OPENAI_OMNI_API_VERSION}</value>
+							<name>DOCAI_BING_AI_API_ENDPOINT</name>
+							<value>${env.DOCAI_BING_AI_API_ENDPOINT}</value>
+						</property>
+						<!-- End -->
+
+						<!-- AOAI environment variables for AOAI models served
+						by Azure -->
+						<property>
+							<name>DOCAI_AOAI_API_ENDPOINT</name>
+							<value>${env.DOCAI_AOAI_API_ENDPOINT}</value>
 						</property>
 						<property>
-							<name>OPENAI_VISION_API_ENGINE</name>
-							<value>${env.OPENAI_VISION_API_ENGINE}</value>
+							<name>DOCAI_AOAI_API_KEY</name>
+							<value>${env.DOCAI_AOAI_API_KEY}</value>
 						</property>
 						<property>
-							<name>OPENAI_VISION_API_VERSION</name>
-							<value>${env.OPENAI_VISION_API_VERSION}</value>
+							<name>DOCAI_AOAI_API_VERSION</name>
+							<value>${env.DOCAI_AOAI_API_VERSION}</value>
 						</property>
 						<property>
-							<name>OPENAI_VISION_VIDEO_INDEX</name>
-							<value>${env.OPENAI_VISION_VIDEO_INDEX}</value>
+							<name>DOCAI_AOAI_DEFAULT_ENGINE</name>
+							<value>${env.DOCAI_AOAI_DEFAULT_ENGINE}</value>
 						</property>
-						<property>
-							<name>AI_VIDEO_API_VERSION</name>
-							<value>${env.AI_VIDEO_API_VERSION}</value>
-						</property>
-						<property>
-							<name>COSMOSDB_URI</name>
-							<value>${env.COSMOSDB_URI}</value>
-						</property>
-						<property>
-							<name>COSMOSDB_API_KEY</name>
-							<value>${env.COSMOSDB_API_KEY}</value>
-						</property>
-						<property>
-							<name>COSMOSDB_DATABASE</name>
-							<value>${env.COSMOSDB_DATABASE}</value>
-						</property>
-						<property>
-							<name>COSMOSDB_CONTAINER</name>
-							<value>${env.COSMOSDB_CONTAINER}</value>
-						</property>
-						<property>
-							<name>COSMOSDB_CONTAINER_DEMOS</name>
-							<value>${env.COSMOSDB_CONTAINER_DEMOS}</value>
-						</property>
-						<property>
-							<name>BING_KEY</name>
-							<value>${env.BING_KEY}</value>
-						</property>
-						<property>
-							<name>ALL_AI_SERVICES_API_KEY</name>
-							<value>${env.ALL_AI_SERVICES_API_KEY}</value>
-						</property>
-						<property>
-							<name>ALL_AI_SERVICES_ENDPOINT</name>
-							<value>${env.ALL_AI_SERVICES_ENDPOINT}</value>
-						</property>
-						<property>
-							<name>BING_QUERY_COUNT</name>
-							<value>${env.BING_QUERY_COUNT}</value>
-						</property>
-						<property>
-							<name>COGNITIVE_SERVICE_KEY</name>
-							<value>${env.COGNITIVE_SERVICE_KEY}</value>
-						</property>
-						<property>
-							<name>COGNITIVE_SERVICE_ENDPOINT</name>
-							<value>${env.COGNITIVE_SERVICE_ENDPOINT}</value>
-						</property>
+						<!-- End -->
+						
+						<!-- If you setup Blob Store as anonymous read, you do not need SAS tokens to access -->
+						<!-- In that case for security, put all apps including Blob Store inside a VNet with PE -->
+						<!--
 						<property>
 							<name>BLOB_STORE_SAS_TOKEN</name>
 							<value>${env.BLOB_STORE_SAS_TOKEN}</value>
 						</property>
+						-->
+						
+						<!-- Below Spring settings are needed to authenticate
+						users to the web app -->
 						<property>
 							<name>DOCAI_APP_TENANT_ID</name>
 							<value>${env.DOCAI_APP_TENANT_ID}</value>
@@ -346,17 +349,31 @@
 							<value>${env.DOCAI_APP_CLIENT_SECRET}</value>
 						</property>
 						<property>
-							<name>GRAPH_API_TENANT_ID</name>
-							<value>${env.GRAPH_API_TENANT_ID}</value>
+							<name>DOCAI_DEMO_USERS</name>
+							<value>${env.DOCAI_DEMO_USERS}</value>
+						</property>
+						<!-- End -->
+
+						<!-- Used to authenticate to tenant, so that emails can
+						be sent using Graph API -->
+						<property>
+							<name>DOCAI_GRAPH_API_TENANT_ID</name>
+							<value>${env.DOCAI_GRAPH_API_TENANT_ID}</value>
 						</property>
 						<property>
-							<name>GRAPH_API_CLIENT_ID</name>
-							<value>${env.GRAPH_API_CLIENT_ID}</value>
+							<name>DOCAI_GRAPH_API_CLIENT_ID</name>
+							<value>${env.DOCAI_GRAPH_API_CLIENT_ID}</value>
 						</property>
 						<property>
-							<name>GRAPH_API_CLIENT_SECRET</name>
-							<value>${env.GRAPH_API_CLIENT_SECRET}</value>
+							<name>DOCAI_GRAPH_API_CLIENT_SECRET</name>
+							<value>${env.DOCAI_GRAPH_API_CLIENT_SECRET}</value>
 						</property>
+						<!-- End -->
+
+						<!-- Sender and receiver email addresses used to
+						send/receive emails. -->
+						<!-- This is needed only if you are using the dem o
+						feature to send the emails from the web app -->
 						<property>
 							<name>DOCAI_EMAIL_SENDER_ADDRESS</name>
 							<value>${env.DOCAI_EMAIL_SENDER_ADDRESS}</value>
@@ -369,10 +386,9 @@
 							<name>DOCAI_EMAIL_SUBJECT_PREFIX</name>
 							<value>${env.DOCAI_EMAIL_SUBJECT_PREFIX}</value>
 						</property>
-						<property>
-							<name>DOCAI_DEMO_USERS</name>
-							<value>${env.DOCAI_DEMO_USERS}</value>
-						</property>
+						<!-- End -->
+
+						<!-- Content Understanding variables -->
 						<property>
 							<name>DOCAI_CU_API_ENDPOINT</name>
 							<value>${env.DOCAI_CU_API_ENDPOINT}</value>
@@ -389,6 +405,8 @@
 							<name>DOCAI_CU_VIDEO_ANALYZER_ID</name>
 							<value>${env.DOCAI_CU_VIDEO_ANALYZER_ID}</value>
 						</property>
+						<!-- End -->
+
 						<property>
 							<name>JAVA_OPTS</name>
 							<value>-Dserver.port=80</value>

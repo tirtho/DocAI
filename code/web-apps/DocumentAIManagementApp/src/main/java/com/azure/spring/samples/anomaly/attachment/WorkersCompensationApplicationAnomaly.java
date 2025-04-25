@@ -6,8 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.azure.spring.samples.ai.AzureOpenAIOperation;
 import com.azure.spring.samples.anomaly.AttachmentAnomaly;
-import com.azure.spring.samples.aoai.AzureOpenAIOperation;
 import com.azure.spring.samples.cosmosdb.CosmosDBCommonQueries;
 import com.azure.spring.samples.cosmosdb.CosmosDBOperation;
 import com.azure.spring.samples.model.AttachmentExtractsData;

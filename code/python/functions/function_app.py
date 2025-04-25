@@ -170,11 +170,11 @@ def getEmailClassesFromOpenAI(subject, body, fName):
                 }
               ]   
     try:
-        cliEngine = os.getenv('DOCAI_EMAIL_CLASSIFIER_ENGINE')
+        cliEngine = os.getenv('DOCAI_AOAI_DEFAULT_ENGINE')
         aoai_status, aoai_client = aoai.setupOpenai(
-                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_ENDPOINT'),
-                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_KEY'),
-                                            os.getenv('DOCAI_EMAIL_CLASSIFIER_API_VERSION'))
+                                            os.getenv('DOCAI_AOAI_API_ENDPOINT'),
+                                            os.getenv('DOCAI_AOAI_API_KEY'),
+                                            os.getenv('DOCAI_AOAI_API_VERSION'))
         if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful for email classifier')
             gotPrompt = composePromptWithRAGData(body,fName)

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -15,7 +16,10 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.azure.cosmos.implementation.apachecommons.lang.StringUtils;
+import com.azure.core.credential.AccessToken;
+import com.azure.core.credential.TokenCredential;
+import com.azure.core.credential.TokenRequestContext;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.spring.samples.utils.ReturnEntity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -36,12 +40,31 @@ public class AzureCUOperation {
 		this.cuKey = cuKey;
 		this.cuAnalyzerId = cuAnalyzerId;
 		this.cuAPIVersion = cuAPIVersion;
+		// No secret from environment variables
+		// Try Managed Identity
+		if (StringUtils.isBlank(cuKey)) {
+	        String scope = "https://cognitiveservices.azure.com/.default";
+	        TokenCredential credential = new DefaultAzureCredentialBuilder().build();
+	        try {
+	            // Get the access token
+	            AccessToken accessToken = credential.getToken(
+									            		new TokenRequestContext()
+									            		.addScopes(scope)
+									            	)
+									            	.block();
+	            // Extract the token string
+	            this.cuKey = accessToken.getToken();
+	            // OffsetDateTime expiry = accessToken.getExpiresAt();
+	        } catch (Exception e) {
+	            logger.info("Exception raised trying to get token using MI for endpoint {} :: {}", cuEndpoint, e );
+	        }
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	// Returns ReturnEntity<String, List<Map<String, ?>>>
 	// where first arg is the ingestion status and the second one is the list of fields
-	public <U, V> ReturnEntity<U, V> getVideoExtractionResult(String fileUrl, String operationId) {
+	public <U, V> ReturnEntity<U, V> getVideoExtractionResult(String operationId) {
 
 		String message = "Error: Unknown";
 		String status = "Failed";
@@ -62,7 +85,7 @@ public class AzureCUOperation {
 					JsonObject responseJson = jsonElement.getAsJsonObject();
 					status = responseJson.get("status").getAsString();
 					
-					// Now update the status and description fields in cosmosdb
+					// Now update the status and other fields
 					updatedFields = new ArrayList<>();
 										
 					JsonObject resultJson = responseJson.get("result").getAsJsonObject();
@@ -133,7 +156,8 @@ public class AzureCUOperation {
 										  );
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet cuGetResult = new HttpGet(baseUrl);
-			cuGetResult.setHeader("Ocp-Apim-Subscription-Key", this.cuKey);
+			// cuGetResult.setHeader("Ocp-Apim-Subscription-Key", this.cuKey);
+			cuGetResult.setHeader("Authorization", "Bearer " + this.cuKey);
 			
 			// Send the request and get the response
 			HttpResponse response = httpClient.execute(cuGetResult);
@@ -174,7 +198,6 @@ public class AzureCUOperation {
 				ingestionState = jsonObject.get("state").getAsString();
 				return ingestionState;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				ingestionState = String.format("GetVideoIngestion response parsing failed with exception: %s", e);
 				logger.info(ingestionState);
 				return ingestionState;
@@ -184,95 +207,8 @@ public class AzureCUOperation {
 	public int deleteOperation(String operationId) {
 		// TODO If we need to delete the CU operation result 
 		// where CU allows it as some point in future
+		// Right now CU doesn't have an API to delete
 		return HttpStatus.SC_NO_CONTENT;
 	}
 
 }
-
-/**
-------------------------------	
-	@SuppressWarnings("unchecked")
-	private <U, V> ReturnEntity<U, V> processVideoExtraction(
-			String fileUrl,
-			AttachmentExtractsData aed, 
-			ExtractData extract, 
-			Map<String, ?> videoDocumentIdField,
-			Map<String, ?> ingestionStatusField
-		) {
-		
-		String message = null;
-		String videoDocumentId = (String) videoDocumentIdField.get("fieldValue");
-		String ingestionState = (String) ingestionStatusField.get("fieldValue");
-		if (videoDocumentId != null && ingestionState != null) {
-			// Time to make another getIngestionState() call to update status
-			// Get Description also again or for the first time
-			
-			HERE write code to implement the Get Results REST API in CU
-			// Check if the ingestion status from the extract data read from cosmos db
-			// says the ingestion is still in "Running" state
-			// If state is "Succeeded", there is nothing to do
-			// Else run the CU Get Result REST API call to get the extracted data
-			if (StringUtils.compare(ingestionState.toLowerCase(), "running") == 0) {
-				cuOps.getCUResult()
-			} else {
-				message = String.format("Success: Extraction of Video[%s] already completed, no CU operation needed;", videoDocumentId);
-				logger.info(message);				
-			}
-			
-			
-			
-			String state = cuOps.getVideoIngestionState(videoDocumentId);
-			if (StringUtils.compare(state.toLowerCase(), "completed") == 0) {
-				// Use GPT4 Vision to get a Description of the video
-				String prompt = String.format(FIND_VIDEO_ENHANCEMENTS_DESCRIPTION_PROMPT, aiOps.getAiEndpoint(),
-						aiOps.getAiKey(), videoDocumentId, fileUrl, videoDocumentId);
-				// Call GPT4 Vision to get description of the video
-				String description = aoaiOps.getAOAIVideoCompletion(prompt);
-				
-				// Now update the status and description fields in cosmosdb
-				List<Map<String, ?>> updatedFields = new ArrayList<>();
-				Map descriptionField = new HashMap<>();
-				descriptionField.put("fieldName", "Description");
-				descriptionField.put("fieldValueType", "string");
-				// Open AI does not support logprobs for Vision APIs yet
-				// Hence the confidence score is commented out and not computed
-				//descriptionField.put("fieldConfidence", 0.99);
-				descriptionField.put("fieldValue", description);
-				updatedFields.add((HashMap<String, ?>) descriptionField);
-
-				Map statusField = new HashMap<>();
-				statusField.put("fieldName", "IngestionStatus");
-				statusField.put("fieldValueType", "string");
-				statusField.put("fieldConfidence", 0.99);
-				statusField.put("fieldValue", "Completed");
-				updatedFields.add((HashMap<String, ?>) statusField);
-
-				ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-				String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-				Map lastUpdatedTimeField = new HashMap<>();
-				lastUpdatedTimeField.put("fieldName", "LastUpdatedTime");
-				lastUpdatedTimeField.put("fieldValueType", "string");
-				lastUpdatedTimeField.put("fieldConfidence", 0.99);
-				lastUpdatedTimeField.put("fieldValue", formattedTime);
-				updatedFields.add((HashMap<String, ?>) lastUpdatedTimeField);
-
-				extract.upsertFields(updatedFields);
-				// Update the 'IngestionStatus' and 'Description' fields for this attachment in
-				// cosmosdb
-				CosmosDBCommonQueries.upsertAttachmentExtractedData(aed, cosmosDB);
-
-				message = String.format("Success: Document[%s] status and description fields updated;",
-						videoDocumentId);
-				logger.info(message);
-			} else {
-				message = String.format("Success: Document[%s] ingestion not complete yet;", videoDocumentId);
-				logger.info(message);
-			}
-		} else {
-			message = "Error: Video extract not found";
-		}
-		
-		return (ReturnEntity<U, V>) new ReturnEntity<String, ExtractData>(message, extract);
-
-	}
-*/

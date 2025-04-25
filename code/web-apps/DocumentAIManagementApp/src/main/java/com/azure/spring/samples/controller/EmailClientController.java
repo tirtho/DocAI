@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,16 +32,7 @@ import core.azure.spring.samples.messaging.SendOutlookEmail;
 public class EmailClientController {
 
     private static Logger logger = LoggerFactory.getLogger(EmailClientController.class);
-   
-    @Value("${azure.cosmos.uri}")
-    private String azureCosmosURI;
-    @Value("${azure.cosmos.key}")
-    private String azureCosmosKey;
-    @Value("${azure.cosmos.database}")
-    private String azureCosmosDatabaseName;
-    @Value("${azure.cosmos.container.demos}")
-    private String azureCosmosContainerDemosName;
-    
+       
     @Value("${docai.receiver.email.address}")
     private String docAIEmailReceiver;
     @Value("${docai.sender.email.address}")

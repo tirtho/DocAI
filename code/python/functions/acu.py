@@ -26,7 +26,8 @@ def extractVideo(
     cuUrl = f'{cuEndpoint}/contentunderstanding/analyzers/{cuDocAIVideoAnalyzerId}:analyze?api-version={cuAPIVersion}'
     headers = {
                 "Content-Type": "application/json",
-                "Ocp-Apim-Subscription-Key": apiKey,
+                #"Ocp-Apim-Subscription-Key": apiKey,
+                "Authorization": f"Bearer {apiKey}",
                 "x-ms-client-request-id": cuClientRequestId
     }
 

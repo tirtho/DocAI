@@ -160,7 +160,7 @@ def composePromptWithRAGData(body, fName):
                     }
                 ]       
     return thePrompt
-    
+
 def getEmailClassesFromOpenAI(subject, body, fName):
     fName = f'{fName}f(getEmailClassesFromOpenAI)->'
     logging.info(f'{fName}Calling OpenAI to get email classes')
@@ -374,10 +374,10 @@ def composeOmniExtractionPrompt(url, fName):
     
 def getExtractsFromImage(url, categories, fName):
     fName = f'{fName}f(getExtractsFromImage)->'
-    aoaiMultiModalAPIKey = os.getenv('DOCAI_IMAGE_API_KEY')
-    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_IMAGE_API_ENDPOINT')
-    aoaiOmniAPIVersion = os.getenv('DOCAI_IMAGE_API_VERSION')
-    aoaiOmniAPIEngine = os.getenv('DOCAI_IMAGE_API_ENGINE')
+    aoaiMultiModalAPIKey = os.getenv('DOCAI_AOAI_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_AOAI_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('DOCAI_AOAI_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('DOCAI_AOAI_DEFAULT_ENGINE')
     try:
         aoai_status, aoai_client = aoai.setupOpenai(
                                             aoaiMultiModalAPIEndpoint,
@@ -386,13 +386,15 @@ def getExtractsFromImage(url, categories, fName):
                                         )
         if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful')
-            rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
-            decodedBytes = base64.b64decode(rawToken)
-            blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-            logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
+            
+            #rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
+            #decodedBytes = base64.b64decode(rawToken)
+            #blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+            #logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
         
             # Extract summary from image
-            gotPrompt = composeOmniExtractionPrompt(f'{url}?{blobStoreSASToken}', fName)
+            #gotPrompt = composeOmniExtractionPrompt(f'{url}?{blobStoreSASToken}', fName)
+            gotPrompt = composeOmniExtractionPrompt(f'{url}', fName)
             logging.info(f'{fName}Got Prompt for summary: {gotPrompt}')
             
             tokens_used, finish_reason, completion = aoai.getChatCompletion(
@@ -403,7 +405,8 @@ def getExtractsFromImage(url, categories, fName):
             summary = completion
             
             # Detect handwritten text in image
-            gotPrompt = hasHandwrittenTextPrompt(f'{url}?{blobStoreSASToken}', fName)
+            #gotPrompt = hasHandwrittenTextPrompt(f'{url}?{blobStoreSASToken}', fName)
+            gotPrompt = hasHandwrittenTextPrompt(f'{url}', fName)
             logging.info(f'{fName}Got Prompt to detect handwritten text in image: {gotPrompt}')
             tokens_used, finish_reason, completion = aoai.getChatCompletion(
                                                                 the_client=aoai_client,
@@ -461,11 +464,12 @@ def getExtractsFromImage(url, categories, fName):
 def getExtractsFromVideo(url, fName):
     fName = f'{fName}f(getExtractsFromVideo)->'
     cuAPIVersion = os.getenv('DOCAI_CU_API_VERSION')
-    rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
-    decodedBytes = base64.b64decode(rawToken)
-    blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-    logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
-    videoFileUrl = f'{url}?{blobStoreSASToken}'
+    #rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
+    #decodedBytes = base64.b64decode(rawToken)
+    #blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+    #logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')        
+    #videoFileUrl = f'{url}?{blobStoreSASToken}'
+    videoFileUrl = f'{url}'
     cuEndpoint = os.getenv('DOCAI_CU_API_ENDPOINT')
     cuAPIKey = os.getenv('DOCAI_CU_API_KEY')
     cuDocAIVideoAnalyzerId = os.getenv('DOCAI_CU_VIDEO_ANALYZER_ID')
@@ -690,7 +694,7 @@ def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="saveEmailProperties", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
 @app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="CosmosDbConnectionString")
+    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
 def saveEmailProperties(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:
@@ -799,10 +803,10 @@ def getAttachmentClassFromVideo(fName, url):
 # Use this to classify image files
 def getAttachmentClassFromImage(fName, url):
     fName = f"{fName}f(getAttachmentClassFromImage)->"
-    aoaiMultiModalAPIKey = os.getenv('DOCAI_IMAGE_API_KEY')
-    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_IMAGE_API_ENDPOINT')
-    aoaiOmniAPIVersion = os.getenv('DOCAI_IMAGE_API_VERSION')
-    aoaiOmniAPIEngine = os.getenv('DOCAI_IMAGE_API_ENGINE')
+    aoaiMultiModalAPIKey = os.getenv('DOCAI_AOAI_API_KEY')
+    aoaiMultiModalAPIEndpoint = os.getenv('DOCAI_AOAI_API_ENDPOINT')
+    aoaiOmniAPIVersion = os.getenv('DOCAI_AOAI_API_VERSION')
+    aoaiOmniAPIEngine = os.getenv('DOCAI_AOAI_DEFAULT_ENGINE')
 
     try:
         aoai_status, aoai_client = aoai.setupOpenai(
@@ -812,12 +816,13 @@ def getAttachmentClassFromImage(fName, url):
                                         )
         if aoai_status == True:
             logging.info(f'{fName}OpenAI connection setup successful')
-            rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
-            decodedBytes = base64.b64decode(rawToken)
-            blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
-            logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
+            #rawToken = str(os.getenv('DOCAI_BLOB_STORE_SAS_TOKEN'))
+            #decodedBytes = base64.b64decode(rawToken)
+            #blobStoreSASToken = decodedBytes.decode("utf-8")[2:-2]
+            #logging.info(f'{fName}Blob SAS token:{blobStoreSASToken}')
                  
-            gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
+            #gotPrompt = composeMultiModalPrompt(f'{url}?{blobStoreSASToken}', fName)
+            gotPrompt = composeMultiModalPrompt(f'{url}', fName)
             logging.info(f'{fName}Got Prompt: {gotPrompt}')
             
             tokens_used, finish_reason, completion = aoai.getChatCompletion(
@@ -943,7 +948,7 @@ def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="saveAttachmentProperties", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
 @app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="CosmosDbConnectionString")
+    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
 def saveAttachmentProperties(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:
@@ -1016,7 +1021,7 @@ def saveAttachmentProperties(req: func.HttpRequest,
 @app.route(route="extractAttachmentData", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
 @app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="CosmosDbConnectionString")
+    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
 def extractAttachmentData(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:

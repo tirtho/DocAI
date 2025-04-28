@@ -1,6 +1,7 @@
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from openai import AzureOpenAI
 import requests
+import logging
 
 # Returns a +ve number if successful
 # It sets openai with the endpoint, api key etc.
@@ -14,12 +15,12 @@ def setupOpenai(aoai_endpoint, aoai_api_key, aoai_version):
                 azure_endpoint=aoai_endpoint,
                 api_version=aoai_version
               )
-      print("\nGot OPENAI API Key from environment variable")
+      logging.info(f'Got OPENAI API Key from environment variable')
       return True, client
     else:
       # the string is empty
       try:
-        print(f"\nCould not get API key from environment variable OPENAI_API_KEY. Trying Managed ID")
+        logging.info(f'Environment variable OPENAI_API_KEY is blank. Trying Managed ID')
         token_provider = get_bearer_token_provider (
           DefaultAzureCredential(),
           "https://cognitiveservices.azure.com/.default"          
@@ -29,13 +30,13 @@ def setupOpenai(aoai_endpoint, aoai_api_key, aoai_version):
           azure_endpoint=aoai_endpoint,
           api_version=aoai_version
         )
-        print("\nAuthenticated successfully with AAD token")
+        logging.info(f'Authenticated successfully with AAD token')
         return True, client
-      except:
-        print("\nSomething went wrong getting token with Managed Identity")
+      except Exception as e:
+        logging.info(f'Exception raised when trying to get token with Managed Identity: {e}')
         return False, None
-  except:
-    print("\nSomething went wrong getting access key from environment variable")
+  except Exception as e:
+    logging.info(f'Exception raised when trying to get token with API Key: {e}')
     return False, None
 
 # Returns total tokens used and the chat completion

@@ -192,7 +192,7 @@ def getEmailClassesFromOpenAI(subject, body, fName):
                     }
                     categories.append(aClassInfo)
         else:
-            errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
+            errorMessage = f'{fName}ERROR: Failed to create an openai client'
             logging.error(errorMessage)
             raise ValueError(errorMessage)
     except Exception as e:
@@ -415,7 +415,7 @@ def getExtractsFromImage(url, categories, fName):
             logging.info(f'{fName} GPT4o API Completion succeeded:tokens used:{tokens_used}')            
             isHandwritten = completion
         else:
-            errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
+            errorMessage = f'{fName}ERROR: Failed to create an openai client'
             logging.error(errorMessage)
             raise ValueError(errorMessage)
     except Exception as e:
@@ -831,7 +831,7 @@ def getAttachmentClassFromImage(fName, url):
                                                                 the_messages=gotPrompt)
             logging.info(f'{fName} GPT4o API Completion succeeded:tokens used:{tokens_used}')
         else:
-            errorMessage = f'{fName}ERROR: OpenAI connection setup raised exception:{e}'
+            errorMessage = f'{fName}ERROR: Failed to create an openai client'
             logging.error(errorMessage)
             raise ValueError(errorMessage)
     except Exception as e:

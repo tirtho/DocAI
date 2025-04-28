@@ -84,23 +84,21 @@ module functionPython './helpers/function_python.bicep' = {
     hostingPlanID: functionDependencies.outputs.hostingPlanID
     applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
     additionalAppSettings: [
-      { name: 'AI_VIDEO_API_VERSION', value: '2023-05-01-preview' }
-      { name: 'BLOB_STORE_SAS_TOKEN', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=BLOB-STORE-SAS-TOKEN)' }
-      { name: 'CosmosDbConnectionString__accountEndpoint', value: cosmosDB.outputs.endpoint }
-      { name: 'CosmosDbConnectionString__credential', value: 'managedidentity' }
-      { name: 'DOCUMENT_CLASSIFIER_ID', value: 'docai-classifier-v1' }
-      { name: 'DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }  
-      { name: 'DOCUMENT_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
-      { name: 'FORM_RECOGNIZER_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=FORM-RECOGNIZER-API-KEY)' }      
-      { name: 'FORM_RECOGNIZER_ENDPOINT', value: aiService.outputs.documentIntelligenceEndpoint }
-      { name: 'OPENAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-API-KEY)' }
-      { name: 'OPENAI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_MULTI_MODAL_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_MULTI_MODAL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-MULTI-MODAL-API-KEY)' }
-      { name: 'OPENAI_OMNI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_OMNI_API_VERSION', value: '2024-02-15-preview' }
+      { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
+      { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }
+      { name: 'DOCAI_AOAI_API_VERSION', value: '2024-02-15-preview' }
+      { name: 'DOCAI_AOAI_DEFAULT_ENGINE', value: 'gpt-4o' }
+      { name: 'DOCAI_COSMOSDB_URI__accountEndpoint', value: cosmosDB.outputs.endpoint }
+      { name: 'DOCAI_COSMOSDB_URI__credential', value: 'managedidentity' }
+      { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
+      { name: 'DOCAI_CU_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-CU-API-KEY)' }
+      { name: 'DOCAI_CU_API_VERSION', value: '2024-12-01-preview' }
+      { name: 'DOCAI_CU_VIDEO_ANALYZER_ID', value: 'docai-video-analyzer' }
+      { name: 'DOCAI_DOCINTEL_API_ENDPOINT', value: aiService.outputs.documentIntelligenceEndpoint }
+      { name: 'DOCAI_DOCINTEL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-DOCINTEL-API-KEY)' }
+      { name: 'DOCAI_DOCINTEL_CLASSIFIER_ID', value: 'docai-classifier-v1' }      
+      { name: 'DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
+      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }
     ]
   }
 }
@@ -118,7 +116,8 @@ module keyVaultSecrets './helpers/keyVaultSecrets.bicep' = {
   name: 'keyVaultSecrets'
   params: {
     keyVaultName: keyVault.outputs.keyVaultName    
-    azureOpenAIName: aiService.outputs.azureOpenAIName    
+    azureOpenAIName: aiService.outputs.azureOpenAIName
+    contentUnderstandingName: aiService.outputs.contentUnderstandingName
     documentIntelligenceName: aiService.outputs.documentIntelligenceName
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     emailStorageContainerName: dataStorage.outputs.emailContainerName

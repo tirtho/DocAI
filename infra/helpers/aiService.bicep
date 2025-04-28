@@ -83,8 +83,9 @@ output openAIPrincipalId string = aiServicesAccount.identity.principalId
 output documentIntelligencePrincipalId string = documentIntelligenceAccount.identity.principalId
 output documentIntelligenceName string = documentIntelligenceAccount.name
 output aiServicesName string = aiServicesAccount.name
+output contentUnderstandingName string = aiServicesAccount.name
 output contentUnderstandingEndpoint string = 'https://${aiServicesAccount.name}.services.ai.azure.com/'
-output azureOpenAIEndpoint string = 'https://${aiServicesAccount.name}.openai.azure.com/'
 output azureOpenAIName string = aiServicesAccount.name
+output azureOpenAIEndpoint string = 'https://${aiServicesAccount.name}.openai.azure.com/'
 output documentIntelligenceEndpoint string = documentIntelligenceAccount.properties.endpoint
 

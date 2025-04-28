@@ -3,6 +3,7 @@ param baseTime string = utcNow('u')
 param keyVaultName string
 param documentIntelligenceName string
 param azureOpenAIName string
+param contentUnderstandingName string
 
 // For CosmosDB
 param cosmosDBAccountName string
@@ -22,17 +23,21 @@ resource openAIAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existin
 
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
   parent: keyVault
-  name: 'OPENAI-API-KEY'
+  name: 'DOCAI-AOAI-API-KEY'
   properties: {
     value: openAIAccount.listKeys().key1
   }
 }
 
+resource contentUnderstandingAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
+  name: contentUnderstandingName
+}
+
 resource keyVaultSecret2 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
   parent: keyVault
-  name: 'OPENAI-MULTI-MODAL-API-KEY'
+  name: 'DOCAI-CU-API-KEY'
   properties: {
-    value: openAIAccount.listKeys().key1
+    value: contentUnderstandingAccount.listKeys().key1
   }
 }
 
@@ -42,7 +47,7 @@ resource documentIntelligenceAccount 'Microsoft.CognitiveServices/accounts@2023-
 
 resource keyVaultSecret4 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
   parent: keyVault
-  name: 'FORM-RECOGNIZER-API-KEY'
+  name: 'DOCAI-DOCINTEL-API-KEY'
   properties: {
     value: documentIntelligenceAccount.listKeys().key1
   }

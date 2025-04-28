@@ -1,10 +1,8 @@
 param baseTime string = utcNow('u')
 
 param keyVaultName string
-param computerVisionName string
 param documentIntelligenceName string
 param azureOpenAIName string
-param azureOpenAIVideoName string
 
 // For CosmosDB
 param cosmosDBAccountName string
@@ -38,18 +36,6 @@ resource keyVaultSecret2 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
   }
 }
 
-resource openAIVisionAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
-  name: azureOpenAIVideoName
-}
-
-resource keyVaultSecret3 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
-  parent: keyVault
-  name: 'OPENAI-VISION-API-KEY'
-  properties: {
-    value: openAIVisionAccount.listKeys().key1
-  }
-}
-
 resource documentIntelligenceAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
   name: documentIntelligenceName
 }
@@ -59,18 +45,6 @@ resource keyVaultSecret4 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
   name: 'FORM-RECOGNIZER-API-KEY'
   properties: {
     value: documentIntelligenceAccount.listKeys().key1
-  }
-}
-
-resource visionServicesAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
-  name: computerVisionName
-}
-
-resource keyVaultSecret5 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
-  parent: keyVault
-  name: 'COGNITIVE-SERVICE-KEY'
-  properties: {
-    value: visionServicesAccount.listKeys().key1
   }
 }
 

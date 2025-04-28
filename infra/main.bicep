@@ -21,9 +21,6 @@ param functionAppName string = 'func-py-${resourceToken}'
 param logicAppName string = 'logicapp-${resourceToken}'
 param keyVaultName string = 'keyvault-${resourceToken}'
 param aiServicesName string = 'docai-ai-non-prod-${resourceToken}'
-param computerVisionServicesName string = 'docai-ai-vision-non-prod-${resourceToken}'
-param azureOpenAIName string = 'docai-aoai-${resourceToken}'
-param azureOpenAIVsionName string = 'docai-aoai-vision-${resourceToken}'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod-${resourceToken}'
 param webAppName string = 'web-app-${resourceToken}'
 param appRegistrationTenantID string = tenant().tenantId
@@ -64,10 +61,7 @@ module dataStorage './helpers/dataStorage.bicep' = {
 module aiService './helpers/aiService.bicep' = {
   name: 'aiService'
   params: {
-    aiServicesName: aiServicesName
-    computerVisionServicesName: computerVisionServicesName
-    azureOpenAIName: azureOpenAIName
-    azureOpenAIVsionName: azureOpenAIVsionName
+    aiServicesName: aiServicesName    
     documentIntelligenceName: documentIntelligenceName
     documentIntelligenceLocationOverride: documentIntelligenceLocationOverride
   }
@@ -92,8 +86,6 @@ module functionPython './helpers/function_python.bicep' = {
     additionalAppSettings: [
       { name: 'AI_VIDEO_API_VERSION', value: '2023-05-01-preview' }
       { name: 'BLOB_STORE_SAS_TOKEN', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=BLOB-STORE-SAS-TOKEN)' }
-      { name: 'COGNITIVE_SERVICE_ENDPOINT', value:  aiService.outputs.computerVisionServicesEndpoint }
-      { name: 'COGNITIVE_SERVICE_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COGNITIVE-SERVICE-KEY)' }
       { name: 'CosmosDbConnectionString__accountEndpoint', value: cosmosDB.outputs.endpoint }
       { name: 'CosmosDbConnectionString__credential', value: 'managedidentity' }
       { name: 'DOCUMENT_CLASSIFIER_ID', value: 'docai-classifier-v1' }
@@ -109,11 +101,6 @@ module functionPython './helpers/function_python.bicep' = {
       { name: 'OPENAI_MULTI_MODAL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-MULTI-MODAL-API-KEY)' }
       { name: 'OPENAI_OMNI_API_ENGINE', value: 'gpt-4o' }
       { name: 'OPENAI_OMNI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_VISION_API_ENDPOINT', value: aiService.outputs.azureOpenAIVsionEndpoint }
-      { name: 'OPENAI_VISION_API_ENGINE', value: 'gpt-4-vision' }
-      { name: 'OPENAI_VISION_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-VISION-API-KEY)' }
-      { name: 'OPENAI_VISION_API_VERSION', value: '2023-12-01-preview' }
-      { name: 'OPENAI_VISION_VIDEO_INDEX', value: 'tr-docai-video-index' }
     ]
   }
 }
@@ -130,10 +117,8 @@ module keyVault './helpers/keyVault.bicep' = {
 module keyVaultSecrets './helpers/keyVaultSecrets.bicep' = {
   name: 'keyVaultSecrets'
   params: {
-    keyVaultName: keyVault.outputs.keyVaultName
-    computerVisionName: aiService.outputs.computerVisionServicesName
-    azureOpenAIName: aiService.outputs.azureOpenAIName
-    azureOpenAIVideoName: aiService.outputs.azureOpenAIVsionName
+    keyVaultName: keyVault.outputs.keyVaultName    
+    azureOpenAIName: aiService.outputs.azureOpenAIName    
     documentIntelligenceName: aiService.outputs.documentIntelligenceName
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     emailStorageContainerName: dataStorage.outputs.emailContainerName
@@ -159,8 +144,7 @@ module rbac './helpers/rbac.bicep' = {
     logicAppPrincipalId: logicApp.outputs.logicAppPrincipalId
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     docIntelStorageAccountName: dataStorage.outputs.docIntelStorageAccountName
-    azureOpenAIName: aiService.outputs.azureOpenAIName
-    azureOpenAIVisionName: aiService.outputs.azureOpenAIVsionName
+    azureOpenAIName: aiService.outputs.azureOpenAIName    
   }
 }
 

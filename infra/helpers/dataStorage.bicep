@@ -18,7 +18,7 @@ module docIntelStorageAccount '../core/storage/storage-account.bicep' = {
   name: docIntelStorageAccountName
   params: {
     name: docIntelStorageAccountName
-    containers: [{ name: docIntelContainerName }]
+    containers: [{ name: docIntelContainerName, publicAccess: 'Blob' }]
   }
 }
 

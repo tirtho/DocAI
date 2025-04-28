@@ -9,7 +9,7 @@ module emailStorageAccount '../core/storage/storage-account.bicep' = {
   name: emailStorageAccountName
   params: {
     name: emailStorageAccountName
-    containers: [{ name: emailContainerName }]
+    containers: [{ name: emailContainerName, publicAccess: 'Blob' }]
   }
 }
 
@@ -18,7 +18,7 @@ module docIntelStorageAccount '../core/storage/storage-account.bicep' = {
   name: docIntelStorageAccountName
   params: {
     name: docIntelStorageAccountName
-    containers: [{ name: docIntelContainerName, publicAccess: 'Blob' }]
+    containers: [{ name: docIntelContainerName }]
   }
 }
 

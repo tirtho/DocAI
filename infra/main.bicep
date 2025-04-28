@@ -18,7 +18,6 @@ param emailStorageAccountName string = 'sa8emails${resourceToken}'
 param docIntelStorageAccountName string = 'sa8docintel${resourceToken}'
 param cosmosDBAccountName string = 'docai-dev-cosmosdb-${resourceToken}'
 param functionAppName string = 'func-py-${resourceToken}'
-param csfunctionAppName string = 'func-cs-${resourceToken}'
 param logicAppName string = 'logicapp-${resourceToken}'
 param keyVaultName string = 'keyvault-${resourceToken}'
 param aiServicesName string = 'docai-ai-non-prod-${resourceToken}'
@@ -78,17 +77,6 @@ module functionDependencies './helpers/function_dependencies.bicep' = {
   name: 'function_dependencies'
   params: {
     resourceToken: resourceToken
-  }
-}
-
-module functionCSharp './helpers/function_csharp.bicep' = {
-  name: 'function_csharp'
-  params: {
-    csfunctionAppName: csfunctionAppName
-    vnetSubnetId: vnet.outputs.subnetId
-    applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
-    hostingPlanID: functionDependencies.outputs.hostingPlanID
-    storageAccountName: functionDependencies.outputs.storageAccountName
   }
 }
 
@@ -250,7 +238,6 @@ output emailStorageContainerName string = dataStorage.outputs.emailContainerName
 output docIntelStorageAccountName string = dataStorage.outputs.docIntelStorageAccountName
 output docIntelStorageContainerName string = dataStorage.outputs.docIntelContainerName
 output pythonFunctionName string = functionPython.outputs.pythonFunctionName
-output cSharpFunctionName string = functionCSharp.outputs.cSharpFunctionName
 output webAppName string = webApp.outputs.webAppJavaHostName
 output logicAppName string = logicApp.outputs.logicAppName
 output subscriptionId string = subscription().subscriptionId

@@ -51,7 +51,7 @@ resource gpt_4o_deployment 'Microsoft.CognitiveServices/accounts/deployments@202
     model: {
       format: 'OpenAI'
       name: 'gpt-4o'
-      version: '2024-08-06'
+      version: '2024-11-20'
     }
     versionUpgradeOption: 'OnceCurrentVersionExpired'
     currentCapacity: 100

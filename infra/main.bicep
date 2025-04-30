@@ -61,7 +61,7 @@ module dataStorage './helpers/dataStorage.bicep' = {
 module aiService './helpers/aiService.bicep' = {
   name: 'aiService'
   params: {
-    aiServicesName: aiServicesName    
+    aiServicesName: aiServicesName
     documentIntelligenceName: documentIntelligenceName
     documentIntelligenceLocationOverride: documentIntelligenceLocationOverride
   }
@@ -115,7 +115,7 @@ module keyVault './helpers/keyVault.bicep' = {
 module keyVaultSecrets './helpers/keyVaultSecrets.bicep' = {
   name: 'keyVaultSecrets'
   params: {
-    keyVaultName: keyVault.outputs.keyVaultName    
+    keyVaultName: keyVault.outputs.keyVaultName
     azureOpenAIName: aiService.outputs.azureOpenAIName
     contentUnderstandingName: aiService.outputs.contentUnderstandingName
     documentIntelligenceName: aiService.outputs.documentIntelligenceName
@@ -143,7 +143,7 @@ module rbac './helpers/rbac.bicep' = {
     logicAppPrincipalId: logicApp.outputs.logicAppPrincipalId
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     docIntelStorageAccountName: dataStorage.outputs.docIntelStorageAccountName
-    azureOpenAIName: aiService.outputs.azureOpenAIName    
+    azureOpenAIName: aiService.outputs.azureOpenAIName
   }
 }
 

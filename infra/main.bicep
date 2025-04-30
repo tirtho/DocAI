@@ -217,4 +217,5 @@ output docIntelStorageContainerName string = dataStorage.outputs.docIntelContain
 output pythonFunctionName string = functionPython.outputs.pythonFunctionName
 output webAppName string = webApp.outputs.webAppJavaHostName
 output logicAppName string = logicApp.outputs.logicAppName
+output openAIName string = aiService.outputs.azureOpenAIName
 output subscriptionId string = subscription().subscriptionId

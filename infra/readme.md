@@ -16,7 +16,7 @@
 
 2. Set up resource group and location:
     ```powershell
-    $resourceGroup = "docai-bicep"
+    $resourceGroup = "docai-bicep-21"
     $location = "westus"
     az group create --name $resourceGroup --location $location
     ```

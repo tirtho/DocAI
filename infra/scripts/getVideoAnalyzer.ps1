@@ -31,7 +31,7 @@ if (-not $endpoint) {
 #   -d @%jsonFile%
 
 # Define variables
-$analyzerId = "docai-video-analyzer"  # Replace with your analyzer ID
+$analyzerId = "12345"  # Replace with your analyzer ID
 $jsonFile = Join-Path -Path $PSScriptRoot -ChildPath "..\..\code\curl\content-understanding\docai-video-analyzer.json"
 
 # Read the JSON file content
@@ -47,7 +47,7 @@ $headers = @{
 }
 
 # Make the PUT request
-$response = Invoke-RestMethod -Uri $apiUrl -Method Put -Headers $headers -Body $jsonContent
+$response = Invoke-RestMethod -Uri $apiUrl -Method Get -Headers $headers -Body $jsonContent
 
 $accountKey = $null
 $headers = $null

@@ -16,7 +16,7 @@
 
 2. Set up resource group and location:
     ```powershell
-    $resourceGroup = "docai-bicep-21"
+    $resourceGroup = "docai-bicep"
     $location = "westus"
     az group create --name $resourceGroup --location $location
     ```
@@ -28,6 +28,7 @@
 
 4. Deploy additional components:
     ```powershell
+    . ./scripts/createVideoIndexing.ps1
     . ./scripts/deployFunctions.ps1
     . ./scripts/deployLogicAppZip.ps1
     . ./scripts/uploadDocIntelModelData.ps1

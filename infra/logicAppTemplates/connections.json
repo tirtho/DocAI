@@ -33,18 +33,6 @@
   },
   "serviceProviderConnections": {},
   "functionConnections": {
-    "azureFunctionOperation": {
-      "function": {
-        "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/CSFUNCPLACEHOLDER/functions/removeHTMLFromEmailBody"
-      },
-      "triggerUrl": "https://CSFUNCPLACEHOLDER.azurewebsites.net/api/removehtmlfromemailbody",
-      "authentication": {
-        "type": "QueryString",
-        "name": "Code",
-        "value": "@appsetting('APP_KIND')"
-      },
-      "displayName": "f(removeHTMLFromEmailBody)"
-    },
     "azureFunctionOperation-1": {
       "function": {
         "id": "/subscriptions/SUBSCRIPTIONPLACEHOLDER/resourceGroups/RESOURCEGROUPLACEHOLDER/providers/Microsoft.Web/sites/PYTHONFUNCPLACEHOLDER/functions/getAttachmentClassUsingFormRecognizerCustomModel"

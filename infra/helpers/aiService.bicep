@@ -1,8 +1,5 @@
 @description('That name is the name of our application. It has to be unique.Type a name followed by your resource group name. (<name>-<resourceGroupName>)')
 param aiServicesName string = 'docai-ai-non-prod'
-param computerVisionServicesName string = 'docai-ai-vision-non-prod'
-param azureOpenAIName string = 'docai-aoai'
-param azureOpenAIVsionName string = 'docai-aoai-vision'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod'
 param location string = resourceGroup().location
 param deployDeployments bool = true
@@ -26,6 +23,9 @@ param sku string = 'S0'
 resource aiServicesAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: aiServicesName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   sku: {
     name: sku
   }
@@ -40,45 +40,8 @@ resource aiServicesAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
-resource visionServicesAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: computerVisionServicesName
-  location: location
-  sku: {
-    name: 'S1'
-  }
-  kind: 'ComputerVision'
-  properties: {
-    customSubDomainName: computerVisionServicesName
-    publicNetworkAccess: 'Enabled'
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    disableLocalAuth: false
-  }
-}
-
-resource openAIAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: azureOpenAIName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  sku: {
-    name: sku
-  }
-  kind: 'OpenAI'
-  properties: {
-    customSubDomainName: azureOpenAIName
-    publicNetworkAccess: 'Enabled'
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    disableLocalAuth: false
-  }
-}
-
 resource gpt_4o_deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-06-01-preview' = if (deployDeployments) {
-  parent: openAIAccount
+  parent: aiServicesAccount
   name: 'gpt-4o'
   sku: {
     name: 'GlobalStandard'
@@ -88,68 +51,11 @@ resource gpt_4o_deployment 'Microsoft.CognitiveServices/accounts/deployments@202
     model: {
       format: 'OpenAI'
       name: 'gpt-4o'
-      version: '2024-08-06'
+      version: '2024-11-20'
     }
     versionUpgradeOption: 'OnceCurrentVersionExpired'
     currentCapacity: 100
     raiPolicyName: 'Microsoft.DefaultV2'
-  }
-}
-
-resource gpt_4_vision_deployment 'Microsoft.CognitiveServices/accounts/deployments@2024-06-01-preview' = if (deployDeployments) {
-  parent: openAIAccount
-  name: 'gpt-4-vision'
-  sku: {
-    name: 'Standard'
-    capacity: 10
-  }
-  properties: {
-    model: {
-      format: 'OpenAI'
-      name: 'gpt-4'
-      version: 'vision-preview'
-    }
-    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
-    currentCapacity: 10
-  }
-  dependsOn: [
-    // Need to deploy gpt_4o_deployment first and WAIT, otherwise we'll get a conflict
-    gpt_4o_deployment
-  ]
-}
-
-resource openAIVisionAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: azureOpenAIVsionName
-  location: location
-  sku: {
-    name: sku
-  }
-  kind: 'OpenAI'
-  properties: {
-    customSubDomainName: azureOpenAIVsionName
-    publicNetworkAccess: 'Enabled'
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    disableLocalAuth: false
-  }
-}
-
-resource gpt_4_vision_deployment_forVisionOpenAI 'Microsoft.CognitiveServices/accounts/deployments@2024-06-01-preview' = if (deployDeployments) {
-  parent: openAIVisionAccount
-  name: 'gpt-4-vision'
-  sku: {
-    name: 'Standard'
-    capacity: 10
-  }
-  properties: {
-    model: {
-      format: 'OpenAI'
-      name: 'gpt-4'
-      version: 'vision-preview'
-    }
-    versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
-    currentCapacity: 10
   }
 }
 
@@ -173,15 +79,13 @@ resource documentIntelligenceAccount 'Microsoft.CognitiveServices/accounts@2023-
   }
 }
 
-output openAIPrincipalId string = openAIAccount.identity.principalId
+output openAIPrincipalId string = aiServicesAccount.identity.principalId
 output documentIntelligencePrincipalId string = documentIntelligenceAccount.identity.principalId
-output azureOpenAIName string = openAIAccount.name
-output azureOpenAIVsionName string = openAIVisionAccount.name
 output documentIntelligenceName string = documentIntelligenceAccount.name
 output aiServicesName string = aiServicesAccount.name
-output computerVisionServicesName string = visionServicesAccount.name
-output azureOpenAIEndpoint string = openAIAccount.properties.endpoint
-output azureOpenAIVsionEndpoint string = openAIVisionAccount.properties.endpoint
+output contentUnderstandingName string = aiServicesAccount.name
+output contentUnderstandingEndpoint string = 'https://${aiServicesAccount.name}.services.ai.azure.com/'
+output azureOpenAIName string = aiServicesAccount.name
+output azureOpenAIEndpoint string = 'https://${aiServicesAccount.name}.openai.azure.com/'
 output documentIntelligenceEndpoint string = documentIntelligenceAccount.properties.endpoint
-output aiServicesEndpoint string = aiServicesAccount.properties.endpoint
-output computerVisionServicesEndpoint string = visionServicesAccount.properties.endpoint
+

@@ -2,7 +2,6 @@ param pythonFunctionPrincipalId string
 param emailStorageAccountName string
 param docIntelStorageAccountName string
 param azureOpenAIName string
-param azureOpenAIVisionName string
 param openAIPrincipalId string
 param documentIntelligencePrincipalId string
 param logicAppPrincipalId string
@@ -22,10 +21,6 @@ resource openAIAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existin
   name: azureOpenAIName
 }
 
-resource openAIVisionAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
-  name: azureOpenAIVisionName
-}
-
 resource emailStorageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
   name: emailStorageAccountName
 }
@@ -38,17 +33,6 @@ resource docIntelStorageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' e
 resource CognitiveServicesOpenAIContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(openAIAccount.id, pythonFunctionPrincipalId, CognitiveServicesOpenAIContributorRoleDefinition.id)
   scope: openAIAccount
-  properties: {
-    roleDefinitionId: CognitiveServicesOpenAIContributorRoleDefinition.id
-    principalId: pythonFunctionPrincipalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Role assignment to give the Function App access to OpenAI Contributor role
-resource CognitiveServicesOpenAIContributorRoleAssignment_Vision 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(openAIVisionAccount.id, pythonFunctionPrincipalId, CognitiveServicesOpenAIContributorRoleDefinition.id)
-  scope: openAIVisionAccount
   properties: {
     roleDefinitionId: CognitiveServicesOpenAIContributorRoleDefinition.id
     principalId: pythonFunctionPrincipalId

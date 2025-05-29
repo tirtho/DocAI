@@ -2,23 +2,12 @@
   "definition": {
     "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
     "actions": {
-      "f(removeHTMLFromEmailBody)": {
-        "type": "Function",
-        "inputs": {
-          "method": "POST",
-          "body": "@triggerBody()?['body']",
-          "function": {
-            "connectionName": "azureFunctionOperation"
-          }
-        },
-        "runAfter": {}
-      },
       "f(getEmailClass)": {
         "type": "Function",
         "inputs": {
           "method": "POST",
           "body": {
-            "body": "@body('f(removeHTMLFromEmailBody)')",
+            "body": "@triggerBody()?['body']",
             "messageType": "email-body",
             "subject": "@triggerBody()?['subject']"
           },
@@ -29,11 +18,7 @@
             "connectionName": "azureFunctionOperation-6"
           }
         },
-        "runAfter": {
-          "f(removeHTMLFromEmailBody)": [
-            "SUCCEEDED"
-          ]
-        }
+        "runAfter": {}
       },
       "f(saveEmailProperties)": {
         "type": "Function",
@@ -271,7 +256,7 @@
             }
           },
           "method": "post",
-          "body": "@body('f(removeHTMLFromEmailBody)')",
+          "body": "@triggerBody()?['body']",
           "headers": {
             "ReadFileMetadataFromServer": true
           },
@@ -282,11 +267,7 @@
             "queryParametersSingleEncoded": true
           }
         },
-        "runAfter": {
-          "f(removeHTMLFromEmailBody)": [
-            "SUCCEEDED"
-          ]
-        },
+        "runAfter": {},
         "runtimeConfiguration": {
           "contentTransfer": {
             "transferMode": "Chunked"

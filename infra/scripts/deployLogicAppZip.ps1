@@ -8,12 +8,11 @@ $deploymentData = $deploymentOutput | ConvertFrom-Json
 
 $subscriptionId = $deploymentData.properties.outputs.subscriptionId.value
 $functionAppName_pythonFunc = $deploymentData.properties.outputs.pythonFunctionName.value
-$functionAppName_csharpFunc = $deploymentData.properties.outputs.cSharpFunctionName.value
 $logicAppName = $deploymentData.properties.outputs.logicAppName.value
 $emailStorageAccountName = $deploymentData.properties.outputs.emailStorageAccountName.value
 
-if(-not $functionAppName_pythonFunc -or -not $functionAppName_csharpFunc) {
-    Write-Output "Error: functionAppName_pythonFunc or functionAppName_csharpFunc is not set. Exiting script."
+if(-not $functionAppName_pythonFunc) {
+    Write-Output "Error: functionAppName_pythonFuncis not set. Exiting script."
     Exit 1  # Exits with a status code of 1 to indicate an error
 }
 
@@ -44,7 +43,6 @@ $replacements = @{
     "SUBSCRIPTIONPLACEHOLDER" = $subscriptionId
     "RESOURCEGROUPLACEHOLDER" = $resourceGroup
     "PYTHONFUNCPLACEHOLDER" = $functionAppName_pythonFunc
-    "CSFUNCPLACEHOLDER" = $functionAppName_csharpFunc
     "STORAGEEMAILSPLACEHOLDER" = $emailStorageAccountName
 }
 

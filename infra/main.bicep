@@ -18,13 +18,9 @@ param emailStorageAccountName string = 'sa8emails${resourceToken}'
 param docIntelStorageAccountName string = 'sa8docintel${resourceToken}'
 param cosmosDBAccountName string = 'docai-dev-cosmosdb-${resourceToken}'
 param functionAppName string = 'func-py-${resourceToken}'
-param csfunctionAppName string = 'func-cs-${resourceToken}'
 param logicAppName string = 'logicapp-${resourceToken}'
 param keyVaultName string = 'keyvault-${resourceToken}'
 param aiServicesName string = 'docai-ai-non-prod-${resourceToken}'
-param computerVisionServicesName string = 'docai-ai-vision-non-prod-${resourceToken}'
-param azureOpenAIName string = 'docai-aoai-${resourceToken}'
-param azureOpenAIVsionName string = 'docai-aoai-vision-${resourceToken}'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod-${resourceToken}'
 param webAppName string = 'web-app-${resourceToken}'
 param appRegistrationTenantID string = tenant().tenantId
@@ -66,9 +62,6 @@ module aiService './helpers/aiService.bicep' = {
   name: 'aiService'
   params: {
     aiServicesName: aiServicesName
-    computerVisionServicesName: computerVisionServicesName
-    azureOpenAIName: azureOpenAIName
-    azureOpenAIVsionName: azureOpenAIVsionName
     documentIntelligenceName: documentIntelligenceName
     documentIntelligenceLocationOverride: documentIntelligenceLocationOverride
   }
@@ -78,17 +71,6 @@ module functionDependencies './helpers/function_dependencies.bicep' = {
   name: 'function_dependencies'
   params: {
     resourceToken: resourceToken
-  }
-}
-
-module functionCSharp './helpers/function_csharp.bicep' = {
-  name: 'function_csharp'
-  params: {
-    csfunctionAppName: csfunctionAppName
-    vnetSubnetId: vnet.outputs.subnetId
-    applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
-    hostingPlanID: functionDependencies.outputs.hostingPlanID
-    storageAccountName: functionDependencies.outputs.storageAccountName
   }
 }
 
@@ -102,30 +84,21 @@ module functionPython './helpers/function_python.bicep' = {
     hostingPlanID: functionDependencies.outputs.hostingPlanID
     applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
     additionalAppSettings: [
-      { name: 'AI_VIDEO_API_VERSION', value: '2023-05-01-preview' }
-      { name: 'BLOB_STORE_SAS_TOKEN', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=BLOB-STORE-SAS-TOKEN)' }
-      { name: 'COGNITIVE_SERVICE_ENDPOINT', value:  aiService.outputs.computerVisionServicesEndpoint }
-      { name: 'COGNITIVE_SERVICE_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COGNITIVE-SERVICE-KEY)' }
-      { name: 'CosmosDbConnectionString__accountEndpoint', value: cosmosDB.outputs.endpoint }
-      { name: 'CosmosDbConnectionString__credential', value: 'managedidentity' }
-      { name: 'DOCUMENT_CLASSIFIER_ID', value: 'docai-classifier-v1' }
-      { name: 'DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }  
-      { name: 'DOCUMENT_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
-      { name: 'FORM_RECOGNIZER_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=FORM-RECOGNIZER-API-KEY)' }      
-      { name: 'FORM_RECOGNIZER_ENDPOINT', value: aiService.outputs.documentIntelligenceEndpoint }
-      { name: 'OPENAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-API-KEY)' }
-      { name: 'OPENAI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_MULTI_MODAL_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_MULTI_MODAL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-MULTI-MODAL-API-KEY)' }
-      { name: 'OPENAI_OMNI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_OMNI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_VISION_API_ENDPOINT', value: aiService.outputs.azureOpenAIVsionEndpoint }
-      { name: 'OPENAI_VISION_API_ENGINE', value: 'gpt-4-vision' }
-      { name: 'OPENAI_VISION_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-VISION-API-KEY)' }
-      { name: 'OPENAI_VISION_API_VERSION', value: '2023-12-01-preview' }
-      { name: 'OPENAI_VISION_VIDEO_INDEX', value: 'tr-docai-video-index' }
+      { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
+      { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }
+      { name: 'DOCAI_AOAI_API_VERSION', value: '2024-02-15-preview' }
+      { name: 'DOCAI_AOAI_DEFAULT_ENGINE', value: 'gpt-4o' }
+      { name: 'DOCAI_COSMOSDB_URI__accountEndpoint', value: cosmosDB.outputs.endpoint }
+      { name: 'DOCAI_COSMOSDB_URI__credential', value: 'managedidentity' }
+      { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
+      { name: 'DOCAI_CU_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-CU-API-KEY)' }
+      { name: 'DOCAI_CU_API_VERSION', value: '2024-12-01-preview' }
+      { name: 'DOCAI_CU_VIDEO_ANALYZER_ID', value: 'docai-video-analyzer' }
+      { name: 'DOCAI_DOCINTEL_API_ENDPOINT', value: aiService.outputs.documentIntelligenceEndpoint }
+      { name: 'DOCAI_DOCINTEL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-DOCINTEL-API-KEY)' }
+      { name: 'DOCAI_DOCINTEL_CLASSIFIER_ID', value: 'docai-classifier-v1' }
+      { name: 'DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
+      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }
     ]
   }
 }
@@ -143,9 +116,8 @@ module keyVaultSecrets './helpers/keyVaultSecrets.bicep' = {
   name: 'keyVaultSecrets'
   params: {
     keyVaultName: keyVault.outputs.keyVaultName
-    computerVisionName: aiService.outputs.computerVisionServicesName
     azureOpenAIName: aiService.outputs.azureOpenAIName
-    azureOpenAIVideoName: aiService.outputs.azureOpenAIVsionName
+    contentUnderstandingName: aiService.outputs.contentUnderstandingName
     documentIntelligenceName: aiService.outputs.documentIntelligenceName
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     emailStorageContainerName: dataStorage.outputs.emailContainerName
@@ -172,7 +144,6 @@ module rbac './helpers/rbac.bicep' = {
     emailStorageAccountName: dataStorage.outputs.emailStorageAccountName
     docIntelStorageAccountName: dataStorage.outputs.docIntelStorageAccountName
     azureOpenAIName: aiService.outputs.azureOpenAIName
-    azureOpenAIVisionName: aiService.outputs.azureOpenAIVsionName
   }
 }
 
@@ -206,40 +177,34 @@ module webApp './helpers/webApp.bicep' = {
     keyVaultName: keyVault.outputs.keyVaultName
     vnetSubnetId: vnet.outputs.subnetId
     additionalAppSettings: [
-      { name: 'AI_VIDEO_API_VERSION', value: '2023-05-01-preview' }
-      { name: 'ALL_AI_SERVICES_API_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
-      { name: 'ALL_AI_SERVICES_ENDPOINT', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
-      { name: 'BING_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
-      { name: 'BING_QUERY_COUNT', value: '5' }
       { name: 'BLOB_STORE_SAS_TOKEN', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=BLOB-STORE-SAS-TOKEN)' }
-      { name: 'COGNITIVE_SERVICE_ENDPOINT', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
-      { name: 'COGNITIVE_SERVICE_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
-      { name: 'COSMOSDB_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COSMOSDB-API-KEY)' }
-      { name: 'COSMOSDB_CONTAINER', value: 'EmailExtracts' }
-      { name: 'COSMOSDB_CONTAINER_DEMOS', value: 'DocAIDemos' }
-      { name: 'COSMOSDB_DATABASE', value: 'DocAIDatabase' }
-      { name: 'COSMOSDB_URI', value: cosmosDB.outputs.endpoint }
-      { name: 'DOCAI_APP_CLIENT_ID', value: webAppClientId } 
-      { name: 'DOCAI_APP_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-APP-CLIENT-SECRET)' } 
-      { name: 'DOCAI_APP_TENANT_ID', value: appRegistrationTenantID } 
+      { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
+      { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }
+      { name: 'DOCAI_AOAI_API_VERSION', value: '2024-02-15-preview' }
+      { name: 'DOCAI_AOAI_DEFAULT_ENGINE', value: 'gpt-4o' }
+      { name: 'DOCAI_APP_CLIENT_ID', value: webAppClientId }
+      { name: 'DOCAI_APP_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-APP-CLIENT-SECRET)'}
+      { name: 'DOCAI_APP_TENANT_ID', value: appRegistrationTenantID }
+      { name: 'DOCAI_BING_AI_API_ENDPOINT', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used      
+      { name: 'DOCAI_BING_AI_API_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used
+      { name: 'DOCAI_BING_API_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used                
+      { name: 'DOCAI_BING_QUERY_COUNT', value: '5' }
+      { name: 'DOCAI_COSMOSDB_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COSMOSDB-API-KEY)' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER', value: 'EmailExtracts' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER_DEMOS', value: 'DocAIDemos' }
+      { name: 'DOCAI_COSMOSDB_DATABASE', value: 'DocAIDatabase' }
+      { name: 'DOCAI_COSMOSDB_URI', value: cosmosDB.outputs.endpoint }
+      { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
+      { name: 'DOCAI_CU_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-CU-API-KEY)' }
+      { name: 'DOCAI_CU_API_VERSION', value: '2024-12-01-preview' }
+      { name: 'DOCAI_CU_VIDEO_ANALYZER_ID', value: 'docai-video-analyzer' }
       { name: 'DOCAI_DEMO_USERS', value: '*@${tenantDomainName}' } // Comma separated list
-      { name: 'DOCAI_EMAIL_RECEIVER_ADDRESS', value: 'docai@${tenantDomainName}' } 
-      { name: 'DOCAI_EMAIL_SENDER_ADDRESS', value: 'fsi-demo@${tenantDomainName}' } 
+      { name: 'DOCAI_EMAIL_RECEIVER_ADDRESS', value: 'docai@${tenantDomainName}' }
+      { name: 'DOCAI_EMAIL_SENDER_ADDRESS', value: 'fsi-demo@${tenantDomainName}' }
       { name: 'DOCAI_EMAIL_SUBJECT_PREFIX', value: 'docai' }
-      { name: 'GRAPH_API_CLIENT_ID', value: graphAPIClientID } 
-      { name: 'GRAPH_API_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=GRAPH-API-CLIENT-SECRET)' } 
-      { name: 'GRAPH_API_TENANT_ID', value: appRegistrationTenantID } 
-      { name: 'OPENAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-API-KEY)' }
-      { name: 'OPENAI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_MULTI_MODAL_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
-      { name: 'OPENAI_MULTI_MODAL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=OPENAI-MULTI-MODAL-API-KEY)' }
-      { name: 'OPENAI_OMNI_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_OMNI_API_VERSION', value: '2024-02-15-preview' }
-      { name: 'OPENAI_VISION_API_ENGINE', value: 'gpt-4o' }
-      { name: 'OPENAI_VISION_API_VERSION', value: '2023-12-01-preview' }
-      { name: 'OPENAI_VISION_VIDEO_INDEX', value: 'tr-docai-video-index' }
+      { name: 'DOCAI_GRAPH_API_CLIENT_ID', value: graphAPIClientID }
+      { name: 'DOCAI_GRAPH_API_CLIENT_SECRET', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=GRAPH-API-CLIENT-SECRET)' }
+      { name: 'DOCAI_GRAPH_API_TENANT_ID', value: appRegistrationTenantID }
     ]
   }
 }
@@ -250,7 +215,7 @@ output emailStorageContainerName string = dataStorage.outputs.emailContainerName
 output docIntelStorageAccountName string = dataStorage.outputs.docIntelStorageAccountName
 output docIntelStorageContainerName string = dataStorage.outputs.docIntelContainerName
 output pythonFunctionName string = functionPython.outputs.pythonFunctionName
-output cSharpFunctionName string = functionCSharp.outputs.cSharpFunctionName
 output webAppName string = webApp.outputs.webAppJavaHostName
 output logicAppName string = logicApp.outputs.logicAppName
+output openAIName string = aiService.outputs.azureOpenAIName
 output subscriptionId string = subscription().subscriptionId

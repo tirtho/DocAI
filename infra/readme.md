@@ -28,7 +28,7 @@
 
 4. Deploy additional components:
     ```powershell
-    . ./scripts/createVideoIndexing.ps1
+    . ./scripts/createVideoAnalyzer.ps1
     . ./scripts/deployFunctions.ps1
     . ./scripts/deployLogicAppZip.ps1
     . ./scripts/uploadDocIntelModelData.ps1

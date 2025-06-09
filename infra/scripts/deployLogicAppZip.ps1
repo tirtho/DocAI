@@ -12,7 +12,7 @@ $logicAppName = $deploymentData.properties.outputs.logicAppName.value
 $emailStorageAccountName = $deploymentData.properties.outputs.emailStorageAccountName.value
 
 if(-not $functionAppName_pythonFunc) {
-    Write-Output "Error: functionAppName_pythonFuncis not set. Exiting script."
+    Write-Output "Error: functionAppName_pythonFunc is not set. Exiting script."
     Exit 1  # Exits with a status code of 1 to indicate an error
 }
 

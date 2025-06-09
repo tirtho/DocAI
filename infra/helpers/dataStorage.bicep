@@ -9,7 +9,7 @@ module emailStorageAccount '../core/storage/storage-account.bicep' = {
   name: emailStorageAccountName
   params: {
     name: emailStorageAccountName
-    containers: [{ name: emailContainerName }]
+    containers: [{ name: emailContainerName, publicAccess: 'Blob' }]
   }
 }
 

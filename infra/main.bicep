@@ -23,6 +23,7 @@ param keyVaultName string = 'keyvault-${resourceToken}'
 param aiServicesName string = 'docai-ai-non-prod-${resourceToken}'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod-${resourceToken}'
 param webAppName string = 'web-app-${resourceToken}'
+param logAnalyticsName string = 'loganalytics-${resourceToken}'
 param appRegistrationTenantID string = tenant().tenantId
 param tenantDomainName string = ''
 
@@ -38,6 +39,13 @@ param graphAPIClientID string = ''
 @secure()
 param graphAPIClientSecret string = ''
 
+module logAnalytics './helpers/logAnalytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    logAnalyticsName: logAnalyticsName
+  }
+}
+
 module vnet './helpers/vnet.bicep' = {
   name: 'vnet'
 }
@@ -47,6 +55,7 @@ module logicApp './helpers/logicApp.bicep' = {
   params: {
     logicAppName: logicAppName
     resourceToken: resourceToken
+    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName
   }
 }
 
@@ -71,6 +80,7 @@ module functionDependencies './helpers/function_dependencies.bicep' = {
   name: 'function_dependencies'
   params: {
     resourceToken: resourceToken
+    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName
   }
 }
 

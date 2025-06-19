@@ -1,6 +1,9 @@
 param location string = resourceGroup().location
 param resourceToken string
 
+@description('Name of the Log Analytics workspace to use for the Logic App.')
+param logAnalyticsName string
+
 @description('Specifies the OS used for the Azure Function hosting plan.')
 @allowed([
   'Windows'
@@ -14,6 +17,10 @@ var applicationInsightsName = 'ai-func'
 var storageAccountName = 'safunc${resourceToken}'
 
 param functionAppPlanSku string = 'EP1'
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' existing = {
+  name: logAnalyticsName
+}
 
 // Storage for Azure Functions (CS + PY)
 module storageAccount '../core/storage/storage-account.bicep' = {
@@ -49,6 +56,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
   properties: {
     Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
   kind: 'web'
 }

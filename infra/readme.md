@@ -26,10 +26,16 @@
     $deploymentOutput = az deployment group create --template-file .\main.bicep --parameters .\main.parameters.json --resource-group $resourceGroup --output json
     ```
 
+3. Extract Variables from Output
+    ```powershell
+    $functionAppName = ($deploymentOutput | ConvertFrom-Json).properties.outputs.pythonFunctionName.value
+
+    ```
+
 4. Deploy additional components:
     ```powershell
     . ./scripts/createVideoAnalyzer.ps1
-    . ./scripts/deployFunctions.ps1
+    . ./scripts/deployFunctions.ps1 -FunctionAppName $functionAppName
     . ./scripts/deployLogicAppZip.ps1
     . ./scripts/uploadDocIntelModelData.ps1
     . ./scripts/deployWebApp.ps1

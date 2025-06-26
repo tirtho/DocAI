@@ -1,6 +1,6 @@
 # Check if $deploymentOutput is set
 if (-not $deploymentOutput) {
-    Write-Output "Error: \$deploymentOutput is not set. Exiting script."
+    Write-Output "Error: `$deploymentOutput is not set. Exiting script."
     Exit 1  # Exits with a status code of 1 to indicate an error
 }
 

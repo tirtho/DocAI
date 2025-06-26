@@ -1,35 +1,20 @@
-# Check if $deploymentOutput is set
-if (-not $deploymentOutput) {
-    Write-Output "Error: deploymentOutput is not set. Exiting script."
-    Exit 1  # Exits with a status code of 1 to indicate an error
-}
-
-$deploymentData = $deploymentOutput | ConvertFrom-Json
-
-$subscriptionId = $deploymentData.properties.outputs.subscriptionId.value
-$functionAppName_pythonFunc = $deploymentData.properties.outputs.pythonFunctionName.value
-$logicAppName = $deploymentData.properties.outputs.logicAppName.value
-$emailStorageAccountName = $deploymentData.properties.outputs.emailStorageAccountName.value
-
-if(-not $functionAppName_pythonFunc) {
-    Write-Output "Error: functionAppName_pythonFunc is not set. Exiting script."
-    Exit 1  # Exits with a status code of 1 to indicate an error
-}
-
-if(-not $logicAppName) {
-    Write-Output "Error: logicAppName is not set. Exiting script."
-    Exit 1  # Exits with a status code of 1 to indicate an error
-}
-
-if(-not $emailStorageAccountName) {
-    Write-Output "Error: emailStorageAccountName is not set. Exiting script."
-    Exit 1  # Exits with a status code of 1 to indicate an error
-}
-
-if(-not $subscriptionId) {
-    Write-Output "Error: subscriptionId is not set. Exiting script."
-    Exit 1  # Exits with a status code of 1 to indicate an error
-}
+# Parameters for the script
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$SubscriptionId,
+    
+    [Parameter(Mandatory = $true)]
+    [string]$ResourceGroup,
+    
+    [Parameter(Mandatory = $true)]
+    [string]$FunctionAppName,
+    
+    [Parameter(Mandatory = $true)]
+    [string]$LogicAppName,
+    
+    [Parameter(Mandatory = $true)]
+    [string]$EmailStorageAccountName
+)
 
 # Define the folder path containing the JSON files and the output ZIP path
 $sourceFolderPath = Join-Path -Path $PSScriptRoot -ChildPath "..\logicAppTemplates\"
@@ -40,10 +25,10 @@ $tempFolder = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "TempJsonF
 
 # Define a dictionary for multiple replacements
 $replacements = @{
-    "SUBSCRIPTIONPLACEHOLDER" = $subscriptionId
-    "RESOURCEGROUPLACEHOLDER" = $resourceGroup
-    "PYTHONFUNCPLACEHOLDER" = $functionAppName_pythonFunc
-    "STORAGEEMAILSPLACEHOLDER" = $emailStorageAccountName
+    "SUBSCRIPTIONPLACEHOLDER" = $SubscriptionId
+    "RESOURCEGROUPLACEHOLDER" = $ResourceGroup
+    "PYTHONFUNCPLACEHOLDER" = $FunctionAppName
+    "STORAGEEMAILSPLACEHOLDER" = $EmailStorageAccountName
 }
 
 # Copy JSON files to the temporary folder and apply replacements
@@ -76,7 +61,7 @@ Remove-Item -Path $tempFolder.FullName -Recurse -Force
 
 Write-Output "ZIP file created at $outputZipPath with modified content."
 
-az logicapp deployment source config-zip --name $logicAppName --resource-group $resourceGroup --src $outputZipPath
+az logicapp deployment source config-zip --name $LogicAppName --resource-group $ResourceGroup --src $outputZipPath
 
 Remove-Item $outputZipPath
 

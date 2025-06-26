@@ -26,23 +26,34 @@
     $deploymentOutput = az deployment group create --template-file .\main.bicep --parameters .\main.parameters.json --resource-group $resourceGroup --output json
     ```
 
-3. Extract Variables from Output
+4. Extract Variables from Output:
     ```powershell
-    $functionAppName = ($deploymentOutput | ConvertFrom-Json).properties.outputs.pythonFunctionName.value
-
+    $deploymentData = $deploymentOutput | ConvertFrom-Json
+    $functionAppName = $deploymentData.properties.outputs.pythonFunctionName.value
+    $logicAppName = $deploymentData.properties.outputs.logicAppName.value
+    $emailStorageAccountName = $deploymentData.properties.outputs.emailStorageAccountName.value
+    $subscriptionId = $deploymentData.properties.outputs.subscriptionId.value
     ```
 
-4. Deploy additional components:
+5. Deploy additional components:
     ```powershell
+    # Create Video Analyzer
     . ./scripts/createVideoAnalyzer.ps1
+    # Deploy Function App
     . ./scripts/deployFunctions.ps1 -FunctionAppName $functionAppName
-    . ./scripts/deployLogicAppZip.ps1
+    
+    # Deploy Logic App
+    . ./scripts/deployLogicAppZip.ps1 -SubscriptionId $subscriptionId -ResourceGroup $resourceGroup -FunctionAppName $functionAppName -LogicAppName $logicAppName -EmailStorageAccountName $emailStorageAccountName
+
+    # Upload DocIntel Model Data
     . ./scripts/uploadDocIntelModelData.ps1
+
+    # Deploy Web Application
     . ./scripts/deployWebApp.ps1
     ```
 
-5. Create Models in DocIntel
+6. Create Models in DocIntel
 
-6. Reestablish LogicApp Connections
+7. Reestablish LogicApp Connections
 
-7. Setup Web Application App Registration
+8. Setup Web Application App Registration

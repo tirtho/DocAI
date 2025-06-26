@@ -26,7 +26,14 @@
     $deploymentOutput = az deployment group create --template-file .\main.bicep --parameters .\main.parameters.json --resource-group $resourceGroup --output json
     ```
 
-4. Deploy additional components:
+4. Ensure Deployment Output is set:
+    ```powershell
+    if (-not $deploymentOutput) {
+        $deploymentOutput = (az deployment group show --name main --resource-group $resourceGroup --output json)
+    }
+    ```
+
+5. Deploy additional components:
     ```powershell
     . ./scripts/createVideoAnalyzer.ps1
     . ./scripts/deployFunctions.ps1
@@ -35,8 +42,8 @@
     . ./scripts/deployWebApp.ps1
     ```
 
-5. Create Models in DocIntel
+6. Create Models in DocIntel
 
-6. Reestablish LogicApp Connections
+7. Reestablish LogicApp Connections
 
-7. Setup Web Application App Registration
+8. Setup Web Application App Registration

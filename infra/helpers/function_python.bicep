@@ -4,7 +4,7 @@ param keyVaultName string
 param vnetSubnetId string
 param storageAccountName string
 param hostingPlanID string
-param applicationInsightsKey string
+param applicationInsightsName string
 param functionWorkerRuntime string = 'python'
 param functionPlanOS string = 'Linux'
 param linuxFxVersion string = 'Python|3.11'
@@ -18,8 +18,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing 
 
 var coreAppSettings = [
   {
-    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-    value: applicationInsightsKey
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: reference('microsoft.insights/components/${applicationInsightsName}', '2015-05-01').ConnectionString
   }
   {
     name: 'AzureWebJobsStorage'

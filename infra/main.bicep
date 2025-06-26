@@ -108,7 +108,7 @@ module functionPython './helpers/function_python.bicep' = {
       { name: 'DOCAI_DOCINTEL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-DOCINTEL-API-KEY)' }
       { name: 'DOCAI_DOCINTEL_CLASSIFIER_ID', value: 'docai-classifier-v1' }
       { name: 'DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
-      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }
+      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.8' }
     ]
   }
 }

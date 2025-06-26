@@ -92,7 +92,7 @@ module functionPython './helpers/function_python.bicep' = {
     vnetSubnetId: vnet.outputs.subnetId
     storageAccountName: functionDependencies.outputs.storageAccountName
     hostingPlanID: functionDependencies.outputs.hostingPlanID
-    applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
+    applicationInsightsName: functionDependencies.outputs.applicationInsightsName
     additionalAppSettings: [
       { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
       { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }

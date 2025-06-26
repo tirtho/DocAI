@@ -63,4 +63,4 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 
 output storageAccountName string = storageAccount.name
 output hostingPlanID string = hostingPlan.id
-output applicationInsightsKey string = applicationInsights.properties.InstrumentationKey
+output applicationInsightsName string = applicationInsights.name

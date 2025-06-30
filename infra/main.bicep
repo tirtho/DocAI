@@ -98,6 +98,8 @@ module functionPython './helpers/function_python.bicep' = {
       { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }
       { name: 'DOCAI_AOAI_API_VERSION', value: '2024-02-15-preview' }
       { name: 'DOCAI_AOAI_DEFAULT_ENGINE', value: 'gpt-4o' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER', value: cosmosDB.outputs.cosmosDBContainerName }      
+      { name: 'DOCAI_COSMOSDB_DATABASE', value: cosmosDB.outputs.cosmosDBDatabaseName }
       { name: 'DOCAI_COSMOSDB_URI__accountEndpoint', value: cosmosDB.outputs.endpoint }
       { name: 'DOCAI_COSMOSDB_URI__credential', value: 'managedidentity' }
       { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
@@ -200,9 +202,9 @@ module webApp './helpers/webApp.bicep' = {
       { name: 'DOCAI_BING_API_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used                
       { name: 'DOCAI_BING_QUERY_COUNT', value: '5' }
       { name: 'DOCAI_COSMOSDB_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COSMOSDB-API-KEY)' }
-      { name: 'DOCAI_COSMOSDB_CONTAINER', value: 'EmailExtracts' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER', value: cosmosDB.outputs.cosmosDBContainerName }
       { name: 'DOCAI_COSMOSDB_CONTAINER_DEMOS', value: 'DocAIDemos' }
-      { name: 'DOCAI_COSMOSDB_DATABASE', value: 'DocAIDatabase' }
+      { name: 'DOCAI_COSMOSDB_DATABASE', value: cosmosDB.outputs.cosmosDBDatabaseName }
       { name: 'DOCAI_COSMOSDB_URI', value: cosmosDB.outputs.endpoint }
       { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
       { name: 'DOCAI_CU_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-CU-API-KEY)' }

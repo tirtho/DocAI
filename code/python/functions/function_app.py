@@ -17,6 +17,9 @@ from azure.core.credentials import AzureKeyCredential
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+database_name = os.getenv('DOCAI_COSMOSDB_DATABASE')
+container_name = os.getenv('DOCAI_COSMOSDB_CONTAINER')
+
 def getCurrentUTCTimeString():
     # Get the current date and time
     current_time = datetime.datetime.now()
@@ -693,8 +696,8 @@ def getEmailClass(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="saveEmailProperties", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
-@app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
+@app.cosmos_db_output(arg_name="outputDocument", database_name=database_name, 
+    container_name=container_name, connection="DOCAI_COSMOSDB_URI")
 def saveEmailProperties(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:
@@ -947,8 +950,8 @@ def getAttachmentClass(req: func.HttpRequest) -> func.HttpResponse:
     
 @app.route(route="saveAttachmentProperties", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
-@app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
+@app.cosmos_db_output(arg_name="outputDocument", database_name=database_name, 
+    container_name=container_name, connection="DOCAI_COSMOSDB_URI")
 def saveAttachmentProperties(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:
@@ -1020,8 +1023,8 @@ def saveAttachmentProperties(req: func.HttpRequest,
 
 @app.route(route="extractAttachmentData", auth_level=func.AuthLevel.ANONYMOUS)
 @app.queue_output(arg_name="msg", queue_name="outqueue", connection="AzureWebJobsStorage")
-@app.cosmos_db_output(arg_name="outputDocument", database_name="DocAIDatabase", 
-    container_name="EmailExtracts", connection="DOCAI_COSMOSDB_URI")
+@app.cosmos_db_output(arg_name="outputDocument", database_name=database_name, 
+    container_name=container_name, connection="DOCAI_COSMOSDB_URI")
 def extractAttachmentData(req: func.HttpRequest,
                         msg: func.Out[func.QueueMessage], 
                         outputDocument: func.Out[func.Document]) -> func.HttpResponse:

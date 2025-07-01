@@ -221,7 +221,7 @@
                   "headers": {
                     "ReadFileMetadataFromServer": true
                   },
-                  "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent(parameters('EmailStorageAccountName')))}/files",
+                  "path": "/v2/datasets/@{parameters('EmailStorageAccountName')}/files",
                   "queries": {
                     "folderPath": "/docai/logic-app-extracted-emails/@{triggerBody()?['from']}/@{formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')}/attachments/",
                     "name": "@item()?['name']",
@@ -260,7 +260,7 @@
           "headers": {
             "ReadFileMetadataFromServer": true
           },
-          "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent(parameters('EmailStorageAccountName')))}/files",
+          "path": "/v2/datasets/@{parameters('EmailStorageAccountName')}/files",
           "queries": {
             "folderPath": "/docai/logic-app-extracted-emails/@{triggerBody()?['from']}/@{formatDateTime(triggerBody()?['receivedDateTime'], 'yyyy-MM-ddTHH:mm:ss')}/",
             "name": "EmailBody.msg",

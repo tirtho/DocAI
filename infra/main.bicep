@@ -76,23 +76,14 @@ module aiService './helpers/aiService.bicep' = {
   }
 }
 
-module functionDependencies './helpers/function_dependencies.bicep' = {
-  name: 'function_dependencies'
-  params: {
-    resourceToken: resourceToken
-    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName
-  }
-}
-
 module functionPython './helpers/function_python.bicep' = {
   name: 'function_python'
   params: {
     functionAppName: functionAppName
     keyVaultName: keyVault.outputs.keyVaultName
     vnetSubnetId: vnet.outputs.subnetId
-    storageAccountName: functionDependencies.outputs.storageAccountName
-    hostingPlanID: functionDependencies.outputs.hostingPlanID
-    applicationInsightsName: functionDependencies.outputs.applicationInsightsName
+    resourceToken: resourceToken
+    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName       
     additionalAppSettings: [
       { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
       { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }

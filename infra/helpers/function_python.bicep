@@ -1,19 +1,25 @@
 param location string = resourceGroup().location
+param resourceToken string
 param functionAppName string
 param keyVaultName string
 param vnetSubnetId string
-param storageAccountName string
-param hostingPlanID string
-param applicationInsightsName string
 param functionWorkerRuntime string = 'python'
 param functionPlanOS string = 'Linux'
 param linuxFxVersion string = 'Python|3.11'
 param additionalAppSettings array = []
 
-var isReserved = ((functionPlanOS == 'Linux') ? true : false)
+@description('Name of the Log Analytics workspace to use for the Logic App.')
+param logAnalyticsName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = {
-  name: storageAccountName
+var isReserved = ((functionPlanOS == 'Linux') ? true : false)
+var hostingPlanName = 'asp-func'
+var applicationInsightsName = 'ai-func'
+var storageAccountName = 'safunc${resourceToken}'
+
+param functionAppPlanSku string = 'EP1'
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' existing = {
+  name: logAnalyticsName
 }
 
 var coreAppSettings = [
@@ -57,7 +63,7 @@ resource pythonFunctionApp 'Microsoft.Web/sites@2022-03-01' = {
   kind: (isReserved ? 'functionapp,linux' : 'functionapp')
   properties: {
     reserved: isReserved
-    serverFarmId: hostingPlanID
+    serverFarmId: hostingPlan.id
     siteConfig: {
       linuxFxVersion: (isReserved ? linuxFxVersion : null)
       appSettings: pythonAppSettings
@@ -93,6 +99,50 @@ resource keyVaultSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignme
     principalId: pythonFunctionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+    defaultToOAuthAuthentication: true
+    allowBlobPublicAccess: false
+  }
+  dependsOn: []
+}
+
+resource hostingPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+  name: hostingPlanName
+  location: location
+  sku: {
+    tier: 'ElasticPremium'
+    name: functionAppPlanSku
+    family: 'EP'
+  }
+  properties: {
+    maximumElasticWorkerCount: 20
+    reserved: isReserved
+  }
+  kind: 'elastic'
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: applicationInsightsName
+  location: location
+  tags: {
+    'hidden-link:${resourceId('Microsoft.Web/sites', applicationInsightsName)}': 'Resource'
+  }
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
+  kind: 'web'
 }
 
 output pythonFunctionName string = pythonFunctionApp.name

@@ -1,133 +1,127 @@
 {
   "functionConnections": {
-      "azureFunctionOperation-1": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_11_functionAppKey')"
-          },
-          "displayName": "f(getEmailClass)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getEmailClass"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getemailclass"
+    "azureFunctionOperation-1": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_11_functionAppKey')"
       },
-      "azureFunctionOperation-2": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_12_functionAppKey')"
-          },
-          "displayName": "f(saveEmailProperties)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/saveEmailProperties"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveemailproperties"
+      "displayName": "f(getEmailClass)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-1-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-1-SiteName')}/functions/getEmailClass"
       },
-      "azureFunctionOperation-3": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_13_functionAppKey')"
-          },
-          "displayName": "f(saveAttachmentProperties)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/saveAttachmentProperties"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveattachmentproperties"
+      "triggerUrl": "@parameters('azureFunctionOperation-1-TriggerUrl')"
+    },
+    "azureFunctionOperation-2": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_12_functionAppKey')"
       },
-      "azureFunctionOperation-4": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_14_functionAppKey')"
-          },
-          "displayName": "f(extractAttachmentData)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/extractAttachmentData"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/extractattachmentdata"
+      "displayName": "f(saveEmailProperties)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-2-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-2-SiteName')}/functions/saveEmailProperties"
       },
-      "azureFunctionOperation-5": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_15_functionAppKey')"
-          },
-          "displayName": "f(getAttachmentClass)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClass"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclass"
+      "triggerUrl": "@parameters('azureFunctionOperation-2-TriggerUrl')"
+    },
+    "azureFunctionOperation-3": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_13_functionAppKey')"
       },
-      "azureFunctionOperation-6": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_16_functionAppKey')"
-          },
-          "displayName": "f(getAttachmentClassUsingOpenAI)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClassUsingOpenAI"
-          },
-          "triggerUrl": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingopenai"
+      "displayName": "f(saveAttachmentProperties)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-3-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-3-SiteName')}/functions/saveAttachmentProperties"
       },
-      "azureFunctionOperation-7": {
-          "authentication": {
-              "name": "Code",
-              "type": "QueryString",
-              "value": "@appsetting('azureFunctionOperation_17_functionAppKey')"
-          },
-          "displayName": "f(getAttachmentClassUsingFormRecognizerCustomModel)",
-          "function": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/sites/docai-python-func-prod/functions/getAttachmentClassUsingFormRecognizerCustomModel"
-          },
-          "triggerUrl": "h@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingformrecognizercustommodel"
-      }
+      "triggerUrl": "@parameters('azureFunctionOperation-3-TriggerUrl')"
+    },
+    "azureFunctionOperation-4": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_14_functionAppKey')"
+      },
+      "displayName": "f(extractAttachmentData)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-4-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-4-SiteName')}/functions/extractAttachmentData"
+      },
+      "triggerUrl": "@parameters('azureFunctionOperation-4-TriggerUrl')"
+    },
+    "azureFunctionOperation-5": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_15_functionAppKey')"
+      },
+      "displayName": "f(getAttachmentClass)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-5-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-5-SiteName')}/functions/getAttachmentClass"
+      },
+      "triggerUrl": "@parameters('azureFunctionOperation-5-TriggerUrl')"
+    },
+    "azureFunctionOperation-6": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_16_functionAppKey')"
+      },
+      "displayName": "f(getAttachmentClassUsingOpenAI)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-6-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-6-SiteName')}/functions/getAttachmentClassUsingOpenAI"
+      },
+      "triggerUrl": "@parameters('azureFunctionOperation-6-TriggerUrl')"
+    },
+    "azureFunctionOperation-7": {
+      "authentication": {
+        "name": "Code",
+        "type": "QueryString",
+        "value": "@appsetting('azureFunctionOperation_17_functionAppKey')"
+      },
+      "displayName": "f(getAttachmentClassUsingFormRecognizerCustomModel)",
+      "function": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{parameters('azureFunctionOperation-7-ResourceGroup')}/providers/Microsoft.Web/sites/@{parameters('azureFunctionOperation-7-SiteName')}/functions/getAttachmentClassUsingFormRecognizerCustomModel"
+      },
+      "triggerUrl": "@parameters('azureFunctionOperation-7-TriggerUrl')"
+    }
   },
   "managedApiConnections": {
-      "azureblob": {
-          "api": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/azureblob"
-          },
-          "authentication": {
-              "type": "ManagedServiceIdentity"
-          },
-          "connection": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/azureblob"
-          },
-          "connectionProperties": {
-              "authentication": {
-                  "audience": "https://storage.azure.com/",
-                  "type": "ManagedServiceIdentity"
-              }
-          },
-          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/azureblob/e0fd5d09efde4d43a277c0c0f0c288a5"
+    "azureblob": {
+      "api": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/@{appsetting('WORKFLOWS_LOCATION_NAME')}/managedApis/azureblob"
       },
-      "office365": {
-          "api": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
-          },
-          "authentication": {
-              "type": "ManagedServiceIdentity"
-          },
-          "connection": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/office365"
-          },
-          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/office365/367862b6ac1547f1ad324bb9d0bbfac8"
+      "authentication": "@parameters('azureblob-Authentication')",
+      "connection": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{appsetting('WORKFLOWS_RESOURCE_GROUP_NAME')}/providers/Microsoft.Web/connections/azureblob"
       },
-      "office365-1": {
-          "api": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/eastus2/managedApis/office365"
-          },
-          "authentication": {
-              "type": "ManagedServiceIdentity"
-          },
-          "connection": {
-              "id": "/subscriptions/@{appsetting('DOCAI_SUBSCRIPTION_ID')}/resourceGroups/docai-prod/providers/Microsoft.Web/connections/office365-1"
-          },
-          "connectionRuntimeUrl": "@{appsetting('DOCAI_LOGIC_APP_APIM_ENDPOINT')}/apim/office365/8beb0391b03848ac91408dbe27cdf13d"
-      }
+      "connectionProperties": {
+        "authentication": {
+          "audience": "https://storage.azure.com/",
+          "type": "ManagedServiceIdentity"
+        }
+      },
+      "connectionRuntimeUrl": "@parameters('azureblob-ConnectionRuntimeUrl')"
+    },
+    "office365": {
+      "api": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/@{appsetting('WORKFLOWS_LOCATION_NAME')}/managedApis/office365"
+      },
+      "authentication": "@parameters('office365-Authentication')",
+      "connection": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{appsetting('WORKFLOWS_RESOURCE_GROUP_NAME')}/providers/Microsoft.Web/connections/office365"
+      },
+      "connectionRuntimeUrl": "@parameters('office365-ConnectionRuntimeUrl')"
+    },
+    "office365-1": {
+      "api": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/providers/Microsoft.Web/locations/@{appsetting('WORKFLOWS_LOCATION_NAME')}/managedApis/office365"
+      },
+      "authentication": "@parameters('office365-1-Authentication')",
+      "connection": {
+        "id": "/subscriptions/@{appsetting('WORKFLOWS_SUBSCRIPTION_ID')}/resourceGroups/@{appsetting('WORKFLOWS_RESOURCE_GROUP_NAME')}/providers/Microsoft.Web/connections/office365-1"
+      },
+      "connectionRuntimeUrl": "@parameters('office365-1-ConnectionRuntimeUrl')"
+    }
   },
   "serviceProviderConnections": {}
 }

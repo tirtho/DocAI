@@ -2,5 +2,119 @@
   "SUBJECT_PREFIX_LOGIC_APP_TRIGGER": {
     "type": "String",
     "value": "docai"
+  },
+  "azureFunctionOperation-1-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-1-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-1-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getemailclass"
+  },
+  "azureFunctionOperation-2-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-2-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-2-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveemailproperties"
+  },
+  "azureFunctionOperation-3-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-3-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-3-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/saveattachmentproperties"
+  },
+  "azureFunctionOperation-4-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-4-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-4-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/extractattachmentdata"
+  },
+  "azureFunctionOperation-5-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-5-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-5-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclass"
+  },
+  "azureFunctionOperation-6-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-6-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-6-TriggerUrl": {
+    "type": "String",
+    "value": "@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingopenai"
+  },
+  "azureFunctionOperation-7-ResourceGroup": {
+    "type": "String",
+    "value": "docai-prod"
+  },
+  "azureFunctionOperation-7-SiteName": {
+    "type": "String",
+    "value": "docai-python-func-prod"
+  },
+  "azureFunctionOperation-7-TriggerUrl": {
+    "type": "String",
+    "value": "h@{appsetting('DOCAI_PYTHON_FUNCTION_ENDPOINT')}/api/getattachmentclassusingformrecognizercustommodel"
+  },
+  "azureblob-ConnectionRuntimeUrl": {
+    "type": "String",
+    "value": "@appsetting('azureblob-ConnectionRuntimeUrl')"
+  },
+  "azureblob-Authentication": {
+    "type": "Object",
+    "value": {
+      "type": "ManagedServiceIdentity"
+    }
+  },
+  "office365-ConnectionRuntimeUrl": {
+    "type": "String",
+    "value": "@appsetting('office365-ConnectionRuntimeUrl')"
+  },
+  "office365-Authentication": {
+    "type": "Object",
+    "value": {
+      "type": "ManagedServiceIdentity"
+    }
+  },
+  "office365-1-ConnectionRuntimeUrl": {
+    "type": "String",
+    "value": "@appsetting('office365-1-ConnectionRuntimeUrl')"
+  },
+  "office365-1-Authentication": {
+    "type": "Object",
+    "value": {
+      "type": "ManagedServiceIdentity"
+    }
   }
 }

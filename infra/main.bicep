@@ -23,6 +23,7 @@ param keyVaultName string = 'keyvault-${resourceToken}'
 param aiServicesName string = 'docai-ai-non-prod-${resourceToken}'
 param documentIntelligenceName string = 'docai-doc-intel-non-prod-${resourceToken}'
 param webAppName string = 'web-app-${resourceToken}'
+param logAnalyticsName string = 'loganalytics-${resourceToken}'
 param appRegistrationTenantID string = tenant().tenantId
 param tenantDomainName string = ''
 
@@ -38,6 +39,13 @@ param graphAPIClientID string = ''
 @secure()
 param graphAPIClientSecret string = ''
 
+module logAnalytics './helpers/logAnalytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    logAnalyticsName: logAnalyticsName
+  }
+}
+
 module vnet './helpers/vnet.bicep' = {
   name: 'vnet'
 }
@@ -47,6 +55,7 @@ module logicApp './helpers/logicApp.bicep' = {
   params: {
     logicAppName: logicAppName
     resourceToken: resourceToken
+    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName
   }
 }
 
@@ -67,27 +76,21 @@ module aiService './helpers/aiService.bicep' = {
   }
 }
 
-module functionDependencies './helpers/function_dependencies.bicep' = {
-  name: 'function_dependencies'
-  params: {
-    resourceToken: resourceToken
-  }
-}
-
 module functionPython './helpers/function_python.bicep' = {
   name: 'function_python'
   params: {
     functionAppName: functionAppName
     keyVaultName: keyVault.outputs.keyVaultName
     vnetSubnetId: vnet.outputs.subnetId
-    storageAccountName: functionDependencies.outputs.storageAccountName
-    hostingPlanID: functionDependencies.outputs.hostingPlanID
-    applicationInsightsKey: functionDependencies.outputs.applicationInsightsKey
+    resourceToken: resourceToken
+    logAnalyticsName: logAnalytics.outputs.logAnalyticsWorkspaceName       
     additionalAppSettings: [
       { name: 'DOCAI_AOAI_API_ENDPOINT', value: aiService.outputs.azureOpenAIEndpoint }
       { name: 'DOCAI_AOAI_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-AOAI-API-KEY)' }
       { name: 'DOCAI_AOAI_API_VERSION', value: '2024-02-15-preview' }
       { name: 'DOCAI_AOAI_DEFAULT_ENGINE', value: 'gpt-4o' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER', value: cosmosDB.outputs.cosmosDBContainerName }      
+      { name: 'DOCAI_COSMOSDB_DATABASE', value: cosmosDB.outputs.cosmosDBDatabaseName }
       { name: 'DOCAI_COSMOSDB_URI__accountEndpoint', value: cosmosDB.outputs.endpoint }
       { name: 'DOCAI_COSMOSDB_URI__credential', value: 'managedidentity' }
       { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
@@ -98,7 +101,7 @@ module functionPython './helpers/function_python.bicep' = {
       { name: 'DOCAI_DOCINTEL_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-DOCINTEL-API-KEY)' }
       { name: 'DOCAI_DOCINTEL_CLASSIFIER_ID', value: 'docai-classifier-v1' }
       { name: 'DOCAI_DOCINTEL_EXTRACTION_MODEL_CLASS_MAP', value: '[{\'unknown\':\'unknown\'},{\'auto-insurance-claim\':\'autoInsuranceClaimExtraction-v1\'},{\'commercial-insurance-application\':\'commercialInsuranceApplicationExtraction-v1\'},{\'workers-compensation-application\':\'workersCompensationApplicationExtraction-v1\'}]' }
-      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.7' }
+      { name: 'DOCAI_DOCUMENT_CONFIDENCE_THRESHOLD', value: '0.8' }
     ]
   }
 }
@@ -190,9 +193,9 @@ module webApp './helpers/webApp.bicep' = {
       { name: 'DOCAI_BING_API_KEY', value: 'NOTUSED' } // 2025-03-17 - Not Currently Used                
       { name: 'DOCAI_BING_QUERY_COUNT', value: '5' }
       { name: 'DOCAI_COSMOSDB_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=COSMOSDB-API-KEY)' }
-      { name: 'DOCAI_COSMOSDB_CONTAINER', value: 'EmailExtracts' }
+      { name: 'DOCAI_COSMOSDB_CONTAINER', value: cosmosDB.outputs.cosmosDBContainerName }
       { name: 'DOCAI_COSMOSDB_CONTAINER_DEMOS', value: 'DocAIDemos' }
-      { name: 'DOCAI_COSMOSDB_DATABASE', value: 'DocAIDatabase' }
+      { name: 'DOCAI_COSMOSDB_DATABASE', value: cosmosDB.outputs.cosmosDBDatabaseName }
       { name: 'DOCAI_COSMOSDB_URI', value: cosmosDB.outputs.endpoint }
       { name: 'DOCAI_CU_API_ENDPOINT', value: aiService.outputs.contentUnderstandingEndpoint }
       { name: 'DOCAI_CU_API_KEY', value: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=DOCAI-CU-API-KEY)' }

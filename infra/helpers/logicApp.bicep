@@ -5,11 +5,18 @@ param location string = resourceGroup().location
 
 param resourceToken string
 
+@description('Name of the Log Analytics workspace to use for the Logic App.')
+param logAnalyticsName string
+
 var hostingPlanName = 'asp-logicApp'
 var applicationInsightsName = 'ai-logic'
 var storageAccountName = 'salogic${resourceToken}'
 
 var contentShare = 'la-docai-referenceb9bb'
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' existing = {
+  name: logAnalyticsName
+}
 
 resource name_resource 'Microsoft.Web/sites@2022-03-01' = {
   name: logicAppName
@@ -121,6 +128,7 @@ resource ai_logic 'microsoft.insights/components@2020-02-02' = {
   }
   properties: {
     Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
   kind: 'web'
 }
